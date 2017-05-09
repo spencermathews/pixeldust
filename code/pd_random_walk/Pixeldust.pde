@@ -6,10 +6,13 @@ class Pixeldust {
   // set scale factor on image, i.e. how much to shrink
   float scaleImg = 2;
   
+  int particlesPerPixel = 6;  // if pixel is black
+  
   // should adjust this so that we specify how many particles per pure black pixel
   // and also ensure that full density -> pure black when reconstituted
-  // set scale factor for splitting pixelss
-  int scaleSplit = 255/10;  // denominator is how many particles to spawn for each pure black pixel
+  // set scale factor for splitting pixels
+  // TODO think about if this should be float or int, there are more particles when it's an int
+  int brightnessPerParticle = 255 / particlesPerPixel;
 
   Pixeldust(String imgFile) {
 
@@ -109,20 +112,20 @@ class Pixeldust {
    * return   int   number of effective particles
    */
   int pixelSplit(color c) {
-    return int((255 - brightness(c)) / scaleSplit);
+    return int((255 - brightness(c)) / brightnessPerParticle);
   }
 
   /*
-   * Merge pixels, should probably modify to take a color and pick it apart in the function
+   * Determine pixel brightness based on how many particles occupy that pixel
    *
    * Convert particle density to color value. 
    *
-   * param  b int   brightness
-   * return   color
+   * param  numParticles int
+   * return              color
    */
-  color pixelMerge(int b) {
-    float v = 255 - b * scaleSplit;
-    return color(v);
+  color pixelMerge(int numParticles) {
+    float b = 255 - numParticles * brightnessPerParticle;
+    return color(b);
   }
 
   /*

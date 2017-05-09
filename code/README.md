@@ -9,7 +9,9 @@ particles
 scaleImg
 : how much to downsample image
 
-scaleSplit
+particlesPerPixel
+
+brightnessPerParticle
 
 ## Methods
 
@@ -20,13 +22,13 @@ imgStats
 : just info
 
 numParticles
-: calculate number of particles for entire image (based on scaleSplit value).
+: calculate number of particles for entire image (based on brightnessPerParticle value).
 
 pixelSplit
-: calculate number of particles corresponding to pixel color (based on scaleSplit value). lossy
+: calculate number of particles corresponding to pixel color (based on brightnessPerParticle value). lossy
 
 pixelMerge
-: convert number of particles to brightness value (based on scaleSplit value).
+: convert number of particles to brightness value (based on brightnessPerParticle value).
 
 particleSplit
 : initialize particles array from image
