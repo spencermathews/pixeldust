@@ -81,26 +81,29 @@ class Pixeldust {
    *
    * Note: Processing does not have unsigned int, and lacks real support for long
    *
-   * param img
    * return number of particles
    */
   int numParticles() {
 
     img.loadPixels();  // make pixels[] array available
-
-    int sumV = 0;
+    
+    int sumBrightness = 0;  // actually "darkness"
+    int sumParticles = 0;
+    
     // Loop through pixels in 1D
     for (int i = 0; i < img.pixels.length; i++) {
       color c = img.pixels[i];
 
-      sumV += pixelSplit(c);  // int cast redundant when incrementing an int var
+      sumBrightness += 255-brightness(c);
+      sumParticles += pixelSplit(c);  // int cast redundant when incrementing an int var
     }
 
-    println(sumV, "particles from", img.pixels.length, "pixels");
+    println(sumParticles, "particles from", img.pixels.length, "pixels");
+    println("Would have been:", int(sumBrightness / brightnessPerParticle));
 
     //img.updatePixels();
 
-    return sumV;
+    return sumParticles;
   }
 
   /*
