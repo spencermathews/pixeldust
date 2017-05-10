@@ -1,6 +1,7 @@
 class Pixeldust {
 
   PImage img;
+  PImage originalImg;
   PVector[] particles;  // array of particle positions
 
   // set scale factor on image, i.e. how much to shrink
@@ -18,6 +19,7 @@ class Pixeldust {
 
     img = loadImage(imgFile);                 // create PImage
     img.resize(floor(img.width/scaleImg), 0); // scale image
+    originalImg = img.copy();                 // keep copy of scaled original image
 
     imgStats();
 
