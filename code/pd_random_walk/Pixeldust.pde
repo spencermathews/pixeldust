@@ -38,7 +38,6 @@ class Pixeldust {
   void imgStats() {
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
-    println(img.pixels.length, "pixels");
 
     // initialize vars to track max values
     float maxR = 0;
@@ -206,14 +205,15 @@ class Pixeldust {
   }
 
   /*
-   * Update particles
+   * Move particles using random walk
    *
-   * Testing
+   * Note: movement constrained to display window
    *
+   * TODO parameterize by magnitude and/or randomize magnitude
    */
-  void moveParticles() {
+  void moveRandomWalk() {
 
-    int moveX, moveY;
+    float moveX, moveY;
     for (int i = 0; i < particles.length; i++) {
       if (random(-1, 1) < 0) {
         moveX = -1;
@@ -225,6 +225,9 @@ class Pixeldust {
       } else {
         moveY = 1;
       }
+      //float range = 10;
+      //moveX = random(-range, range);
+      //moveY = random(-range, range);
 
       particles[i].x = constrain(particles[i].x + moveX, 0, img.width-1);
       particles[i].y = constrain(particles[i].y + moveY, 0, img.height-1);
@@ -242,7 +245,7 @@ class Pixeldust {
   }
 
   void update() {
-    moveParticles();
+    moveRandomWalk();
   }
 
   void display() {
@@ -254,7 +257,6 @@ class Pixeldust {
    * Initialize with random particles
    *
    * Create a number appropriate for the image.
-   *
    */
   void initRandom() {
 
