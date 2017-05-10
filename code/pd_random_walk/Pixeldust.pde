@@ -15,6 +15,11 @@ class Pixeldust {
   // TODO think about if this should be float or int, there are more particles when it's an int
   int brightnessPerParticle = 255 / particlesPerPixel;
 
+  /*
+   * Constructor
+   *
+   * param imgFile String path to image to load
+   */
   Pixeldust(String imgFile) {
 
     img = loadImage(imgFile);                 // create PImage
@@ -35,7 +40,7 @@ class Pixeldust {
    */
   void imgStats() {
 
-    img.loadPixels();
+    img.loadPixels();  // we only read so no need to img.updatePixels();
     println(img.pixels.length, "pixels");
 
     // initialize vars to track max values
@@ -72,8 +77,17 @@ class Pixeldust {
 
     println("RGBA(", maxR, maxG, maxB, maxA, ")");
     println("HSBA(", maxH, maxS, maxV, maxA, ")");
+    
+    println(numParticles(), "particles from", img.pixels.length, "pixels");
+    
+    //int sumBrightness = 0;  // actually "darkness"
+    //// Loop through pixels in 1D
+    //for (int i = 0; i < img.pixels.length; i++) {
+    //  color c = img.pixels[i];
 
-    //img.updatePixels();
+    //  sumBrightness += 255 - brightness(c);
+    //}
+    //println("Would have been:", int(sumBrightness / brightnessPerParticle));
   }
 
   /*
@@ -87,24 +101,15 @@ class Pixeldust {
    */
   int numParticles() {
 
-    img.loadPixels();  // make pixels[] array available
-    
-    int sumBrightness = 0;  // actually "darkness"
+    img.loadPixels();  // we only read so no need to img.updatePixels();
+
     int sumParticles = 0;
-    
     // Loop through pixels in 1D
     for (int i = 0; i < img.pixels.length; i++) {
       color c = img.pixels[i];
-
-      sumBrightness += 255-brightness(c);
       sumParticles += pixelSplit(c);  // int cast redundant when incrementing an int var
     }
-
-    println(sumParticles, "particles from", img.pixels.length, "pixels");
-    println("Would have been:", int(sumBrightness / brightnessPerParticle));
-
-    //img.updatePixels();
-
+    
     return sumParticles;
   }
 
@@ -163,7 +168,8 @@ class Pixeldust {
         int loc = x + y * img.width;
 
         int n = pixelSplit(img.pixels[loc]);  // compute number of particles to spawn from this pixel
-        while (n>0) {
+        // create appropriate number of particles at this pixel location
+        while (n > 0) {
           particles[i].set(x, y);  // set location of this particle
           n--;
           i++;
