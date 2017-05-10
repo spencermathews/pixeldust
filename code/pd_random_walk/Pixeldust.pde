@@ -3,24 +3,22 @@ class Pixeldust {
   PImage img;
   PImage originalImg;
   PVector[] particles;  // array of particle positions
-
-  // set scale factor on image, i.e. how much to shrink
-  float scaleImg = 2;
   
-  int particlesPerPixel = 6;  // if pixel is black
-  
-  // should adjust this so that we specify how many particles per pure black pixel
-  // and also ensure that full density -> pure black when reconstituted
-  // set scale factor for splitting pixels
-  // TODO think about if this should be float or int, there are more particles when it's an int
-  int brightnessPerParticle = 255 / particlesPerPixel;
+  float scaleImg = 2;  // set scale factor on image, i.e. how much to shrink
 
+  int brightnessPerParticle;  // color contribution of each particle
+  
   /*
    * Constructor
    *
-   * param imgFile String path to image to load
+   * param imgFile           String path to image to load
+   * param particlesPerPixel int    number of particles for each black pixel
    */
-  Pixeldust(String imgFile) {
+  Pixeldust(String imgFile, int particlesPerPixel) {
+    
+    // TODO? ensure that full density -> pure black when reconstituted
+    // TODO think about if this should be float or int, there are more particles when it's an int
+    brightnessPerParticle = 255 / particlesPerPixel;
 
     img = loadImage(imgFile);                 // create PImage
     img.resize(floor(img.width/scaleImg), 0); // scale image
