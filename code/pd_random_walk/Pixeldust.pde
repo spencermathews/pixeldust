@@ -27,6 +27,7 @@ class Pixeldust {
     imgStats();
 
     initParticles();
+    //initRandom();
   }
 
   /*
@@ -248,4 +249,22 @@ class Pixeldust {
     particleMerge();
     image(img, 0, 0);
   }
+
+  /*
+   * Initialize with random particles
+   *
+   * Create a number appropriate for the image.
+   *
+   */
+  void initRandom() {
+
+    int numParticles = numParticles();  // declare and initialize particle vector
+
+    particles = new PVector[numParticles];
+    for (int i = 0; i < particles.length; i++) {
+      particles[i] = new PVector(random(img.width), random(img.height));
+    }
+  }
+
+  //void constrain
 }
