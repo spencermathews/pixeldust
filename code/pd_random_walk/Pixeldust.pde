@@ -3,11 +3,11 @@ class Pixeldust {
   PImage img;
   PImage originalImg;
   PVector[] particles;  // array of particle positions
-  
+
   float scaleImg = 2;  // set scale factor on image, i.e. how much to shrink
 
   int brightnessPerParticle;  // color contribution of each particle
-  
+
   /*
    * Constructor
    *
@@ -15,7 +15,7 @@ class Pixeldust {
    * param particlesPerPixel int    number of particles for each black pixel
    */
   Pixeldust(String imgFile, int particlesPerPixel) {
-    
+
     // TODO? ensure that full density -> pure black when reconstituted
     // TODO think about if this should be float or int, there are more particles when it's an int
     brightnessPerParticle = 255 / particlesPerPixel;
@@ -26,9 +26,7 @@ class Pixeldust {
 
     imgStats();
 
-    // TODO make sure we don't overflow int range
-    particleSplit();
-    //println(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    initParticles();
   }
 
   /*
@@ -75,9 +73,9 @@ class Pixeldust {
 
     println("RGBA(", maxR, maxG, maxB, maxA, ")");
     println("HSBA(", maxH, maxS, maxV, maxA, ")");
-    
+
     println(numParticles(), "particles from", img.pixels.length, "pixels");
-    
+
     //int sumBrightness = 0;  // actually "darkness"
     //// Loop through pixels in 1D
     //for (int i = 0; i < img.pixels.length; i++) {
@@ -91,9 +89,11 @@ class Pixeldust {
   /*
    * Determine number of particles in entire image
    *
-   * Assuming a pixels spawns a number of particles equal to its brightness (v).
+   * Assuming a pixels spawns a number of particles equal to its brightness.
    *
    * Note: Processing does not have unsigned int, and lacks real support for long
+   * TODO make sure we don't overflow int range
+   * //println(Integer.MIN_VALUE, Integer.MAX_VALUE);
    *
    * return number of particles
    */
@@ -107,7 +107,7 @@ class Pixeldust {
       color c = img.pixels[i];
       sumParticles += pixelSplit(c);  // int cast redundant when incrementing an int var
     }
-    
+
     return sumParticles;
   }
 
@@ -126,7 +126,7 @@ class Pixeldust {
   /*
    * Determine pixel brightness based on how many particles occupy that pixel
    *
-   * Convert particle density to color value. 
+   * Used to convert particle density to color value. 
    *
    * param  numParticles int
    * return              color
@@ -137,17 +137,15 @@ class Pixeldust {
   }
 
   /*
-   * Create particles
+   * Create particles from image
    *
-   * Spawns a number of particles from image using pixelSplit
+   * Spawns a number of particles from image. Uses pixelSplit.
    *
-   * Could be merged with numParticles, but kept separate for clarity.
-   *
+   * Was named particleSplit.
    */
-  void particleSplit() {
+  void initParticles() {
 
-    // declare and initialize particle vector
-    int numParticles = numParticles();
+    int numParticles = numParticles();  // declare and initialize particle vector
 
     particles = new PVector[numParticles];
     for (int i = 0; i < particles.length; i++) {
@@ -179,8 +177,7 @@ class Pixeldust {
   /*
    * Merge particles into image
    *
-   * Merge particles using pixelMerge
-   *
+   * Uses pixelMerge.
    */
   void particleMerge() {
     img.loadPixels();
