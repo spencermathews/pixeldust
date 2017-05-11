@@ -252,6 +252,14 @@ class Pixeldust {
     }
   }
 
+  /* 
+   */
+  void updateAttractors(Attractor[] attractors) {
+    for (int i = 0; i < particles.length; i++) {
+      particles[i].updateAttractors(attractors);
+    }
+  }
+
   void display() {
     particleMerge();
     //img.loadPixels();
@@ -277,41 +285,52 @@ class Pixeldust {
     }
   }
 
+  /* Create attractors at random locations in the display window
+   *
+   */
+  Attractor[] createAttractors(int numAttractors) {
+    Attractor[] attractors = new Attractor[numAttractors];
+    for (int i = 0; i < numAttractors; i++) {
+      attractors[i] = new Attractor(random(width), random(height));
+    }
+    return attractors;
+  }
+
   /* 
    *
    */
-  Attractor[] createAttractors(float size) {
-    Attractor[] = new attractor;
+  //Attractor[] createAttractors(float size) {
+  //  Attractor[] = new attractor;
 
-    PImage img;       // The source image
-    int cellsize = 2; // Dimensions of each cell in the grid
-    int cols, rows;   // Number of columns and rows in our system
+  //  PImage img;       // The source image
+  //  int cellsize = 2; // Dimensions of each cell in the grid
+  //  int cols, rows;   // Number of columns and rows in our system
 
-    cellsize = int(map(mouseX, 0, width, 1, width));
-    cols = width/cellsize;              // Calculate # of columns
-    rows = height/cellsize;             // Calculate # of rows
+  //  cellsize = int(map(mouseX, 0, width, 1, width));
+  //  cols = width/cellsize;              // Calculate # of columns
+  //  rows = height/cellsize;             // Calculate # of rows
 
-    img.loadPixels();
+  //  img.loadPixels();
 
-    // Begin loop for columns
-    for (int i = 0; i < cols; i++ ) {
-      // Begin loop for rows
-      for (int j = 0; j < rows; j++ ) {
-        int x = i*cellsize + cellsize/2; // x position
-        int y = j*cellsize + cellsize/2; // y position
-        int loc = x + y*width;           // Pixel array location
-        color c = img.pixels[loc];       // Grab the color
-        // Map brightness to a z position as a function of mouseX
-        //float z = map(brightness(img.pixels[loc]), 0, 255, 0, mouseX);
-        // Translate to the location, set fill and stroke, and draw the rect
-        pushMatrix();
-        translate(x, y); 
-        fill(c);
-        noStroke();
-        rectMode(CENTER);
-        rect(0, 0, cellsize, cellsize);
-        popMatrix();
-      }
-    }
-  }
+  //  // Begin loop for columns
+  //  for (int i = 0; i < cols; i++ ) {
+  //    // Begin loop for rows
+  //    for (int j = 0; j < rows; j++ ) {
+  //      int x = i*cellsize + cellsize/2; // x position
+  //      int y = j*cellsize + cellsize/2; // y position
+  //      int loc = x + y*width;           // Pixel array location
+  //      color c = img.pixels[loc];       // Grab the color
+  //      // Map brightness to a z position as a function of mouseX
+  //      //float z = map(brightness(img.pixels[loc]), 0, 255, 0, mouseX);
+  //      // Translate to the location, set fill and stroke, and draw the rect
+  //      pushMatrix();
+  //      translate(x, y); 
+  //      fill(c);
+  //      noStroke();
+  //      rectMode(CENTER);
+  //      rect(0, 0, cellsize, cellsize);
+  //      popMatrix();
+  //    }
+  //  }
+  //}
 }

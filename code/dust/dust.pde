@@ -7,6 +7,7 @@
  */
 
 Pixeldust pd;
+Attractor[] attractors;
 
 void setup () {
   size(1, 1);
@@ -18,9 +19,13 @@ void setup () {
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   surface.setLocation(0, 0);
+  
+  attractors = pd.createAttractors(4);
 }
 
 void draw() {
-  pd.update();
+  //pd.update();
+  pd.updateAttractors(attractors);
+
   pd.display();
 }

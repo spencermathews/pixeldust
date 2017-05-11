@@ -1,0 +1,6 @@
+# Attractor Class
+
+## Fields
+
+## Methods
+

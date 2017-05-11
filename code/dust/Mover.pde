@@ -13,6 +13,7 @@ class Mover {
   Mover(float x, float y) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
     topspeed = 5;
     mass = 1;
   }
@@ -51,6 +52,19 @@ class Mover {
     // position changes by velocity
     position.add(velocity);
 
+    checkEdges();
+  }
+
+  /* 
+   */
+  void updateAttractors(Attractor[] attractors) {
+    //acceleration.mult(0);
+    for (int i = 0; i < attractors.length; i++) {
+      PVector force = attractors[i].attract(this);
+      //println(force);
+      applyForce(force);
+    }
+    update();
     checkEdges();
   }
 
