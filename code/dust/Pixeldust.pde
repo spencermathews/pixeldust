@@ -1,8 +1,9 @@
 class Pixeldust {
 
-  PImage img;
-  PImage originalImg;
-  Mover[] particles;  // array of particle positions
+  PImage img;         // reconstituted image for display, updated each iteration
+  PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
+
+  Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
   float scaleImg = 2;  // set scale factor on image, i.e. how much to shrink
 
@@ -22,7 +23,7 @@ class Pixeldust {
 
     img = loadImage(imgFile);                 // create PImage
     img.resize(floor(img.width/scaleImg), 0); // scale image
-    originalImg = img.copy();                 // keep copy of scaled original image
+    imgPixelsOrig = img.copy();               // keep copy of scaled original image
 
     imgStats();
 
@@ -145,13 +146,12 @@ class Pixeldust {
    */
   void initParticles() {
 
-    int numParticles = numParticles();  // declare and initialize particle vector
-
+    int numParticles = numParticles();
     particles = new Mover[numParticles];
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
 
-    int i = 0;
+    int i = 0;  // index into particles array
     // Loop through pixels in 2D
     // Loop through every pixel column
     for (int y = 0; y < img.height; y++) {
@@ -261,9 +261,9 @@ class Pixeldust {
    */
   void initRandom() {
 
-    int numParticles = numParticles();  // declare and initialize particle vector
-
+    int numParticles = numParticles();
     particles = new Mover[numParticles];
+
     for (int i = 0; i < particles.length; i++) {
       particles[i] = new Mover(random(img.width), random(img.height));
     }
