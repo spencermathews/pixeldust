@@ -17,13 +17,6 @@ class Mover {
     mass = 1;
   }
 
-  /* As per Shiffman NOC Ch 2
-   */
-  void applyForce(PVector force) {
-    PVector f = PVector.div(force, mass);
-    acceleration.add(f);
-  }
-
   /* As per Shiffman NOC Example 1.9
    * but included checkEdges here instead of externally
    */
@@ -59,6 +52,13 @@ class Mover {
     position.add(velocity);
 
     checkEdges();
+  }
+
+  /* As per Shiffman NOC Ch 2
+   */
+  void applyForce(PVector force) {
+    PVector f = PVector.div(force, mass);
+    acceleration.add(f);
   }
 
   /* As per Shiffman NOC Ch 2
