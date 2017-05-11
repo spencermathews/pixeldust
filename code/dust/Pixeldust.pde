@@ -242,7 +242,10 @@ class Pixeldust {
   }
 
   void update() {
-    moveRandomWalk();
+    //moveRandomWalk();
+    for (int i = 0; i < particles.length; i++) {
+      particles[i].update();
+    }
   }
 
   void display() {

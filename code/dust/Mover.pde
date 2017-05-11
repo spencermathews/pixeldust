@@ -15,7 +15,8 @@ class Mover {
     topspeed = 6;
   }
 
-  // currently unused
+  /* As per Shiffman NOC Example 1.9, but included checkEdges here instead of externally
+   */
   void update() {
     acceleration = PVector.random2D();
     acceleration.mult(random(2));
@@ -23,6 +24,8 @@ class Mover {
     velocity.add(acceleration);
     velocity.limit(topspeed);
     position.add(velocity);
+    
+    checkEdges();
   }
 
   // currently unused
@@ -33,19 +36,22 @@ class Mover {
     ellipse(position.x, position.y, 48, 48);
   }
 
-  // currently unused
+  /* As per Shiffman NOC Example 1.9, but added -1 to width/height
+   * Could also choose to constrain instead of wrapping.
+   * TODO pull request this detail to upstream
+   */
   void checkEdges() {
 
-    if (position.x > width) {
+    if (position.x > width-1) {
       position.x = 0;
     } else if (position.x < 0) {
-      position.x = width;
+      position.x = width-1;
     }
 
-    if (position.y > height) {
+    if (position.y > height-1) {
       position.y = 0;
     } else if (position.y < 0) {
-      position.y = height;
+      position.y = height-1;
     }
   }
 }
