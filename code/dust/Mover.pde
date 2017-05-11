@@ -8,11 +8,20 @@ class Mover {
   PVector velocity;
   PVector acceleration;
   float topspeed;
+  float mass;
 
   Mover(float x, float y) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
     topspeed = 5;
+    mass = 1;
+  }
+
+  /* As per Shiffman NOC Ch 2
+   */
+  void applyForce(PVector force) {
+    PVector f = PVector.div(force, mass);
+    acceleration.add(f);
   }
 
   /* As per Shiffman NOC Example 1.9
@@ -50,6 +59,14 @@ class Mover {
     position.add(velocity);
 
     checkEdges();
+  }
+
+  /* As per Shiffman NOC Ch 2
+   */
+  void update() {
+    velocity.add(acceleration);
+    position.add(velocity);
+    acceleration.mult(0);
   }
 
   // currently unused
