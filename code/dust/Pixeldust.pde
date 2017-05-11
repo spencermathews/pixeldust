@@ -2,6 +2,7 @@ class Pixeldust {
 
   PImage img;         // reconstituted image for display, updated each iteration
   PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
+  int[] imgParticlesOrig; // array like img but elements hold number of particles in corresponding pixel, for reference
 
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
@@ -150,6 +151,7 @@ class Pixeldust {
     particles = new Mover[numParticles];
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
+    imgParticlesOrig = new int[img.pixels.length];
 
     int i = 0;  // index into particles array
     // Loop through pixels in 2D
@@ -161,6 +163,7 @@ class Pixeldust {
         int loc = x + y * img.width;
 
         int n = pixelSplit(img.pixels[loc]);  // compute number of particles to spawn from this pixel
+        imgParticlesOrig[loc] = n;                // store particles in each pixel in a separate array
         // create appropriate number of particles at this pixel location
         while (n > 0) {
           particles[i] = new Mover(x, y);  // set location of this particle
@@ -251,6 +254,11 @@ class Pixeldust {
 
   void display() {
     particleMerge();
+    //img.loadPixels();
+    //for (int i = 0; i < img.pixels.length; i++) {
+    //  img.pixels[i] = color(255-imgParticles[i]*brightnessPerParticle);
+    //}
+    //img.updatePixels();
     image(img, 0, 0);
   }
 
