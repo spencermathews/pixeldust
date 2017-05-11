@@ -2,7 +2,7 @@ class Pixeldust {
 
   PImage img;
   PImage originalImg;
-  PVector[] particles;  // array of particle positions
+  Mover[] particles;  // array of particle positions
 
   float scaleImg = 2;  // set scale factor on image, i.e. how much to shrink
 
@@ -147,10 +147,7 @@ class Pixeldust {
 
     int numParticles = numParticles();  // declare and initialize particle vector
 
-    particles = new PVector[numParticles];
-    for (int i = 0; i < particles.length; i++) {
-      particles[i] = new PVector();  // could be combined with assignment/set below
-    }
+    particles = new Mover[numParticles];
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
 
@@ -166,7 +163,7 @@ class Pixeldust {
         int n = pixelSplit(img.pixels[loc]);  // compute number of particles to spawn from this pixel
         // create appropriate number of particles at this pixel location
         while (n > 0) {
-          particles[i].set(x, y);  // set location of this particle
+          particles[i] = new Mover(x, y);  // set location of this particle
           n--;
           i++;
         }
@@ -190,7 +187,7 @@ class Pixeldust {
     // sum particle density through pixel brightness
     for (int i = 0; i < particles.length; i++) {
       // find the 1D location of particle in img
-      int loc = int(particles[i].x) + int(particles[i].y) * img.width;
+      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
       // hack, to accumulate values in img, scale later
       int particleCount = int(brightness(img.pixels[loc]));
       img.pixels[loc] = color(particleCount + 1);
@@ -229,8 +226,8 @@ class Pixeldust {
       //moveX = random(-range, range);
       //moveY = random(-range, range);
 
-      particles[i].x = constrain(particles[i].x + moveX, 0, img.width-1);
-      particles[i].y = constrain(particles[i].y + moveY, 0, img.height-1);
+      particles[i].position.x = constrain(particles[i].position.x + moveX, 0, img.width-1);
+      particles[i].position.y = constrain(particles[i].position.y + moveY, 0, img.height-1);
     }
   }
 
@@ -262,9 +259,9 @@ class Pixeldust {
 
     int numParticles = numParticles();  // declare and initialize particle vector
 
-    particles = new PVector[numParticles];
+    particles = new Mover[numParticles];
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new PVector(random(img.width), random(img.height));
+      particles[i] = new Mover(random(img.width), random(img.height));
     }
   }
 
