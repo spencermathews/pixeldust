@@ -12,19 +12,43 @@ class Mover {
   Mover(float x, float y) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
-    topspeed = 6;
+    topspeed = 5;
   }
 
-  /* As per Shiffman NOC Example 1.9, but included checkEdges here instead of externally
+  /* As per Shiffman NOC Example 1.9
+   * but included checkEdges here instead of externally
    */
-  void update() {
+  void updateRandom() {
     acceleration = PVector.random2D();
     acceleration.mult(random(2));
 
     velocity.add(acceleration);
     velocity.limit(topspeed);
     position.add(velocity);
-    
+
+    checkEdges();
+  }
+
+  /* As per Shiffman NOC Example 1.11
+   * but included checkEdges here instead of externally
+   */
+  void updateMouse() {
+
+    // Compute a vector that points from position to mouse
+    PVector mouse = new PVector(mouseX, mouseY);
+    acceleration = PVector.sub(mouse, position);
+    // Set magnitude of acceleration
+    //acceleration.setMag(0.2);
+    acceleration.normalize();
+    acceleration.mult(0.2);
+
+    // Velocity changes according to acceleration
+    velocity.add(acceleration);
+    // Limit the velocity by topspeed
+    velocity.limit(topspeed);
+    // position changes by velocity
+    position.add(velocity);
+
     checkEdges();
   }
 
