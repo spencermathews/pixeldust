@@ -15,7 +15,36 @@ class Mover {
     topspeed = 5;
   }
 
-  /* As per Shiffman NOC Example 1.9
+  /* Move particles using random walk
+   *
+   * Note: movement constrained to display window
+   *
+   * TODO parameterize by magnitude and/or randomize magnitude
+   */
+  void updateRandomWalk() {
+
+    float moveX, moveY;
+
+    if (random(-1, 1) < 0) {
+      moveX = -1;
+    } else {
+      moveX = 1;
+    }
+    if (random(-1, 1) < 0) {
+      moveY = -1;
+    } else {
+      moveY = 1;
+    }
+
+    position.x += moveX;
+    position.y += moveY;
+
+    checkEdges();
+  }
+
+  /*
+   *
+   * Modified from Shiffman NOC Example 1.9
    * but included checkEdges here instead of externally
    */
   void updateRandom() {

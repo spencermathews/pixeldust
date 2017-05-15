@@ -21,7 +21,7 @@ class Pixeldust {
     // TODO? ensure that full density -> pure black when reconstituted
     // TODO think about if this should be float or int, there are more particles when it's an int
     brightnessPerParticle = 255 / particlesPerPixel;
-    
+
     this.scaleImg = scaleImg;
 
     img = loadImage(imgFile);                 // create PImage
@@ -206,36 +206,6 @@ class Pixeldust {
     img.updatePixels();
   }
 
-  /*
-   * Move particles using random walk
-   *
-   * Note: movement constrained to display window
-   *
-   * TODO parameterize by magnitude and/or randomize magnitude
-   */
-  void moveRandomWalk() {
-
-    float moveX, moveY;
-    for (int i = 0; i < particles.length; i++) {
-      if (random(-1, 1) < 0) {
-        moveX = -1;
-      } else {
-        moveX = 1;
-      }
-      if (random(-1, 1) < 0) {
-        moveY = -1;
-      } else {
-        moveY = 1;
-      }
-      //float range = 10;
-      //moveX = random(-range, range);
-      //moveY = random(-range, range);
-
-      particles[i].position.x = constrain(particles[i].position.x + moveX, 0, img.width-1);
-      particles[i].position.y = constrain(particles[i].position.y + moveY, 0, img.height-1);
-    }
-  }
-
   // accessor function
   float imgWidth() {
     return img.width;
@@ -247,10 +217,11 @@ class Pixeldust {
   }
 
   void update() {
-    //moveRandomWalk();
+    
     for (int i = 0; i < particles.length; i++) {
+      particles[i].updateRandomWalk();
       //particles[i].updateRandom();
-      particles[i].updateMouse();
+      //particles[i].updateMouse();
     }
   }
 
