@@ -4,7 +4,11 @@
 
 img
 
-originalImg
+imgParticles
+
+imgPixelsOrig
+
+imgParticlesOrig
 
 particles
 
@@ -32,13 +36,10 @@ After setup, the flow (update) is to move particles then reconstitute image usin
 : convert number of particles to brightness value (based on brightnessPerParticle value).
 
 `initParticles`
-: initialize particles array from image
+: Initializes particles array from image. Populates particle, imgParticlesOrig, and imgParticles arrays.
 
 `particleMerge`
 : consolidate particles into image for rendering
-
-`moveRandomWalk`
-: random walk dynamics
 
 `imgWidth/imgHeight`
 : accessor functions return width/height of scaled image
@@ -50,4 +51,4 @@ After setup, the flow (update) is to move particles then reconstitute image usin
 : wrapper for display
 
 `initRandom`
-
+: initialize with random particles. Populates particle and imgParticles arrays.
