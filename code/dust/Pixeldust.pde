@@ -1,6 +1,6 @@
 class Pixeldust {
 
-  PImage img;         // reconstituted image for display, updated each iteration
+  PImage img;             // reconstituted image for display, updated each iteration
   PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
   int[] imgParticlesOrig; // array like img but elements hold number of particles in corresponding pixel, for reference
 
@@ -16,11 +16,13 @@ class Pixeldust {
    * param imgFile           String path to image to load
    * param particlesPerPixel int    number of particles for each black pixel
    */
-  Pixeldust(String imgFile, int particlesPerPixel) {
+  Pixeldust(String imgFile, float scaleImg, int particlesPerPixel) {
 
     // TODO? ensure that full density -> pure black when reconstituted
     // TODO think about if this should be float or int, there are more particles when it's an int
     brightnessPerParticle = 255 / particlesPerPixel;
+    
+    this.scaleImg = scaleImg;
 
     img = loadImage(imgFile);                 // create PImage
     img.resize(floor(img.width/scaleImg), 0); // scale image

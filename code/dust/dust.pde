@@ -12,7 +12,7 @@ void setup () {
   size(1, 1);
   surface.setResizable(true); // enable resizable display window
 
-  pd = new Pixeldust("MandelaNew.jpg", 5); // create PImage;
+  pd = new Pixeldust("MandelaNew.jpg", 2, 5); // create PImage;
 
   surface.setSize(int(pd.imgWidth()), int(pd.imgHeight()));  // set display window to image size
 
