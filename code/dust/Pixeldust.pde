@@ -189,32 +189,19 @@ class Pixeldust {
     countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
-  /*
-   * Merge particles into image
+  /* Merge particles into image
    *
    * Uses pixelMerge.
+   *
+   * Requires imgParticles array to be current.
    */
   void particleMerge() {
 
     img.loadPixels();  // loads img pixels[] array so we can update it
 
-    // zero image
-    for (int i = 0; i < img.pixels.length; i++) {
-      img.pixels[i] = color(0);
-    }
-
-    // sum particle density through pixel brightness
-    for (int i = 0; i < particles.length; i++) {
-      // find the 1D location of particle in img
-      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
-      // hack, to accumulate values in img, scale later
-      int particleCount = int(brightness(img.pixels[loc]));
-      img.pixels[loc] = color(particleCount + 1);
-    }
-
     // scale image and invert
     for (int i = 0; i < img.pixels.length; i++) {
-      img.pixels[i] = pixelMerge(int(brightness(img.pixels[i])));
+      img.pixels[i] = pixelMerge(imgParticles[i]);
     }
 
     img.updatePixels();
