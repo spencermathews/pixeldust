@@ -189,8 +189,6 @@ class Pixeldust {
    */
   void particleMerge() {
 
-    countParticles();  // updates imgParticles by counting particles in each pixel area
-
     img.loadPixels();  // loads img pixels[] array so we can update it
 
     // zero image
@@ -265,6 +263,8 @@ class Pixeldust {
       }
     }
     println(numOverflowed);
+
+    countParticles();  // updates imgParticles by counting particles in each pixel area
   }
 
   void update() {
@@ -275,6 +275,9 @@ class Pixeldust {
       //particles[i].updateRandom(2);
       //particles[i].updateMouse();
     }
+
+    // sort of unnecessary here since only updateForward() relies on values in imgParticles
+    countParticles();  // updates imgParticles by counting particles in each pixel area
   }
 
   void display() {
@@ -289,8 +292,6 @@ class Pixeldust {
 
   // TODO optimize! PShape? PGraphics?
   void displayParticles(int displayFrequency) {
-
-    countParticles();  // don't need to update pixels, only particle counts
 
     if (frameCount % displayFrequency == 0) {
       background(255);

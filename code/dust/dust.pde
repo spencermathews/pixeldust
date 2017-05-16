@@ -26,8 +26,8 @@ void draw() {
   pd.updateForward();
   //pd.update();
 
-  //pd.display();
-  pd.displayParticles(1);
+  pd.display();
+  //pd.displayParticles(1);
 
   surface.setTitle(int(frameRate) + " fps");
 }
