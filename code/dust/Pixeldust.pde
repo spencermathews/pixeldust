@@ -14,6 +14,8 @@ class Pixeldust {
 
   int numParticles;  // number of particles in simulation
 
+  int numPixelsOver = 0;   // tracks number of pixels with excess particles
+  int numPixelsUnder = 0;  // tracks number of pixels with particle deficiencies
   /*
    * Constructor
    *
@@ -240,8 +242,9 @@ class Pixeldust {
    * or maybe by comparing to adjacent pixels.
    */
   void updateForward() {
+    numPixelsOver = 0;  // counts number of overflowed pixels
+    numPixelsUnder = 0; // counts number of underflowed pixels
 
-    int numOverflowed = 0;  // for debugging
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of this particle on img grid
       int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
@@ -257,15 +260,17 @@ class Pixeldust {
         //particles[i].checkEdgesConstrained();
         //particles[i].checkEdgesReflective();
 
-        numOverflowed++;
+        numPixelsOver++;
 
         // cleverly updates imgPixels, since directly calling countParticles is wildy inefficient
         imgParticles[loc]--;  // decrement particle count of pixel at previous location
         loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;  // identify pixel where particle moved
         imgParticles[loc]++;  // increment particle count of pixel at new location
-      }
+      } else if (imgParticles[loc] < imgParticlesOrig[loc]) {
+        numPixelsUnder++;
+      } // else would catch particles with correct occupation
     }
-    println(numOverflowed);
+    println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
 
     // not needed as longs as as imgParticles is updated after every move
     //countParticles();  // updates imgParticles by counting particles in each pixel area
