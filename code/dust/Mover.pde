@@ -37,7 +37,10 @@ class Mover {
       velocity.y--;
     }
     position.add(velocity);
-    checkEdges();
+
+    //checkEdgesPeriodic();
+    //checkEdgesConstrained();
+    checkEdgesReflective();
   }
 
   /* Move particles using random walk with von Neumann neighborhood
@@ -52,7 +55,10 @@ class Mover {
     // randomly move to any of 8 surrounding pixels or stay still - int steps
     velocity = new PVector(int(random(3))-1, int(random(3))-1);
     position.add(velocity);
-    checkEdges();
+
+    //checkEdgesPeriodic();
+    //checkEdgesConstrained();
+    checkEdgesReflective();
   }
 
   /* Move particles using random walk with Moore neighborhood
@@ -65,13 +71,20 @@ class Mover {
     // randomly move to any of 8 surrounding pixels or stay still - float steps
     velocity = new PVector(random(-1, 1), random(-1, 1));
     position.add(velocity);
-    checkEdges();
+
+    //checkEdgesPeriodic();
+    //checkEdgesConstrained();
+    checkEdgesReflective();
   }
 
-  /*
+  /* Move particles by applying a random vector
+   *
+   * Velocity is limited by the Mover's topspeed field.
    *
    * Modified from Shiffman NOC Example 1.9
    * but included checkEdges here instead of externally
+   *
+   * param high float maximum magnitude of acceleration vector
    */
   void updateRandom(float high) {
     acceleration = PVector.random2D();
@@ -81,7 +94,9 @@ class Mover {
     velocity.limit(topspeed);
     position.add(velocity);
 
-    checkEdges();
+    //checkEdgesPeriodic();
+    //checkEdgesConstrained();
+    checkEdgesReflective();
   }
 
   /* As per Shiffman NOC Example 1.11
@@ -104,7 +119,9 @@ class Mover {
     // position changes by velocity
     position.add(velocity);
 
-    checkEdges();
+    //checkEdgesPeriodic();
+    //checkEdgesConstrained();
+    checkEdgesReflective();
   }
 
   void display() {
@@ -114,22 +131,63 @@ class Mover {
     point(position.x, position.y);
   }
 
-  /* As per Shiffman NOC Example 1.9, but added -1 to width/height
-   * Could also choose to constrain instead of wrapping.
+  /* Impose periodic boundary conditions
+   *
+   * TODO preserve magnitude with mod like in checkEdgesReflective
+   * May be possible to combine the naive and magnitude preserving versions
+   * of the Periodic and Reflective methods.
+   *
+   * As per Shiffman NOC Example 1.9, but added -1 to width/height
    * TODO pull request this detail to upstream
    */
-  void checkEdges() {
+  void checkEdgesPeriodic() {
 
-    if (position.x > width-1) {
+    if (position.x > width - 1) {
       position.x = 0;
     } else if (position.x < 0) {
-      position.x = width-1;
+      position.x = width - 1;
     }
 
-    if (position.y > height-1) {
+    if (position.y > height - 1) {
       position.y = 0;
     } else if (position.y < 0) {
-      position.y = height-1;
+      position.y = height - 1;
+    }
+  }
+
+  /* Constrain position to edge of display window
+   */
+  void checkEdgesConstrained() {
+
+    if (position.x > width - 1) {
+      position.x = width - 1;
+    } else if (position.x < 0) {
+      position.x = 0;
+    }
+
+    if (position.y > height - 1) {
+      position.y = height - 1;
+    } else if (position.y < 0) {
+      position.y = 0;
+    }
+  }
+
+  /* Impose reflective boundary condition
+   *
+   * Particles elastically bounce off edges.
+   */
+  void checkEdgesReflective() {
+
+    if (position.x > width - 1) {
+      position.x = (width - 1) - (position.x % width);  // width -> width-1
+    } else if (position.x < 0) {
+      position.x = 0 - (position.x % width) - 1;  // -1 -> 0
+    }
+
+    if (position.y > height - 1) {
+      position.y = (height - 1) - (position.y % height);
+    } else if (position.y < 0) {
+      position.y = 0 - (position.y % height) - 1;
     }
   }
 }

@@ -25,5 +25,10 @@ updateMouse
 
 display?
 
-checkEdges
+checkEdgesPeriodic
+: consider calling from Pixeldust and not Mover.updateX to increase flexibility
+
+checkEdgesConstrained
+
+checkEdgesReflective
 
