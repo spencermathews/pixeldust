@@ -287,6 +287,34 @@ class Pixeldust {
     image(img, 0, 0);
   }
 
+  // TODO optimize! PShape? PGraphics?
+  void displayParticles(int displayFrequency) {
+
+    countParticles();  // don't need to update pixels, only particle counts
+
+    if (frameCount % displayFrequency == 0) {
+      background(255);
+
+      // draw using Mover.display
+      for (int i = 0; i < particles.length; i++) {
+        particles[i].display();
+      }
+
+      // draw using PShape - does not seem any faster!
+      //PShape points;
+      //points = createShape();
+      //points.beginShape(POINTS);
+      //points.stroke(0);
+      //points.strokeWeight(1);
+      //points.fill(0);
+      //for (int i = 0; i < particles.length; i++) {
+      //  points.vertex(particles[i].position.x, particles[i].position.y);
+      //}
+      //points.endShape();
+      //shape(points);
+    }
+  }
+
   /*
    * Initializes with random particles
    *

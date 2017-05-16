@@ -18,10 +18,16 @@ void setup () {
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   surface.setLocation(0, 0);
+
+  noSmooth();  // may increase performance
 }
 
 void draw() {
   pd.updateForward();
   //pd.update();
-  pd.display();
+
+  //pd.display();
+  pd.displayParticles(1);
+
+  surface.setTitle(int(frameRate) + " fps");
 }

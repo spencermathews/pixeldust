@@ -107,12 +107,11 @@ class Mover {
     checkEdges();
   }
 
-  // currently unused
   void display() {
     stroke(0);
-    strokeWeight(2);
-    fill(127);
-    ellipse(position.x, position.y, 48, 48);
+    strokeWeight(1);
+    fill(0);
+    point(position.x, position.y);
   }
 
   /* As per Shiffman NOC Example 1.9, but added -1 to width/height
