@@ -229,8 +229,32 @@ class Pixeldust {
     return img.height;
   }
 
-  void update() {
+  /* Dynamics moving toward image
+   *
+   * Naive implemenation only moves particles on pixels that are over-occupied.
+   * An improvement recalculates overflow state after every move.
+   * Consider adjusting move range depending on how overoccupied,
+   * or maybe by comparing to adjacent pixels.
+   */
+  void updateForward() {
 
+    int numOverflowed = 0;  // for debugging
+    for (int i = 0; i < particles.length; i++) {
+      // finds the 1D location of this particle on img grid
+      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
+
+      // performs update step if this pixel has overflowed
+      if (imgParticles[loc] > imgParticlesOrig[loc]) {
+        //particles[i].updateRandomWalk();
+        particles[i].updateRandom();
+
+        numOverflowed++;
+      }
+    }
+    println(numOverflowed);
+  }
+
+  void update() {
     for (int i = 0; i < particles.length; i++) {
       particles[i].updateRandomWalk();
       //particles[i].updateRandom();
