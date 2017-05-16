@@ -12,6 +12,8 @@ class Pixeldust {
 
   int brightnessPerParticle;  // color contribution of each particle
 
+  int numParticles;  // number of particles in simulation
+
   /*
    * Constructor
    *
@@ -29,6 +31,8 @@ class Pixeldust {
     img = loadImage(imgFile);                 // create PImage
     img.resize(floor(img.width/scaleImg), 0); // scale image
     imgPixelsOrig = img.copy();               // keep copy of scaled original image
+
+    numParticles = numParticles();  // compute number of particles to work with
 
     imgStats();
 
@@ -80,7 +84,7 @@ class Pixeldust {
     println("RGBA(", maxR, maxG, maxB, maxA, ")");
     println("HSBA(", maxH, maxS, maxV, maxA, ")");
 
-    println(numParticles(), "particles from", img.pixels.length, "pixels");
+    println(numParticles, "particles from", img.pixels.length, "pixels");
 
     //int sumBrightness = 0;  // actually "darkness"
     //// Loop through pixels in 1D
@@ -100,6 +104,8 @@ class Pixeldust {
    * Note: Processing does not have unsigned int, and lacks real support for long
    * TODO make sure we don't overflow int range
    * //println(Integer.MIN_VALUE, Integer.MAX_VALUE);
+   *
+   * Requires img field to be initialized.
    *
    * return number of particles
    */
@@ -148,10 +154,11 @@ class Pixeldust {
    *
    * Uses pixelSplit.
    * Was named particleSplit.
+   *
+   * Requires fields img and numParticles to be initialized.
    */
   void initParticles() {
 
-    int numParticles = numParticles();
     particles = new Mover[numParticles];
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
@@ -331,16 +338,17 @@ class Pixeldust {
   }
 
   /*
-   * Initializes with random particles
+   * Initializes particle array with random particles
    *
    * Creates a number appropriate for the image.
    *
    * Populates particle and imgParticles arrays.
    * Note does not create imgParticlesOrig like initParticles does.
+   *
+   * Requires fields img and numParticles to be initialized.
    */
   void initRandom() {
 
-    int numParticles = numParticles();
     particles = new Mover[numParticles];
 
     for (int i = 0; i < particles.length; i++) {
