@@ -8,6 +8,8 @@
 
 Pixeldust pd;
 
+float alpha = 0;
+
 void setup () {
   size(1, 1);
   surface.setResizable(true); // enable resizable display window
@@ -19,15 +21,37 @@ void setup () {
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   surface.setLocation(0, 0);
 
-  noSmooth();  // may increase performance
+  //noSmooth();  // may increase performance
 }
 
 void draw() {
-  pd.updateForward();
-  //pd.update();
+  //background(255);
+  if (frameCount<30) {
+    pd.update();
+    pd.display();
+  } else {
+    if (pd.numPixelsOver > 3000) {
+      pd.updateForward();
+      pd.display();
+    } else {
 
-  pd.display();
-  //pd.displayParticles(1);
+      float target = 16;
+      println(alpha);
+      if (alpha < target) {
+        pd.updateForward();
+        pd.display();
+        alpha += (target - alpha)/2;
+        tint(255, alpha);
+        //blendMode(DARKEST);
+        image(pd.imgPixelsOrig, 0, 0);
+      } else {
+        //background(255);
+        tint(255, 255);
+        pd.update();
+        pd.display();
+      }
+    }
+  }
 
-  surface.setTitle(int(frameRate) + " fps");
+  surface.setTitle("frame " + frameCount + " @ " + int(frameRate) + " fps");
 }

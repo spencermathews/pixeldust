@@ -16,6 +16,7 @@ class Pixeldust {
 
   int numPixelsOver = 0;   // tracks number of pixels with excess particles
   int numPixelsUnder = 0;  // tracks number of pixels with particle deficiencies
+
   /*
    * Constructor
    *
@@ -276,7 +277,7 @@ class Pixeldust {
     }
 
     // output how close we match original image
-    if (frameCount % 10 == 0) {
+    if (frameCount % 100 == 0) {
       println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
     }
 
@@ -288,8 +289,8 @@ class Pixeldust {
     for (int i = 0; i < particles.length; i++) {
       //particles[i].updateRandomWalkBasic();
       //particles[i].updateRandomWalkVonNeumann();
-      particles[i].updateRandomWalkMoore();
-      //particles[i].updateRandom(2);
+      //particles[i].updateRandomWalkMoore();
+      particles[i].updateRandom(10);
       //particles[i].updateMouse();
 
       //particles[i].checkEdgesPeriodicSnap();
