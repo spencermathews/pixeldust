@@ -178,7 +178,8 @@ class Pixeldust {
     }
 
     imgParticles = new int[img.pixels.length];  // create array for storing current particle count
-    arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
+    //arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
+    countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
   /*
@@ -187,16 +188,14 @@ class Pixeldust {
    * Uses pixelMerge.
    */
   void particleMerge() {
-    img.loadPixels();
+
+    countParticles();  // updates imgParticles by counting particles in each pixel area
+
+    img.loadPixels();  // loads img pixels[] array so we can update it
 
     // zero image
     for (int i = 0; i < img.pixels.length; i++) {
       img.pixels[i] = color(0);
-    }
-
-    // zeros array of current particle count
-    for (int i = 0; i < imgParticles.length; i++) {
-      imgParticles[i] = 0;
     }
 
     // sum particle density through pixel brightness
@@ -206,9 +205,6 @@ class Pixeldust {
       // hack, to accumulate values in img, scale later
       int particleCount = int(brightness(img.pixels[loc]));
       img.pixels[loc] = color(particleCount + 1);
-
-      imgParticles[loc]++;  // increments count of current particles
-      // TODO move imgParticles incrementation out of particleMerge, and use to update pixel array.
     }
 
     // scale image and invert
@@ -227,6 +223,21 @@ class Pixeldust {
   // accessor function
   float imgHeight() {
     return img.height;
+  }
+
+  /* Count particles occupying each pixel space and update imgParticles array
+   */
+  void countParticles() {
+    // zeros array
+    for (int i = 0; i < imgParticles.length; i++) {
+      imgParticles[i] = 0;
+    }
+
+    for (int i = 0; i < particles.length; i++) {
+      // finds the 1D location of particle on img grid and increment the particle count there
+      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
+      imgParticles[loc]++;
+    }
   }
 
   /* Dynamics moving toward image
@@ -285,17 +296,10 @@ class Pixeldust {
     int numParticles = numParticles();
     particles = new Mover[numParticles];
 
-    // zeros array, note array was created in initParticles
-    for (int i = 0; i < imgParticles.length; i++) {
-      imgParticles[i] = 0;
-    }
-
     for (int i = 0; i < particles.length; i++) {
       particles[i] = new Mover(random(img.width), random(img.height));  // creates a particle at random location
-
-      // finds the 1D location of particle on img grid and increment the particle count there
-      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
-      imgParticles[loc]++;
     }
+
+    countParticles();
   }
 }
