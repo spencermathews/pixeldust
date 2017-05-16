@@ -22,5 +22,6 @@ void setup () {
 
 void draw() {
   pd.updateForward();
+  //pd.update();
   pd.display();
 }

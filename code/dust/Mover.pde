@@ -15,30 +15,56 @@ class Mover {
     topspeed = 5;
   }
 
-  /* Move particles using random walk
+  /* Move particles using random walk, basic
    *
-   * Note: movement constrained to display window
+   * It is not possible to stay put.
+   *
+   * Modified from Shiffman NOC Introduction
    *
    * TODO parameterize by magnitude and/or randomize magnitude
    */
-  void updateRandomWalk() {
-
-    float moveX, moveY;
-
-    if (random(-1, 1) < 0) {
-      moveX = -1;
+  void updateRandomWalkBasic() {
+    // randomly move left, right, up, or down, no option to stay still
+    int choice = int(random(4));
+    velocity = new PVector(0, 0);
+    if (choice == 0) {
+      velocity.x++;
+    } else if (choice == 1) {
+      velocity.x--;
+    } else if (choice == 2) {
+      velocity.y++;
     } else {
-      moveX = 1;
+      velocity.y--;
     }
-    if (random(-1, 1) < 0) {
-      moveY = -1;
-    } else {
-      moveY = 1;
-    }
+    position.add(velocity);
+    checkEdges();
+  }
 
-    position.x += moveX;
-    position.y += moveY;
+  /* Move particles using random walk with von Neumann neighborhood
+   *
+   * Possibility of no move.
+   *
+   * Note: movement constrained to display window
+   *
+   * Modified from Shiffman NOC Introduction
+   */
+  void updateRandomWalkVonNeumann() {
+    // randomly move to any of 8 surrounding pixels or stay still - int steps
+    velocity = new PVector(int(random(3))-1, int(random(3))-1);
+    position.add(velocity);
+    checkEdges();
+  }
 
+  /* Move particles using random walk with Moore neighborhood
+   *
+   * Possibility of no move.
+   *
+   * Modified from Shiffman NOC Introduction
+   */
+  void updateRandomWalkMoore() {
+    // randomly move to any of 8 surrounding pixels or stay still - float steps
+    velocity = new PVector(random(-1, 1), random(-1, 1));
+    position.add(velocity);
     checkEdges();
   }
 

@@ -13,9 +13,13 @@ topspeed
 
 ## Methods
 
-updateRandomWalk
+updateRandomWalkBasic
 
-updaterandom
+updateRandomWalkVonNeumann
+
+updateRandomWalkMoore
+
+updateRandom
 
 updateMouse
 
