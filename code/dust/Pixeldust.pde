@@ -257,11 +257,11 @@ class Pixeldust {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
-        particles[i].updateRandom(2);
+        particles[i].updateRandom(10);
 
-        checkEdgesPeriodic();
-        //checkEdgesConstrained();
-        //checkEdgesReflective();
+        particles[i].checkEdgesPeriodic();
+        //particles[i].checkEdgesConstrained();
+        //particles[i].checkEdgesReflective();
 
         numOverflowed++;
 
@@ -285,9 +285,9 @@ class Pixeldust {
       //particles[i].updateRandom(2);
       //particles[i].updateMouse();
 
-      checkEdgesPeriodic();
-      //checkEdgesConstrained();
-      //checkEdgesReflective();
+      particles[i].checkEdgesPeriodic();
+      //particles[i].checkEdgesConstrained();
+      //particles[i].checkEdgesReflective();
     }
 
     // sort of unnecessary here since only updateForward() relies on values in imgParticles

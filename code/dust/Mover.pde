@@ -12,7 +12,7 @@ class Mover {
   Mover(float x, float y) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
-    topspeed = 5;
+    topspeed = 20;
   }
 
   /* Move particles using random walk, basic
