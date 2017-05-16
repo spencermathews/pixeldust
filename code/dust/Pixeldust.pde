@@ -256,15 +256,21 @@ class Pixeldust {
       if (imgParticles[loc] > imgParticlesOrig[loc]) {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
-        particles[i].updateRandomWalkMoore();
-        //particles[i].updateRandom(2);
+        //particles[i].updateRandomWalkMoore();
+        particles[i].updateRandom(2);
 
         numOverflowed++;
+
+        // cleverly updates imgPixels, since directly calling countParticles is wildy inefficient
+        imgParticles[loc]--;  // decrement particle count of pixel at previous location
+        loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;  // identify pixel where particle moved
+        imgParticles[loc]++;  // increment particle count of pixel at new location
       }
     }
     println(numOverflowed);
 
-    countParticles();  // updates imgParticles by counting particles in each pixel area
+    // not needed as longs as as imgParticles is updated after every move
+    //countParticles();  // updates imgParticles by counting particles in each pixel area
   }
 
   void update() {
