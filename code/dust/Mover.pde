@@ -111,44 +111,64 @@ class Mover {
     point(position.x, position.y);
   }
 
-  /* Impose periodic boundary conditions
+  /* Impose periodic boundary conditions but snap to edge
    *
-   * TODO preserve magnitude with mod like in checkEdgesReflective
-   * May be possible to combine the naive and magnitude preserving versions
-   * of the Periodic and Reflective methods.
+   * As per Shiffman NOC Example 1.9
+   */
+  void checkEdgesPeriodicSnap() {
+
+    if (position.x >= width) {
+      position.x = 0;
+    } else if (position.x < 0) {
+      position.x = width - 0.999;
+    }
+
+    if (position.y >= height) {
+      position.y = 0;
+    } else if (position.y < 0) {
+      position.y = height - 0.999;
+    }
+  }
+
+  /* Impose periodic boundary conditions but preserve magnitude
    *
-   * As per Shiffman NOC Example 1.9, but added -1 to width/height
-   * TODO pull request this detail to upstream
+   * Note special handling of when position exactly equal to 0 in either dimension.
+   *
+   * May not make much difference over the snap version.
    */
   void checkEdgesPeriodic() {
 
-    if (position.x > width - 1) {
-      position.x = 0;
+    if (position.x > width) {
+      position.x = 0 + (position.x - width);
     } else if (position.x < 0) {
-      position.x = width - 1;
+      position.x = width + position.x;
+    } else if (position.x == 0) {
+      position.x = width - 0.999;  // handle edge case
     }
 
-    if (position.y > height - 1) {
-      position.y = 0;
+    if (position.y > height) {
+      position.y = 0 + (position.y - height);
     } else if (position.y < 0) {
-      position.y = height - 1;
+      position.y = width + position.y;
+    } else if (position.y == 0) {
+      position.y = height - 0.999;  // handle edge case
     }
   }
 
   /* Constrain position to edge of display window
    */
-  void checkEdgesConstrained() {
+  void checkEdgesReflectiveSnap() {
 
-    if (position.x > width - 1) {
-      position.x = width - 1;
+    if (position.x >= width) {
+      position.x = width - 0.999;
       velocity.x = -abs(velocity.x);
     } else if (position.x < 0) {
       position.x = 0;
       velocity.x = abs(velocity.x);
     }
 
-    if (position.y > height - 1) {
-      position.y = height - 1;
+    if (position.y >= height) {
+      position.y = height - 0.999;
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
       position.y = 0;
@@ -156,25 +176,52 @@ class Mover {
     }
   }
 
-  /* Impose reflective boundary condition
+  /* Impose reflective boundary condition preserving magnitude
    *
    * Particles elastically bounce off edges.
+   *
+   * Note special handling of when position exactly equal to width or height.
    */
   void checkEdgesReflective() {
 
-    if (position.x > width - 1) {
-      position.x = (width - 1) - (position.x % width);  // width -> width-1
+    if (position.x > width) {
+      position.x = width - (position.x - width);
       velocity.x = -abs(velocity.x);
     } else if (position.x < 0) {
-      position.x = 0 - (position.x % width) - 1;  // -1 -> 0
+      position.x = 0 - position.x;
       velocity.x = abs(velocity.x);
+    } else if (position.x == width) {
+      position.x = width - 0.999;  // handle edge case
+      velocity.x = -abs(velocity.x);
     }
 
-    if (position.y > height - 1) {
-      position.y = (height - 1) - (position.y % height);
+    if (position.y > height) {
+      position.y = height - (position.y - height);
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
-      position.y = 0 - (position.y % height) - 1;
+      position.y = 0 - position.y;
+      velocity.y = abs(velocity.y);
+    } else if (position.y == height) {
+      position.y = height - 0.999;  // handle edge case
+      velocity.y = -abs(velocity.y);
+    }
+  }
+
+  void checkEdgesMixed() {
+
+    // uses periodic boundary on x axis
+    if (position.x >= width) {
+      position.x = 0;
+    } else if (position.x < 0) {
+      position.x = width - 1;
+    }
+
+    // uses reflective bounary on y axis
+    if (position.y >= height) {
+      position.y = (height - 1) - (position.y - height);
+      velocity.y = -abs(velocity.y);
+    } else if (position.y < 0) {
+      position.y = 0 - position.y;
       velocity.y = abs(velocity.y);
     }
   }

@@ -8,7 +8,7 @@ class Pixeldust {
 
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
-  float scaleImg = 2;  // set scale factor on image, i.e. how much to shrink
+  float scaleImg;  // set scale factor on image, i.e. how much to shrink
 
   int brightnessPerParticle;  // color contribution of each particle
 
@@ -39,7 +39,7 @@ class Pixeldust {
     imgStats();
 
     initParticles();
-    initRandom();
+    initRandom(1);
   }
 
   /*
@@ -48,6 +48,8 @@ class Pixeldust {
    * param img
    */
   void imgStats() {
+
+    println("Scaled", "x", scaleImg, "->", img.width, img.height);
 
     img.loadPixels();  // we only read so no need to img.updatePixels();
 
@@ -256,9 +258,11 @@ class Pixeldust {
         //particles[i].updateRandomWalkMoore();
         particles[i].updateRandom(10);
 
-        particles[i].checkEdgesPeriodic();
-        //particles[i].checkEdgesConstrained();
+        //particles[i].checkEdgesPeriodicSnap();
+        //particles[i].checkEdgesPeriodic();
+        //particles[i].checkEdgesReflectiveSnap();
         //particles[i].checkEdgesReflective();
+        particles[i].checkEdgesMixed();
 
         numPixelsOver++;
 
@@ -270,7 +274,11 @@ class Pixeldust {
         numPixelsUnder++;
       } // else would catch particles with correct occupation
     }
-    println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
+
+    // output how close we match original image
+    if (frameCount % 10 == 0) {
+      println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
+    }
 
     // not needed as longs as as imgParticles is updated after every move
     //countParticles();  // updates imgParticles by counting particles in each pixel area
@@ -284,9 +292,11 @@ class Pixeldust {
       //particles[i].updateRandom(2);
       //particles[i].updateMouse();
 
-      particles[i].checkEdgesPeriodic();
-      //particles[i].checkEdgesConstrained();
+      //particles[i].checkEdgesPeriodicSnap();
+      //particles[i].checkEdgesPeriodic();
+      //particles[i].checkEdgesReflectiveSnap();
       //particles[i].checkEdgesReflective();
+      particles[i].checkEdgesMixed();
     }
 
     // sort of unnecessary here since only updateForward() relies on values in imgParticles
@@ -338,13 +348,15 @@ class Pixeldust {
    * Note does not create imgParticlesOrig like initParticles does.
    *
    * Requires fields img and numParticles to be initialized.
+   *
+   * param ySpread float number of pixels from "bottom" initially occupied by particles
    */
-  void initRandom() {
+  void initRandom(float ySpread) {
 
     particles = new Mover[numParticles];
 
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(random(img.width), random(img.height));  // creates a particle at random location
+      particles[i] = new Mover(int(random(img.width)), int(random(img.height - ySpread, img.height)));  // creates a particle at random location
     }
 
     countParticles();
