@@ -259,6 +259,10 @@ class Pixeldust {
         //particles[i].updateRandomWalkMoore();
         particles[i].updateRandom(2);
 
+        checkEdgesPeriodic();
+        //checkEdgesConstrained();
+        //checkEdgesReflective();
+
         numOverflowed++;
 
         // cleverly updates imgPixels, since directly calling countParticles is wildy inefficient
@@ -280,6 +284,10 @@ class Pixeldust {
       particles[i].updateRandomWalkMoore();
       //particles[i].updateRandom(2);
       //particles[i].updateMouse();
+
+      checkEdgesPeriodic();
+      //checkEdgesConstrained();
+      //checkEdgesReflective();
     }
 
     // sort of unnecessary here since only updateForward() relies on values in imgParticles

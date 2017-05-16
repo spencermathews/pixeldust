@@ -37,10 +37,6 @@ class Mover {
       velocity.y--;
     }
     position.add(velocity);
-
-    //checkEdgesPeriodic();
-    //checkEdgesConstrained();
-    checkEdgesReflective();
   }
 
   /* Move particles using random walk with von Neumann neighborhood
@@ -55,10 +51,6 @@ class Mover {
     // randomly move to any of 8 surrounding pixels or stay still - int steps
     velocity = new PVector(int(random(3))-1, int(random(3))-1);
     position.add(velocity);
-
-    //checkEdgesPeriodic();
-    //checkEdgesConstrained();
-    checkEdgesReflective();
   }
 
   /* Move particles using random walk with Moore neighborhood
@@ -71,10 +63,6 @@ class Mover {
     // randomly move to any of 8 surrounding pixels or stay still - float steps
     velocity = new PVector(random(-1, 1), random(-1, 1));
     position.add(velocity);
-
-    //checkEdgesPeriodic();
-    //checkEdgesConstrained();
-    checkEdgesReflective();
   }
 
   /* Move particles by applying a random vector
@@ -93,10 +81,6 @@ class Mover {
     velocity.add(acceleration);
     velocity.limit(topspeed);
     position.add(velocity);
-
-    //checkEdgesPeriodic();
-    //checkEdgesConstrained();
-    checkEdgesReflective();
   }
 
   /* As per Shiffman NOC Example 1.11
@@ -118,10 +102,6 @@ class Mover {
     velocity.limit(topspeed);
     // position changes by velocity
     position.add(velocity);
-
-    //checkEdgesPeriodic();
-    //checkEdgesConstrained();
-    checkEdgesReflective();
   }
 
   void display() {
