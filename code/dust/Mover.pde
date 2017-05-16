@@ -47,9 +47,9 @@ class Mover {
    * Modified from Shiffman NOC Example 1.9
    * but included checkEdges here instead of externally
    */
-  void updateRandom() {
+  void updateRandom(float high) {
     acceleration = PVector.random2D();
-    acceleration.mult(random(2));
+    acceleration.mult(random(high));
 
     velocity.add(acceleration);
     velocity.limit(topspeed);

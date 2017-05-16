@@ -257,7 +257,7 @@ class Pixeldust {
       // performs update step if this pixel has overflowed
       if (imgParticles[loc] > imgParticlesOrig[loc]) {
         //particles[i].updateRandomWalk();
-        particles[i].updateRandom();
+        particles[i].updateRandom(2);
 
         numOverflowed++;
       }
@@ -268,7 +268,7 @@ class Pixeldust {
   void update() {
     for (int i = 0; i < particles.length; i++) {
       particles[i].updateRandomWalk();
-      //particles[i].updateRandom();
+      //particles[i].updateRandom(2);
       //particles[i].updateMouse();
     }
   }
