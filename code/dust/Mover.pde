@@ -161,14 +161,18 @@ class Mover {
 
     if (position.x > width - 1) {
       position.x = width - 1;
+      velocity.x = -velocity.x;  // reversing velocity seems a reasonable heuristic
     } else if (position.x < 0) {
       position.x = 0;
+      velocity.x = -velocity.x;
     }
 
     if (position.y > height - 1) {
       position.y = height - 1;
+      velocity.y = -velocity.y;
     } else if (position.y < 0) {
       position.y = 0;
+      velocity.y = -velocity.y;
     }
   }
 
@@ -180,14 +184,18 @@ class Mover {
 
     if (position.x > width - 1) {
       position.x = (width - 1) - (position.x % width);  // width -> width-1
+      velocity.x = -velocity.x;  // reversing velocity seems a reasonable heuristic
     } else if (position.x < 0) {
       position.x = 0 - (position.x % width) - 1;  // -1 -> 0
+      velocity.x = -velocity.x;
     }
 
     if (position.y > height - 1) {
       position.y = (height - 1) - (position.y % height);
+      velocity.y = -velocity.y;
     } else if (position.y < 0) {
       position.y = 0 - (position.y % height) - 1;
+      velocity.y = -velocity.y;
     }
   }
 }
