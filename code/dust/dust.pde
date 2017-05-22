@@ -23,7 +23,7 @@ void setup () {
 }
 
 void draw() {
-  pd.updateForward();
+  pd.updateForward(0);
   //pd.update();
 
   pd.display();

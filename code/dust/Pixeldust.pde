@@ -243,7 +243,7 @@ class Pixeldust {
    * Consider adjusting move range depending on how overoccupied,
    * or maybe by comparing to adjacent pixels.
    */
-  void updateForward() {
+  void updateForward(float p) {
     numPixelsOver = 0;  // counts number of overflowed pixels
     numPixelsUnder = 0; // counts number of underflowed pixels
 
@@ -251,8 +251,9 @@ class Pixeldust {
       // finds the 1D location of this particle on img grid
       int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
 
+      boolean go = random(1.0) < p;
       // performs update step if this pixel has overflowed
-      if (imgParticles[loc] > imgParticlesOrig[loc]) {
+      if (imgParticles[loc] > imgParticlesOrig[loc] || go) {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
