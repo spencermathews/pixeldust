@@ -17,6 +17,9 @@ class Pixeldust {
 
   int numPixelsOver = 0;   // tracks number of pixels with excess particles
   int numPixelsUnder = 0;  // tracks number of pixels with particle deficiencies
+
+  int particleMultiplier = 2;  // experimental: how many particles to spawn for each one calculated
+
   /*
    * Constructor
    *
@@ -126,7 +129,7 @@ class Pixeldust {
       sumParticles += pixelSplit(c);  // int cast redundant when incrementing an int var
     }
 
-    return sumParticles;
+    return int(sumParticles * particleMultiplier);
   }
 
   /*
@@ -181,6 +184,7 @@ class Pixeldust {
 
         int n = pixelSplit(imgPixelsOrig.pixels[loc]);  // compute number of particles to spawn from this pixel
         imgParticlesOrig[loc] = n;                // store particles in each pixel in a separate array
+        n *= particleMultiplier;
         // create appropriate number of particles at this pixel location
         while (n > 0) {
           particles[i] = new Mover(x, y);  // set location of this particle
