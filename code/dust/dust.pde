@@ -1,3 +1,5 @@
+import processing.sound.*;
+
 /*
  * Pixeldust first stab implemented as a class
  *
@@ -7,10 +9,14 @@
  */
 
 Pixeldust pd;
+PixeldustSimulation sim;
 
 void setup () {
   size(1, 1);
   surface.setResizable(true); // enable resizable display window
+
+  String csvFileName = "Mandela-timing.csv";
+  sim = new PixeldustSimulation(this, csvFileName);
 
   pd = new Pixeldust("MandelaNew.jpg", 2, 5); // create PImage;
 
@@ -23,10 +29,10 @@ void setup () {
 }
 
 void draw() {
-  pd.updateForward(0);
+  //pd.updateForward(0);
   //pd.update();
 
-  pd.display();
+  //pd.display();
   //pd.displayParticles(1);
 
   surface.setTitle(int(frameRate) + " fps");
