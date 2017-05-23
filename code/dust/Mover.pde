@@ -138,20 +138,27 @@ class Mover {
    */
   void checkEdgesPeriodic() {
 
-    if (position.x > width) {
+    float offset = 0.001;  // slight offset to avoid equality with width/height
+
+    if (position.x >= width) {
       position.x = 0 + (position.x - width);
     } else if (position.x < 0) {
       position.x = width + position.x;
-    } else if (position.x == 0) {
-      position.x = width - 0.999;  // handle edge case
+    }
+    // handle edge case
+    if (position.x == width) {
+      position.x = width - offset;
     }
 
-    if (position.y > height) {
+    if (position.y >= height) {
       position.y = 0 + (position.y - height);
     } else if (position.y < 0) {
-      position.y = width + position.y;
-    } else if (position.y == 0) {
-      position.y = height - 0.999;  // handle edge case
+      position.y = height + position.y;
+    }
+    // handle edge case, catching position.y==0 as a special case is insufficient
+    // since position.y will still be assigned value of height when initially small negative number
+    if (position.y == height) {
+      position.y = height - offset;
     }
   }
 
@@ -184,14 +191,18 @@ class Mover {
    */
   void checkEdgesReflective() {
 
+    float offset = 0.001;  // slight offset to avoid equality with width/height
+
     if (position.x > width) {
       position.x = width - (position.x - width);
       velocity.x = -abs(velocity.x);
     } else if (position.x < 0) {
       position.x = 0 - position.x;
       velocity.x = abs(velocity.x);
-    } else if (position.x == width) {
-      position.x = width - 0.999;  // handle edge case
+    }
+    // handle edge case
+    if (position.x == width) {
+      position.x = width - offset;
       velocity.x = -abs(velocity.x);
     }
 
@@ -201,28 +212,41 @@ class Mover {
     } else if (position.y < 0) {
       position.y = 0 - position.y;
       velocity.y = abs(velocity.y);
-    } else if (position.y == height) {
-      position.y = height - 0.999;  // handle edge case
+    }
+    // handle edge case
+    if (position.y == height) {
+      position.y = height - offset;
       velocity.y = -abs(velocity.y);
     }
   }
 
   void checkEdgesMixed() {
 
+    float offset = 0.001;  // slight offset to avoid equality with width/height
+
     // uses periodic boundary on x axis
     if (position.x >= width) {
-      position.x = 0;
+      position.x = 0 + (position.x - width);
     } else if (position.x < 0) {
-      position.x = width - 1;
+      position.x = width + position.x;
+    }
+    // handle edge case
+    if (position.x == width) {
+      position.x = width - offset;
     }
 
     // uses reflective bounary on y axis
-    if (position.y >= height) {
-      position.y = (height - 1) - (position.y - height);
+    if (position.y > height) {
+      position.y = height - (position.y - height);
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
       position.y = 0 - position.y;
       velocity.y = abs(velocity.y);
+    }
+    // handle edge case
+    if (position.y == height) {
+      position.y = height - offset;
+      velocity.y = -abs(velocity.y);
     }
   }
 }
