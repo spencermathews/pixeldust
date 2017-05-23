@@ -1,6 +1,7 @@
 class Pixeldust {
 
-  PImage img;             // reconstituted image for display, updated each iteration
+  PImage img;             // original image as loaded
+  PImage imgPixels;       // reconstituted image for display, updated each iteration
   int[] imgParticles;     // maintain current number of particles which occupy each pixel coordinate
 
   PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
@@ -30,9 +31,10 @@ class Pixeldust {
 
     this.scaleImg = scaleImg;
 
-    img = loadImage(imgFile);                 // create PImage
-    img.resize(floor(img.width/scaleImg), 0); // scale image
-    imgPixelsOrig = img.copy();               // keep copy of scaled original image
+    img = loadImage(imgFile);                 // load image file
+    imgPixels = img.copy();                   // copy image to rescale
+    imgPixels.resize(floor(imgPixels.width/scaleImg), 0); // scale image
+    imgPixelsOrig = imgPixels.copy();               // keep copy of scaled original image
 
     numParticles = numParticles();  // compute number of particles to work with
 
@@ -49,9 +51,9 @@ class Pixeldust {
    */
   void imgStats() {
 
-    println("Scaled", "x", scaleImg, "->", img.width, img.height);
+    println("Scaled", "x", scaleImg, "->", imgPixelsOrig.width, imgPixelsOrig.height);
 
-    img.loadPixels();  // we only read so no need to img.updatePixels();
+    imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
 
     // initialize vars to track max values
     float maxR = 0;
@@ -63,8 +65,8 @@ class Pixeldust {
     float maxV = 0;
 
     // Loop through pixels in 1D
-    for (int i = 0; i < img.pixels.length; i++) {
-      color p = img.pixels[i];
+    for (int i = 0; i < imgPixelsOrig.pixels.length; i++) {
+      color p = imgPixelsOrig.pixels[i];
 
       // decompose pixel
       float r = red(p);
@@ -88,12 +90,12 @@ class Pixeldust {
     println("RGBA(", maxR, maxG, maxB, maxA, ")");
     println("HSBA(", maxH, maxS, maxV, maxA, ")");
 
-    println(numParticles, "particles from", img.pixels.length, "pixels");
+    println(numParticles, "particles from", imgPixelsOrig.pixels.length, "pixels");
 
     //int sumBrightness = 0;  // actually "darkness"
     //// Loop through pixels in 1D
-    //for (int i = 0; i < img.pixels.length; i++) {
-    //  color c = img.pixels[i];
+    //for (int i = 0; i < imgPixelsOrig.pixels.length; i++) {
+    //  color c = imgPixelsOrig.pixels[i];
 
     //  sumBrightness += 255 - brightness(c);
     //}
@@ -109,18 +111,18 @@ class Pixeldust {
    * TODO make sure we don't overflow int range
    * //println(Integer.MIN_VALUE, Integer.MAX_VALUE);
    *
-   * Requires img field to be initialized.
+   * Requires imgPixelsOrig field to be initialized.
    *
    * return number of particles
    */
   int numParticles() {
 
-    img.loadPixels();  // we only read so no need to img.updatePixels();
+    imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
 
     int sumParticles = 0;
     // Loop through pixels in 1D
-    for (int i = 0; i < img.pixels.length; i++) {
-      color c = img.pixels[i];
+    for (int i = 0; i < imgPixelsOrig.pixels.length; i++) {
+      color c = imgPixelsOrig.pixels[i];
       sumParticles += pixelSplit(c);  // int cast redundant when incrementing an int var
     }
 
@@ -159,25 +161,25 @@ class Pixeldust {
    * Uses pixelSplit.
    * Was named particleSplit.
    *
-   * Requires fields img and numParticles to be initialized.
+   * Requires fields imgPixelsOrig and numParticles to be initialized.
    */
   void initParticles() {
 
     particles = new Mover[numParticles];
 
-    img.loadPixels();  // we only read so no need to img.updatePixels();
-    imgParticlesOrig = new int[img.pixels.length];
+    imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
+    imgParticlesOrig = new int[imgPixelsOrig.pixels.length];
 
     int i = 0;  // index into particles array
     // Loop through pixels in 2D
     // Loop through every pixel column
-    for (int y = 0; y < img.height; y++) {
+    for (int y = 0; y < imgPixelsOrig.height; y++) {
       // Loop through every pixel column
-      for (int x = 0; x < img.width; x++) {
+      for (int x = 0; x < imgPixelsOrig.width; x++) {
         // Use the formula to find the 1D location
-        int loc = x + y * img.width;
+        int loc = x + y * imgPixelsOrig.width;
 
-        int n = pixelSplit(img.pixels[loc]);  // compute number of particles to spawn from this pixel
+        int n = pixelSplit(imgPixelsOrig.pixels[loc]);  // compute number of particles to spawn from this pixel
         imgParticlesOrig[loc] = n;                // store particles in each pixel in a separate array
         // create appropriate number of particles at this pixel location
         while (n > 0) {
@@ -188,37 +190,35 @@ class Pixeldust {
       }
     }
 
-    imgParticles = new int[img.pixels.length];  // create array for storing current particle count
+    imgParticles = new int[imgPixelsOrig.pixels.length];  // create array for storing current particle count
     //arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
     countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
-  /* Merge particles into image
-   *
-   * Uses pixelMerge.
+  /* Merge particles into image using pixelMerge()
    *
    * Requires imgParticles array to be current.
    */
   void particleMerge() {
 
-    img.loadPixels();  // loads img pixels[] array so we can update it
+    imgPixels.loadPixels();  // loads img pixels[] array so we can update it
 
     // scale image and invert
-    for (int i = 0; i < img.pixels.length; i++) {
-      img.pixels[i] = pixelMerge(imgParticles[i]);
+    for (int i = 0; i < imgPixels.pixels.length; i++) {
+      imgPixels.pixels[i] = pixelMerge(imgParticles[i]);
     }
 
-    img.updatePixels();
+    imgPixels.updatePixels();
   }
 
   // accessor function
   float imgWidth() {
-    return img.width;
+    return imgPixelsOrig.width;
   }
 
   // accessor function
   float imgHeight() {
-    return img.height;
+    return imgPixelsOrig.height;
   }
 
   /* Count particles occupying each pixel space and update imgParticles array
@@ -231,7 +231,7 @@ class Pixeldust {
 
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of particle on img grid and increment the particle count there
-      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
+      int loc = int(particles[i].position.x) + int(particles[i].position.y) * imgPixels.width;
       imgParticles[loc]++;
     }
   }
@@ -249,7 +249,7 @@ class Pixeldust {
 
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of this particle on img grid
-      int loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;
+      int loc = int(particles[i].position.x) + int(particles[i].position.y) * imgPixels.width;
 
       boolean go = random(1.0) < p;
       // performs update step if this pixel has overflowed
@@ -269,7 +269,7 @@ class Pixeldust {
 
         // cleverly updates imgPixels, since directly calling countParticles is wildy inefficient
         imgParticles[loc]--;  // decrement particle count of pixel at previous location
-        loc = int(particles[i].position.x) + int(particles[i].position.y) * img.width;  // identify pixel where particle moved
+        loc = int(particles[i].position.x) + int(particles[i].position.y) * imgPixels.width;  // identify pixel where particle moved
         imgParticles[loc]++;  // increment particle count of pixel at new location
       } else if (imgParticles[loc] < imgParticlesOrig[loc]) {
         numPixelsUnder++;
@@ -311,7 +311,7 @@ class Pixeldust {
     //  img.pixels[i] = color(255-imgParticles[i]*brightnessPerParticle);
     //}
     //img.updatePixels();
-    image(img, 0, 0);
+    image(imgPixels, 0, 0);
   }
 
   // TODO optimize! PShape? PGraphics?
@@ -357,7 +357,7 @@ class Pixeldust {
     particles = new Mover[numParticles];
 
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(int(random(img.width)), int(random(img.height - ySpread, img.height)));  // creates a particle at random location
+      particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)));  // creates a particle at random location
     }
 
     countParticles();
