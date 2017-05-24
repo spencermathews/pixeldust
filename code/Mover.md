@@ -2,33 +2,41 @@
 
 ## Fields
 
-position
+`position`
 
-velocity
+`velocity`
 
-acceleration
+`acceleration`
 
-topspeed
-
+`topspeed`
 
 ## Methods
 
-updateRandomWalkBasic
+Methods include various ways to *update* the mover's location and to establish boundary conditions by *edge checking*.
 
-updateRandomWalkVonNeumann
+### Basic Methods
 
-updateRandomWalkMoore
+`display`
 
-updateRandom
+### Update Methods
 
-updateMouse
+`updateRandomWalkBasic`
 
-display?
+`updateRandomWalkVonNeumann`
 
-checkEdgesPeriodic
+`updateRandomWalkMoore`
+
+`updateRandom`
+
+`updateMouse`
+
+### Edge Checking Methods
+
+`checkEdgesPeriodicSnap`
 : consider calling from Pixeldust and not Mover.updateX to increase flexibility
 
-checkEdgesConstrained
+`checkEdgesPeriodic`
 
-checkEdgesReflective
+`checkEdgesReflectiveSnap`
 
+`checkEdgesReflective`
