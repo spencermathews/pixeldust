@@ -12,6 +12,9 @@ class PixeldustSimulation {
   float[] times;
   Pixeldust[] images;
 
+  int width;
+  int height;
+
   int nextTime = 0;
 
   /* Constructor
@@ -30,10 +33,22 @@ class PixeldustSimulation {
     // initialize audio
     audio = new SoundFile(ref, audioFile);
 
+    width = 0;
+    height = 0;
     // create and initialize images array
     images = new Pixeldust[imageFiles.length];
     for (int i = 0; i < imageFiles.length; i++) {
+      println("\nCreating", imageFiles[i]);
       images[i] = new Pixeldust(imageFiles[i], 4, 2);
+
+      // TODO actually make sure that all images are same dimensions
+      // or decouple simulation size from images so smaller images can be inserted
+      if (images[i].width > width) {
+        width = images[i].width;
+      }
+      if (images[i].height > height) {
+        height = images[i].height;
+      }
     }
 
     bootstrap();

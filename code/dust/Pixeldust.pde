@@ -1,3 +1,4 @@
+// TODO maybe make Pixeldust a subclass of PImage?
 class Pixeldust {
 
   PImage img;             // original image as loaded
@@ -6,6 +7,9 @@ class Pixeldust {
 
   PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
   int[] imgParticlesOrig; // array like img but elements hold number of particles in corresponding pixel, for reference
+
+  int width;   // width of scaled image (imgPixels)
+  int height;  // height of scaled image (imgPixels)
 
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
@@ -17,6 +21,8 @@ class Pixeldust {
 
   int numPixelsOver = 0;   // tracks number of pixels with excess particles
   int numPixelsUnder = 0;  // tracks number of pixels with particle deficiencies
+
+
   /*
    * Constructor
    *
@@ -36,6 +42,9 @@ class Pixeldust {
     imgPixels.resize(floor(imgPixels.width/scaleImg), 0); // scale image
     imgPixelsOrig = imgPixels.copy();               // keep copy of scaled original image
 
+    width = imgPixelsOrig.width;
+    height = imgPixelsOrig.height;
+
     numParticles = numParticles();  // compute number of particles to work with
 
     imgStats();
@@ -43,6 +52,7 @@ class Pixeldust {
     initParticles();
     initRandom(1);
   }
+
 
   /*
    * Gather and print image statistics
@@ -102,6 +112,7 @@ class Pixeldust {
     //println("Would have been:", int(sumBrightness / brightnessPerParticle));
   }
 
+
   /*
    * Determine number of particles in entire image
    *
@@ -129,6 +140,7 @@ class Pixeldust {
     return sumParticles;
   }
 
+
   /*
    * Decompose pixels into particles based on darkness
    *
@@ -140,6 +152,7 @@ class Pixeldust {
   int pixelSplit(color c) {
     return int((255 - brightness(c)) / brightnessPerParticle);
   }
+
 
   /*
    * Determine pixel brightness based on how many particles occupy that pixel
@@ -153,6 +166,7 @@ class Pixeldust {
     float b = 255 - numParticles * brightnessPerParticle;
     return color(b);
   }
+
 
   /* Spawns a number of particles from image
    *
@@ -195,6 +209,7 @@ class Pixeldust {
     countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
+
   /* Merge particles into image using pixelMerge()
    *
    * Requires imgParticles array to be current.
@@ -203,7 +218,7 @@ class Pixeldust {
 
     imgPixels.loadPixels();  // loads img pixels[] array so we can update it
 
-    // scale image and invert
+    // convert pixel occupation to brightness inverted
     for (int i = 0; i < imgPixels.pixels.length; i++) {
       imgPixels.pixels[i] = pixelMerge(imgParticles[i]);
     }
@@ -211,15 +226,6 @@ class Pixeldust {
     imgPixels.updatePixels();
   }
 
-  // accessor function
-  float imgWidth() {
-    return imgPixelsOrig.width;
-  }
-
-  // accessor function
-  float imgHeight() {
-    return imgPixelsOrig.height;
-  }
 
   /* Count particles occupying each pixel space and update imgParticles array
    */
@@ -235,6 +241,7 @@ class Pixeldust {
       imgParticles[loc]++;
     }
   }
+
 
   /* Dynamics moving toward image
    *
@@ -285,6 +292,7 @@ class Pixeldust {
     //countParticles();  // updates imgParticles by counting particles in each pixel area
   }
 
+
   void update() {
     for (int i = 0; i < particles.length; i++) {
       //particles[i].updateRandomWalkBasic();
@@ -304,6 +312,7 @@ class Pixeldust {
     countParticles();  // updates imgParticles by counting particles in each pixel area
   }
 
+
   void display() {
     particleMerge();
     //img.loadPixels();
@@ -313,6 +322,7 @@ class Pixeldust {
     //img.updatePixels();
     image(imgPixels, 0, 0);
   }
+
 
   // TODO optimize! PShape? PGraphics?
   void displayParticles(int displayFrequency) {
@@ -339,6 +349,7 @@ class Pixeldust {
       //shape(points);
     }
   }
+
 
   /*
    * Initializes particle array with random particles

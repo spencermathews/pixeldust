@@ -18,9 +18,9 @@ void setup () {
   String csvFileName = "Mandela-timing.csv";
   sim = new PixeldustSimulation(this, csvFileName);
 
-  pd = new Pixeldust("MandelaNew.jpg", 2, 5); // create PImage;
+  //pd = new Pixeldust("MandelaNew.jpg", 2, 5); // create PImage;
 
-  surface.setSize(int(pd.imgWidth()), int(pd.imgHeight()));  // set display window to image size
+  surface.setSize(sim.width, sim.height);  // set display window to simulation size
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   surface.setLocation(0, 0);
