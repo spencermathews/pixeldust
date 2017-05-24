@@ -45,9 +45,13 @@ class Pixeldust {
     width = imgPixelsOrig.width;
     height = imgPixelsOrig.height;
 
+    println("scaled", "x", scaleImg, "->", imgPixelsOrig.width, imgPixelsOrig.height);
+
     numParticles = numParticles();  // compute number of particles to work with
 
-    imgStats();
+    println(numParticles, "particles from", imgPixelsOrig.pixels.length, "pixels");
+
+    //imgStats();
 
     initParticles();
     initRandom(1);
@@ -60,8 +64,6 @@ class Pixeldust {
    * param img
    */
   void imgStats() {
-
-    println("Scaled", "x", scaleImg, "->", imgPixelsOrig.width, imgPixelsOrig.height);
 
     imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
 
@@ -99,8 +101,6 @@ class Pixeldust {
 
     println("RGBA(", maxR, maxG, maxB, maxA, ")");
     println("HSBA(", maxH, maxS, maxV, maxA, ")");
-
-    println(numParticles, "particles from", imgPixelsOrig.pixels.length, "pixels");
 
     //int sumBrightness = 0;  // actually "darkness"
     //// Loop through pixels in 1D

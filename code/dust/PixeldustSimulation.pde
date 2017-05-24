@@ -22,8 +22,8 @@ class PixeldustSimulation {
    * It's rather silly that because of how SoundFile works we need to
    * pass the global PApplet reference. Maybe there is a more clever way?
    *
-   * param ref          PApplet reference to global PApplet
-   * param soundFileName String name of audio file
+   * param ref     PApplet reference to global PApplet
+   * param csvFile String name of csv file
    * should change to accept name of csv file!
    */
   PixeldustSimulation(PApplet ref, String csvFile) {
@@ -87,7 +87,6 @@ class PixeldustSimulation {
     }
 
     // TODO validate data and that times are well ordered
-
     for (int i = 0; i < imageFiles.length; i++) {
       println(imageFiles[i], timestamps[i], times[i]);
     }
