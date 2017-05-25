@@ -160,6 +160,12 @@ class Mover {
     if (position.y == height) {
       position.y = height - offset;
     }
+
+    // catch conditions where we have gone more than a full width/height
+    // may not precicely handle periodic and/or reflect dynamics
+    // but should be fine for large systems and it's just for rare edge cases anyway
+    position.x = constrain(position.x, 0, width - offset);
+    position.y = constrain(position.y, 0, height - offset);
   }
 
   /* Constrain position to edge of display window
@@ -218,6 +224,12 @@ class Mover {
       position.y = height - offset;
       velocity.y = -abs(velocity.y);
     }
+
+    // catch conditions where we have gone more than a full width/height
+    // may not precicely handle periodic and/or reflect dynamics
+    // but should be fine for large systems and it's just for rare edge cases anyway
+    position.x = constrain(position.x, 0, width - offset);
+    position.y = constrain(position.y, 0, height - offset);
   }
 
   void checkEdgesMixed() {
@@ -248,5 +260,11 @@ class Mover {
       position.y = height - offset;
       velocity.y = -abs(velocity.y);
     }
+
+    // catch conditions where we have gone more than a full width/height
+    // may not precicely handle periodic and/or reflect dynamics
+    // but should be fine for large systems and it's just for rare edge cases anyway
+    position.x = constrain(position.x, 0, width - offset);
+    position.y = constrain(position.y, 0, height - offset);
   }
 }
