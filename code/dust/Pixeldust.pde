@@ -258,9 +258,9 @@ class Pixeldust {
       // finds the 1D location of this particle on img grid
       int loc = int(particles[i].position.x) + int(particles[i].position.y) * imgPixels.width;
 
-      boolean go = random(1.0) < p;
+      float prob = random(1.0);
       // performs update step if this pixel has overflowed
-      if (imgParticles[loc] > imgParticlesOrig[loc] || go) {
+      if (imgParticles[loc] > imgParticlesOrig[loc] || prob < p) {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
