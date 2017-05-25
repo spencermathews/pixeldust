@@ -15,10 +15,11 @@ class PixeldustSimulation {
 
   float[] times;
 
+  int currentIndex;
+
   int numParticles;   // number of particles in simulation
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
-  int currentIndex;
 
   /* Constructor
    *
@@ -121,13 +122,21 @@ class PixeldustSimulation {
       println("\nCreating", imageFiles[i]);
       images[i] = new Pixeldust(imageFiles[i], scaleImg, particlesPerPixel);
 
-      // TODO actually make sure that all images are same dimensions
-      // or decouple simulation size from images so smaller images can be inserted
+      // set simulation dimensions to the max of all images
       if (images[i].width > this.width) {
         this.width = images[i].width;
       }
       if (images[i].height > this.height) {
         this.height = images[i].height;
+      }
+    }
+
+    // verify that all images are same dimsension, may want to relax later
+    // or decouple simulation size from images so smaller images can be inserted
+    for (Pixeldust img : images) {
+      if (img.width != this.width || img.height != this.height) {
+        println("Error: images must have same dimensions");
+        exit();
       }
     }
 
