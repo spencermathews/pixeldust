@@ -162,10 +162,11 @@ class Mover {
     }
 
     // catch conditions where we have gone more than a full width/height
-    // may not precicely handle periodic and/or reflect dynamics
-    // but should be fine for large systems and it's just for rare edge cases anyway
-    position.x = constrain(position.x, 0, width - offset);
-    position.y = constrain(position.y, 0, height - offset);
+    // only a concern if we allow topspeed more than width/height
+    // using mod works fine here but verify for negative numbers (note -1%n -> -1)
+    // TODO improve
+    position.x = position.x % width;
+    position.y = position.y % height;
   }
 
   /* Constrain position to edge of display window
@@ -226,8 +227,9 @@ class Mover {
     }
 
     // catch conditions where we have gone more than a full width/height
-    // may not precicely handle periodic and/or reflect dynamics
+    // doesn't precicely handle reflect dynamics
     // but should be fine for large systems and it's just for rare edge cases anyway
+    // TODO improve
     position.x = constrain(position.x, 0, width - offset);
     position.y = constrain(position.y, 0, height - offset);
   }
@@ -264,7 +266,7 @@ class Mover {
     // catch conditions where we have gone more than a full width/height
     // may not precicely handle periodic and/or reflect dynamics
     // but should be fine for large systems and it's just for rare edge cases anyway
-    position.x = constrain(position.x, 0, width - offset);
+    position.x = position.x % width;
     position.y = constrain(position.y, 0, height - offset);
   }
 }
