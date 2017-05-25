@@ -1,4 +1,7 @@
-// TODO maybe make Pixeldust a subclass of PImage?
+/* Pixeldust Class
+ *
+ * TODO maybe make Pixeldust a subclass of PImage?
+ */
 class Pixeldust {
 
   PImage img;             // original image as loaded
@@ -37,13 +40,29 @@ class Pixeldust {
 
     this.scaleImg = scaleImg;
 
-    img = loadImage(imgFile);                 // load image file
+    img = loadImage(imgFile);  // load image file
+    transparentToWhite(img);   // set
+
     imgPixels = img.copy();                   // copy image to rescale
     imgPixels.resize(floor(imgPixels.width/scaleImg), 0); // scale image
     imgPixelsOrig = imgPixels.copy();               // keep copy of scaled original image
 
     this.width = imgPixelsOrig.width;
     this.height = imgPixelsOrig.height;
+
+    switch(imgPixelsOrig.format) {
+    case RGB:
+      println("RGB format");
+      break;
+    case ARGB:
+      println("ARGB format");
+      break;
+    case ALPHA:
+      println("ALPHA format");
+      break;
+    default:
+      println("Error: unknown format");
+    }
 
     println("scaled", "x", scaleImg, "->", imgPixelsOrig.width + "x" + imgPixelsOrig.height);
 
@@ -56,16 +75,14 @@ class Pixeldust {
     // Initializes imgParticlesOrig[] array
     initImgParticlesOrig();
 
-    // Initializes particles[] array
-    initParticles();
-
-    // Initializes particles[] array
-    initRandom(1);
-
-    // Create imgParticles[]
+    // Create imgParticles[], but not yet initialized! 
     imgParticles = new int[imgPixelsOrig.pixels.length];  // create array for storing current particle count
     //arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
-    countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
+
+    // we used to initialize particles[] here, but now must call separately
+
+    // we used to initialize imgParticles[] using countParticles() here, but call after particles initialized
+    // TODO add call to countParticles back into init functions, now possible after initImgParticlesOrig split off
   }
 
 
@@ -316,7 +333,7 @@ class Pixeldust {
     }
 
     // output how close we match original image
-    if (frameCount % 10 == 0) {
+    if (frameCount % 60 == 0) {
       println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
     }
 
@@ -396,6 +413,11 @@ class Pixeldust {
 
     particles = new Mover[numParticles];
 
+    // full random spread if given 0 argument, TODO this is untested but should work
+    //if(ySpread == 0) {
+    //  ySpread = imgPixelsOrig.height;
+    //}
+
     for (int i = 0; i < particles.length; i++) {
       particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)));  // creates a particle at random location
     }
@@ -411,5 +433,23 @@ class Pixeldust {
     // TODO verify that particles are within range
     this.particles = particles;
     numParticles = particles.length;
+  }
+
+
+  /* Sets transparent pixels to white and removes transparency
+   *
+   * PNGs pixels with 0 alpha are probably also 0, 0, 0 and thus are treated as black and generate particles.
+   *
+   * Setting pixels to white is required for proper particle generation based on darkness.
+   * Removing transparency wouldn't be necessary if we displayed transparent image on white background, but this is cleaner.
+   */
+  void transparentToWhite(PImage img) {
+    img.loadPixels();
+    for (int i = 0; i < img.pixels.length; i++) {
+      if (alpha(img.pixels[i]) == 0) {
+        img.pixels[i] = color(255, 255);
+      }
+    }
+    img.updatePixels();
   }
 }

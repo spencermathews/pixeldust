@@ -2,6 +2,21 @@
 
 The original image file is read into `img` and saved there. A scaled version of the image (based on scale factor `scaleImg`) is saved as `imgPixelsOrig`.  `imgPixels`
 
+## Flow
+
+setup tasks
+
+    pd = new Pixeldust(...);
+    // several init methods to choose from
+    pd.initParticles();
+    pd.countParticles();  // may later be included in init
+
+run tasks
+
+    // several update functions to choose from
+    pd.update();
+    pd.display();
+
 ## Fields
 
 `img`
@@ -11,7 +26,7 @@ The original image file is read into `img` and saved there. A scaled version of 
 : original image scaled
 
 `imgParticlesOrig`
-: per pixel occupation of original scaled image
+: per pixel occupation of original scaled image, TODO remove this and do realtime calculations from imgPixelsOrig when needed
 
 `particles`
 : array of Movers
