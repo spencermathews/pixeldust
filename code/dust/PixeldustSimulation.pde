@@ -42,8 +42,6 @@ class PixeldustSimulation {
 
     // initializes numParticles and particles[]
     initParticles();
-
-    currentIndex = 0;  // begin with the first Pixeldust image
   }
 
 
@@ -170,13 +168,27 @@ class PixeldustSimulation {
 
   void begin() {
     audio.play();
+    setImage(0);
   }
 
-  void update() {
 
-    Pixeldust currentImage = images[currentIndex];  // later consider keeping a ref to currentImage to avoid repetition
+  // pass control to a Pixeldust object
+  void setImage(int i) {
+    currentIndex = i;
+    Pixeldust currentImage = images[i];
+    currentImage.initParticles(particles);
+    currentImage.countParticles();
+  }
+
+  void run() {
+
+    // get current image and time
+    // later consider keeping refs to avoid repetition each frame
+    Pixeldust currentImage = images[currentIndex];
     float nextTime = times[currentIndex];
 
+    //currentImage.updateForward(particles, 0);
+    //currentImage.display();
 
     for (int i = 0; i < times.length; i++) {
 
@@ -188,8 +200,6 @@ class PixeldustSimulation {
   }
 
 
-  void display() {
-  }
 
 
   /* Extract reverse frames from Pixeldust
