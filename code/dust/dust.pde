@@ -16,7 +16,9 @@ void setup () {
   surface.setResizable(true); // enable resizable display window
 
   String csvFileName = "Mandela-timing.csv";
-  sim = new PixeldustSimulation(this, csvFileName);
+  float scaleImg = 2;
+  int particlesPerPixel = 4;
+  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   surface.setSize(sim.width, sim.height);  // set display window to simulation size
 
@@ -24,6 +26,8 @@ void setup () {
   surface.setLocation(0, 0);
 
   noSmooth();  // may increase performance
+  
+  sim.begin();
 }
 
 void draw() {

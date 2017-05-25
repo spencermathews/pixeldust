@@ -49,7 +49,7 @@ class Pixeldust {
 
     numParticles = numParticles();  // compute number of particles to work with
 
-    println(numParticles, "particles from", imgPixelsOrig.pixels.length, "pixels");
+    println(nfc(numParticles), "particles from", nfc(imgPixelsOrig.pixels.length), "pixels");
 
     //imgStats();
 

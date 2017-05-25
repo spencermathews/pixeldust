@@ -18,7 +18,7 @@ class PixeldustSimulation {
   int numParticles;   // number of particles in simulation
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
-  int nextTime = 0;
+  int currentIndex;
 
   /* Constructor
    *
@@ -29,7 +29,7 @@ class PixeldustSimulation {
    * param csvFile String name of csv file
    * should change to accept name of csv file!
    */
-  PixeldustSimulation(PApplet ref, String csvFile) {
+  PixeldustSimulation(PApplet ref, String csvFile, float scaleImg, int particlesPerPixel) {
     // parse control file and initialize audioFile, imageFiles, and times
     parse(csvFile);
 
@@ -37,13 +37,12 @@ class PixeldustSimulation {
     initAudio(ref);
 
     // initializes width, height, and images[]
-    initImages();
+    initImages(scaleImg, particlesPerPixel);  // args eventually passed through to Pixeldust constructors
 
     // initializes numParticles and particles[]
     initParticles();
 
-
-    run();
+    currentIndex = 0;  // begin with the first Pixeldust image
   }
 
 
@@ -97,28 +96,22 @@ class PixeldustSimulation {
   }
 
 
-  void run() {
-    audio.play();
-
-    // create particles or particleSystem
-    // start things going
-  }
-
   /* Initializes audio field
    *
    * Must be called after audioFile initialized in parse()
    */
   void initAudio(PApplet ref) {
     audio = new SoundFile(ref, audioFile);
-    
+
     println("\nSimulation with audio file with", audio.duration(), "duration");
   }
+
 
   /* Initializes width, height, and images[] fields
    *
    * Must be called after imagesFiles array is initialized in parse()
    */
-  void initImages() {
+  void initImages(float scaleImg, int particlesPerPixel) {
     this.width = 0;
     this.height = 0;
 
@@ -126,7 +119,7 @@ class PixeldustSimulation {
     images = new Pixeldust[imageFiles.length];
     for (int i = 0; i < imageFiles.length; i++) {
       println("\nCreating", imageFiles[i]);
-      images[i] = new Pixeldust(imageFiles[i], 4, 2);
+      images[i] = new Pixeldust(imageFiles[i], scaleImg, particlesPerPixel);
 
       // TODO actually make sure that all images are same dimensions
       // or decouple simulation size from images so smaller images can be inserted
@@ -140,6 +133,7 @@ class PixeldustSimulation {
 
     println("\nSimulation with", images.length, "images at", this.width + "x" + this.height);
   }
+
 
   /* Calculates numParticles and initializes particle[] with random particles
    *
@@ -161,10 +155,19 @@ class PixeldustSimulation {
       particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
     }
 
-    println("\nSimulation uses", numParticles, "particles");
+    println("\nSimulation uses", nfc(numParticles), "particles");
+  }
+
+
+  void begin() {
+    audio.play();
   }
 
   void update() {
+
+    Pixeldust currentImage = images[currentIndex];  // later consider keeping a ref to currentImage to avoid repetition
+    float nextTime = times[currentIndex];
+
 
     for (int i = 0; i < times.length; i++) {
 
@@ -174,6 +177,7 @@ class PixeldustSimulation {
       //}
     }
   }
+
 
   void display() {
   }
