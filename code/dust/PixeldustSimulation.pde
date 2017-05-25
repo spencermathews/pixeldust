@@ -1,8 +1,7 @@
-/* PixeldustSimulation
+/* PixeldustSimulation Class
  *
  * requires Sound library
  */
-
 class PixeldustSimulation {
 
   String audioFile;
@@ -166,39 +165,41 @@ class PixeldustSimulation {
   }
 
 
+  /* Begin audio and set up for run
+   *
+   * Begin playing audio and set first image, now we can run().
+   */
   void begin() {
     audio.play();
-    setImage(0);
+    setCurrentImage(0);
   }
 
 
-  // pass control to a Pixeldust object
-  void setImage(int i) {
+  /* Pass control to a Pixeldust object
+   *
+   * Set currentIndex and pass particles to it.
+   */
+  void setCurrentImage(int i) {
     currentIndex = i;
     Pixeldust currentImage = images[i];
-    currentImage.initParticles(particles);
-    currentImage.countParticles();
+
+    currentImage.initParticles(particles);  // pass this particle[] array to the current Pixeldust image
+    currentImage.countParticles();          // update that object's imgParticles[] array with the new particles
   }
 
-  void run() {
 
+  /* Main event loop to be called from draw()
+   */
+  void run() {
     // get current image and time
     // later consider keeping refs to avoid repetition each frame
     Pixeldust currentImage = images[currentIndex];
     float nextTime = times[currentIndex];
 
-    //currentImage.updateForward(particles, 0);
-    //currentImage.display();
-
-    for (int i = 0; i < times.length; i++) {
-
-      //if (millis() > nextTime) {
-      //  println(brightness(g.backgroundColor));
-      //  nextTime = times[i];
-      //}
-    }
+    currentImage.updateForward(0);
+    //currentImage.updateForward(map(mouseX, 0, width, 1, -0.1));
+    currentImage.display();
   }
-
 
 
 

@@ -1,9 +1,7 @@
 import processing.sound.*;
 
 /*
- * Pixeldust first stab implemented as a class
- *
- * Pixels move by random walk
+ * Pixeldust
  *
  * Spencer Mathews, began: 3/2017
  */
@@ -23,15 +21,15 @@ void setup () {
   surface.setSize(sim.width, sim.height);  // set display window to simulation size
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
-  surface.setLocation(0, 0);
+  //surface.setLocation(0, 0);
 
   noSmooth();  // may increase performance
-  
+
   sim.begin();
 }
 
 void draw() {
-
+  sim.run();
 
   surface.setTitle(int(frameRate) + " fps");
 }
