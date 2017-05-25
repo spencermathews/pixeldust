@@ -53,8 +53,16 @@ class Pixeldust {
 
     //imgStats();
 
+    // Initializes particles[] and imgParticlesOrig[] arrays
     initParticles();
+
+    // Initializes particles[] array
     initRandom(1);
+
+    // Create imgParticles[]
+    imgParticles = new int[imgPixelsOrig.pixels.length];  // create array for storing current particle count
+    //arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
+    countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
 
@@ -170,12 +178,12 @@ class Pixeldust {
 
   /* Spawns a number of particles from image
    *
-   * Populates particle, imgParticlesOrig, and imgParticles arrays
+   * Creates and populates particle[], imgParticlesOrig[], and imgParticles[] arrays
    *
-   * Uses pixelSplit.
-   * Was named particleSplit.
+   * Uses pixelSplit().
+   * Was named particleSplit().
    *
-   * Requires fields imgPixelsOrig and numParticles to be initialized.
+   * Requires fields imgPixelsOrig[] and numParticles to be initialized.
    */
   void initParticles() {
 
@@ -203,10 +211,6 @@ class Pixeldust {
         }
       }
     }
-
-    imgParticles = new int[imgPixelsOrig.pixels.length];  // create array for storing current particle count
-    //arrayCopy(imgParticlesOrig, imgParticles);  // initialize as per original image
-    countParticles();  // gives same result as arrayCopy here, but use for clarity and consistency
   }
 
 
@@ -356,10 +360,10 @@ class Pixeldust {
    *
    * Creates a number appropriate for the image.
    *
-   * Populates particle and imgParticles arrays.
-   * Note does not create imgParticlesOrig like initParticles does.
+   * Populates particles[].
+   * Note: does not create imgParticlesOrig[] like initParticles() does.
    *
-   * Requires fields img and numParticles to be initialized.
+   * Requires fields imgPixelsOrig[] and numParticles to be initialized.
    *
    * param ySpread float number of pixels from "bottom" initially occupied by particles
    */
@@ -371,6 +375,5 @@ class Pixeldust {
       particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)));  // creates a particle at random location
     }
 
-    countParticles();
   }
 }
