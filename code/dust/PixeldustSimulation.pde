@@ -9,11 +9,14 @@ class PixeldustSimulation {
   SoundFile audio;
 
   String[] imageFiles;
-  float[] times;
   Pixeldust[] images;
-
   int width;
   int height;
+
+  float[] times;
+
+  int numParticles;   // number of particles in simulation
+  Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
   int nextTime = 0;
 
@@ -31,27 +34,16 @@ class PixeldustSimulation {
     parse(csvFile);
 
     // initialize audio
-    audio = new SoundFile(ref, audioFile);
+    initAudio(ref);
 
-    width = 0;
-    height = 0;
-    // create and initialize images array
-    images = new Pixeldust[imageFiles.length];
-    for (int i = 0; i < imageFiles.length; i++) {
-      println("\nCreating", imageFiles[i]);
-      images[i] = new Pixeldust(imageFiles[i], 4, 2);
+    // initializes width, height, and images[]
+    initImages();
 
-      // TODO actually make sure that all images are same dimensions
-      // or decouple simulation size from images so smaller images can be inserted
-      if (images[i].width > width) {
-        width = images[i].width;
-      }
-      if (images[i].height > height) {
-        height = images[i].height;
-      }
-    }
+    // initializes numParticles and particles[]
+    initParticles();
 
-    bootstrap();
+
+    run();
   }
 
 
@@ -64,7 +56,7 @@ class PixeldustSimulation {
   void parse(String csvFile) {
 
     Table table = loadTable(csvFile);
-    println(csvFile, "has", table.getRowCount(), "rows and", table.getColumnCount(), "columns");
+    println("Parsing", csvFile, "with", table.getRowCount(), "rows and", table.getColumnCount(), "columns");
 
     int numRows = table.getRowCount();
 
@@ -92,7 +84,7 @@ class PixeldustSimulation {
     }
   }
 
-
+  // helper function to convert minutes:seconds to seconds
   float convertTime(String timestamps) {
     String[] time = split(timestamps, ':');
     if (time.length != 2) {
@@ -105,12 +97,72 @@ class PixeldustSimulation {
   }
 
 
-  void bootstrap() {
+  void run() {
     audio.play();
+
     // create particles or particleSystem
     // start things going
   }
 
+  /* Initializes audio field
+   *
+   * Must be called after audioFile initialized in parse()
+   */
+  void initAudio(PApplet ref) {
+    audio = new SoundFile(ref, audioFile);
+    
+    println("\nSimulation with audio file with", audio.duration(), "duration");
+  }
+
+  /* Initializes width, height, and images[] fields
+   *
+   * Must be called after imagesFiles array is initialized in parse()
+   */
+  void initImages() {
+    this.width = 0;
+    this.height = 0;
+
+    // create and initialize images array
+    images = new Pixeldust[imageFiles.length];
+    for (int i = 0; i < imageFiles.length; i++) {
+      println("\nCreating", imageFiles[i]);
+      images[i] = new Pixeldust(imageFiles[i], 4, 2);
+
+      // TODO actually make sure that all images are same dimensions
+      // or decouple simulation size from images so smaller images can be inserted
+      if (images[i].width > this.width) {
+        this.width = images[i].width;
+      }
+      if (images[i].height > this.height) {
+        this.height = images[i].height;
+      }
+    }
+
+    println("\nSimulation with", images.length, "images at", this.width + "x" + this.height);
+  }
+
+  /* Calculates numParticles and initializes particle[] with random particles
+   *
+   * Must be called after images array is initialized.
+   *
+   * Adapted from Pixeldust.initRandom() which is on its way to being deprecated.
+   */
+  void initParticles() {
+    // determines the maximum number of particles over all Pixeldust images
+    int maxParticles = 0;
+    for (Pixeldust img : images) {
+      maxParticles = max(img.numParticles, maxParticles);
+    }
+    numParticles = maxParticles;  // assigns 
+
+    particles = new Mover[numParticles];
+    // creates particles at random locations
+    for (int i = 0; i < particles.length; i++) {
+      particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
+    }
+
+    println("\nSimulation uses", numParticles, "particles");
+  }
 
   void update() {
 

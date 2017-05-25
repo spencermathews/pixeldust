@@ -42,10 +42,10 @@ class Pixeldust {
     imgPixels.resize(floor(imgPixels.width/scaleImg), 0); // scale image
     imgPixelsOrig = imgPixels.copy();               // keep copy of scaled original image
 
-    width = imgPixelsOrig.width;
-    height = imgPixelsOrig.height;
+    this.width = imgPixelsOrig.width;
+    this.height = imgPixelsOrig.height;
 
-    println("scaled", "x", scaleImg, "->", imgPixelsOrig.width, imgPixelsOrig.height);
+    println("scaled", "x", scaleImg, "->", imgPixelsOrig.width + "x" + imgPixelsOrig.height);
 
     numParticles = numParticles();  // compute number of particles to work with
 
