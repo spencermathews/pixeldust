@@ -53,7 +53,10 @@ class Pixeldust {
 
     //imgStats();
 
-    // Initializes particles[] and imgParticlesOrig[] arrays
+    // Initializes imgParticlesOrig[] array
+    initImgParticlesOrig();
+
+    // Initializes particles[] array
     initParticles();
 
     // Initializes particles[] array
@@ -178,19 +181,18 @@ class Pixeldust {
 
   /* Spawns a number of particles from image
    *
-   * Creates and populates particle[], imgParticlesOrig[], and imgParticles[] arrays
+   * Creates and populates particle[] array based on image.
+   *
+   * Requires imgPixelsOrig[] field to be initialized.
    *
    * Uses pixelSplit().
    * Was named particleSplit().
-   *
-   * Requires fields imgPixelsOrig[] and numParticles to be initialized.
    */
   void initParticles() {
 
     particles = new Mover[numParticles];
 
     imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
-    imgParticlesOrig = new int[imgPixelsOrig.pixels.length];
 
     int i = 0;  // index into particles array
     // Loop through pixels in 2D
@@ -200,9 +202,8 @@ class Pixeldust {
       for (int x = 0; x < imgPixelsOrig.width; x++) {
         // Use the formula to find the 1D location
         int loc = x + y * imgPixelsOrig.width;
-
         int n = pixelSplit(imgPixelsOrig.pixels[loc]);  // compute number of particles to spawn from this pixel
-        imgParticlesOrig[loc] = n;                // store particles in each pixel in a separate array
+
         // create appropriate number of particles at this pixel location
         while (n > 0) {
           particles[i] = new Mover(x, y);  // set location of this particle
@@ -213,6 +214,33 @@ class Pixeldust {
     }
   }
 
+  /* Creates and populates imgParticlesOrig[] array
+   *
+   * Requires imgPixelsOrig[] field to be initialized.
+   *
+   * Split off from initParticles() to separarate creation of imgParticlesOrig[] from particles[].
+   * Consider future ways to reduce redundant code but for now they each repeat the same loops
+   * except that initParticles() spawns particles and this just populats imgParticlesOrig[].
+   */
+  void initImgParticlesOrig() {
+
+    imgParticlesOrig = new int[imgPixelsOrig.pixels.length];
+
+    imgPixelsOrig.loadPixels();  // we only read so no need to updatePixels();
+
+    // Loop through pixels in 2D
+    // Loop through every pixel column
+    for (int y = 0; y < imgPixelsOrig.height; y++) {
+      // Loop through every pixel column
+      for (int x = 0; x < imgPixelsOrig.width; x++) {
+        // Use the formula to find the 1D location
+        int loc = x + y * imgPixelsOrig.width;
+        int n = pixelSplit(imgPixelsOrig.pixels[loc]);  // compute number of particles to spawn from this pixel
+
+        imgParticlesOrig[loc] = n;                // store particles in each pixel in a separate array
+      }
+    }
+  }
 
   /* Merge particles into image using pixelMerge()
    *
@@ -356,14 +384,11 @@ class Pixeldust {
 
 
   /*
-   * Initializes particle array with random particles
+   * Create particle[] array and populate with random particles
    *
-   * Creates a number appropriate for the image.
+   * Create a number appropriate for the image.
    *
-   * Populates particles[].
-   * Note: does not create imgParticlesOrig[] like initParticles() does.
-   *
-   * Requires fields imgPixelsOrig[] and numParticles to be initialized.
+   * Requires imgPixelsOrig[] and numParticles fields to be initialized.
    *
    * param ySpread float number of pixels from "bottom" initially occupied by particles
    */
@@ -374,6 +399,17 @@ class Pixeldust {
     for (int i = 0; i < particles.length; i++) {
       particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)));  // creates a particle at random location
     }
+  }
 
+
+  /* Pass particles in to initialize particle[] array
+   *
+   * Warning: a copy of the original particle[] is NOT made, only a reference is kept!
+   * Warning: be mindful of side effects since numParticles no longer tied to this image!
+   */
+  void initParticles(Mover[] particles) {
+    // TODO verify that particles are within range
+    this.particles = particles;
+    numParticles = particles.length;
   }
 }
