@@ -9,7 +9,7 @@ import processing.sound.*;
 Pixeldust pd;
 PixeldustSimulation sim;
 
-int lastTime;
+int lastTime;  // keeps track of timer for fps in title
 
 void setup () {
   size(1, 1);
