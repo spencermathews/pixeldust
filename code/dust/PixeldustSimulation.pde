@@ -12,7 +12,7 @@ class PixeldustSimulation {
   int width;
   int height;
 
-  float[] times;
+  int[] times;
 
   int currentIndex;
 
@@ -71,8 +71,8 @@ class PixeldustSimulation {
       timestamps[i-1] = table.getString(i, 1);
     }
 
-    // converts M:S to milliseconds
-    times = new float[timestamps.length];
+    // converts M:S to seconds
+    times = new int[timestamps.length];
     for (int i = 0; i < timestamps.length; i++) {
       times[i] = convertTime(timestamps[i]);
     }
@@ -84,7 +84,7 @@ class PixeldustSimulation {
   }
 
   // helper function to convert minutes:seconds to seconds
-  float convertTime(String timestamps) {
+  int convertTime(String timestamps) {
     String[] time = split(timestamps, ':');
     if (time.length != 2) {
       println("Error: time format");
