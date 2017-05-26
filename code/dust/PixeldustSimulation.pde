@@ -199,8 +199,8 @@ class PixeldustSimulation {
     Pixeldust currentImage = images[currentIndex];
     float nextTime = times[currentIndex];
 
-    currentImage.updateForward(0);
-    //currentImage.updateForward(map(mouseX, 0, width, 1, -0.1));
+    //currentImage.updateForward(0);
+    currentImage.updateForward(map(mouseX, 0, width, 1, -0.1));
     currentImage.display();
   }
 

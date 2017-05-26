@@ -303,6 +303,9 @@ class Pixeldust {
     numPixelsOver = 0;  // counts number of overflowed pixels
     numPixelsUnder = 0; // counts number of underflowed pixels
 
+    float maxAcceleration = map(mouseY, 0, height, 0, 20);
+    //println(maxAcceleration);
+
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of this particle on img grid
       int loc = int(particles[i].position.x) + int(particles[i].position.y) * imgPixels.width;
@@ -313,7 +316,10 @@ class Pixeldust {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
-        particles[i].updateRandom(10);
+        //particles[i].updateRandom(10);
+        particles[i].topspeed = maxAcceleration*10;
+        particles[i].updateRandom(maxAcceleration);
+
 
         //particles[i].checkEdgesPeriodicSnap();
         //particles[i].checkEdgesPeriodic();
