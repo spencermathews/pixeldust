@@ -9,6 +9,8 @@ import processing.sound.*;
 Pixeldust pd;
 PixeldustSimulation sim;
 
+int lastTime;
+
 void setup () {
   size(1, 1);
   surface.setResizable(true); // enable resizable display window
@@ -31,5 +33,14 @@ void setup () {
 void draw() {
   sim.run();
 
-  surface.setTitle(int(frameRate) + " fps");
+  int currentTime = millis();
+  if (millis() - lastTime > 100) {
+    int elapsedTime = (millis() - sim.startTime)/1000;
+    int min = elapsedTime/60;  // use int division to our advantage
+    int sec = elapsedTime % 60;
+    
+    surface.setTitle(min + ":" + nf(sec,2) + " / " + int(frameRate) + " fps");
+    
+    lastTime = millis();
+  }
 }

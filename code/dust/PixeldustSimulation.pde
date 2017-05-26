@@ -19,6 +19,8 @@ class PixeldustSimulation {
   int numParticles;   // number of particles in simulation
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
+  int startTime;
+
 
   /* Constructor
    *
@@ -171,6 +173,7 @@ class PixeldustSimulation {
    */
   void begin() {
     audio.play();
+    startTime = millis();
     setCurrentImage(0);
   }
 
