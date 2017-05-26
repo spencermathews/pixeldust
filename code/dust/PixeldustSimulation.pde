@@ -14,12 +14,15 @@ class PixeldustSimulation {
 
   int[] times;
 
-  int currentIndex;
+  int currentIndex;        // controlling variable, set with setCurrent() since there is other work to be done
+  Pixeldust currentImage;  // reference to images[curentIndex], for convenience
+  int currentTime;         // reference to times[currentIndex], for convenience
+  int currentInterval;     // total time we have to converge current image, calculated wrt simulation startTime
 
   int numParticles;   // number of particles in simulation
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
-  int startTime;
+  int startTime;  // set by begin() to track when audio starts
 
 
   /* Constructor
@@ -71,7 +74,7 @@ class PixeldustSimulation {
       timestamps[i-1] = table.getString(i, 1);
     }
 
-    // converts M:S to seconds
+    // converts M:S to milliseconds
     times = new int[timestamps.length];
     for (int i = 0; i < timestamps.length; i++) {
       times[i] = convertTime(timestamps[i]);
@@ -83,7 +86,7 @@ class PixeldustSimulation {
     }
   }
 
-  // helper function to convert minutes:seconds to seconds
+  // helper function to convert minutes:seconds to milliseconds
   int convertTime(String timestamps) {
     String[] time = split(timestamps, ':');
     if (time.length != 2) {
@@ -92,7 +95,7 @@ class PixeldustSimulation {
     }
     int minutes = int(time[0]);
     int seconds = int(time[1]);
-    return minutes * 60 + seconds;
+    return (minutes * 60 + seconds)*1000;
   }
 
 
@@ -163,7 +166,7 @@ class PixeldustSimulation {
       particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
     }
 
-    println("\nSimulation uses", nfc(numParticles), "particles");
+    println("\nSimulation uses", nfc(numParticles), "particles\n");
   }
 
 
@@ -173,8 +176,11 @@ class PixeldustSimulation {
    */
   void begin() {
     audio.play();
-    startTime = millis();
-    setCurrentImage(0);
+
+    startTime = millis();  // marks the time the simulation starts
+
+    currentTime = 0;
+    setCurrent(0);
   }
 
 
@@ -182,26 +188,34 @@ class PixeldustSimulation {
    *
    * Set currentIndex and pass particles to it.
    */
-  void setCurrentImage(int i) {
+  void setCurrent(int i) {
+    println("\nelapsed time:", millis() - startTime, "| actual interval ->", currentInterval + (millis() - startTime) - currentTime);
     currentIndex = i;
-    Pixeldust currentImage = images[i];
+    currentImage = images[i];
+    currentTime = times[i];
+    // computes target time relative to time elapsed since start of sim
+    // will typically be some 10s of ms less than expected time because of error in catching the time condition
+    currentInterval = (currentTime - (millis() - startTime));
+    println("set: currentIndex =", currentIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
 
-    currentImage.initParticles(particles);  // pass this particle[] array to the current Pixeldust image
-    currentImage.countParticles();          // update that object's imgParticles[] array with the new particles
+    currentImage.initParticles(particles);  // passes this particle[] array to the current Pixeldust image
+    currentImage.countParticles();          // updates that object's imgParticles[] array with the new particles
   }
 
 
   /* Main event loop to be called from draw()
    */
   void run() {
-    // get current image and time
-    // later consider keeping refs to avoid repetition each frame
-    Pixeldust currentImage = images[currentIndex];
-    float nextTime = times[currentIndex];
+    // assumes currentIndex, currentImage, and currentTime are up to date
 
     //currentImage.updateForward(0);
     currentImage.updateForward(map(mouseX, 0, width, 1, -0.1));
     currentImage.display();
+
+    // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
+    if (millis() - startTime > currentTime && currentIndex < images.length-1) {
+      setCurrent(currentIndex+1);  // set next to be current
+    }
   }
 
 
