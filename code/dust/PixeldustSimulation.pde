@@ -19,7 +19,6 @@ class PixeldustSimulation {
   int currentTime;         // reference to times[currentIndex], for convenience
   int currentInterval;     // total time we have to converge current image, calculated wrt simulation startTime
 
-  int numParticles;   // number of particles in simulation
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
   int startTime;  // set by begin() to track when audio starts
@@ -158,15 +157,14 @@ class PixeldustSimulation {
     for (Pixeldust img : images) {
       maxParticles = max(img.numParticles, maxParticles);
     }
-    numParticles = maxParticles;  // assigns 
 
-    particles = new Mover[numParticles];
+    particles = new Mover[maxParticles];
     // creates particles at random locations
     for (int i = 0; i < particles.length; i++) {
       particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
     }
 
-    println("\nSimulation uses", nfc(numParticles), "particles\n");
+    println("\nSimulation uses", nfc(particles.length), "particles\n");
   }
 
 
