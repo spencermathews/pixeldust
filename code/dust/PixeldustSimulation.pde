@@ -48,7 +48,7 @@ class PixeldustSimulation {
   }
 
 
-  /* Parses controlling csv file and sets audioFiles, imageFiles, and times fields
+  /* Parses controlling csv file and sets audioFile, imageFiles, and times fields
    *
    * Assume first row is audio file and remaining rows are image/time pairs.
    *
@@ -177,7 +177,6 @@ class PixeldustSimulation {
 
     startTime = millis();  // marks the time the simulation starts
 
-    currentTime = 0;
     setCurrent(0);
   }
 
@@ -187,13 +186,13 @@ class PixeldustSimulation {
    * Set currentIndex and pass particles to it.
    */
   void setCurrent(int i) {
-    println("\nelapsed time:", millis() - startTime, "| actual interval ->", currentInterval + (millis() - startTime) - currentTime);
+    println("\nelapsed time:", elapsedTime(), "| actual interval ->", currentInterval + elapsedTime() - currentTime);
     currentIndex = i;
     currentImage = images[i];
     currentTime = times[i];
     // computes target time relative to time elapsed since start of sim
     // will typically be some 10s of ms less than expected time because of error in catching the time condition
-    currentInterval = (currentTime - (millis() - startTime));
+    currentInterval = (currentTime - elapsedTime());
     println("set: currentIndex =", currentIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
 
     currentImage.initParticles(particles);  // passes this particle[] array to the current Pixeldust image
@@ -202,6 +201,8 @@ class PixeldustSimulation {
 
 
   /* Main event loop to be called from draw()
+   *
+   * Should not be called until after 
    */
   void run() {
     // assumes currentIndex, currentImage, and currentTime are up to date
@@ -211,11 +212,16 @@ class PixeldustSimulation {
     currentImage.display();
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
-    if (millis() - startTime > currentTime && currentIndex < images.length-1) {
+    if (elapsedTime() > currentTime && currentIndex < images.length-1) {
       setCurrent(currentIndex+1);  // set next to be current
     }
   }
 
+  /* Returns elapsed time in milliseconds (elapsed time is time since begin() was called) 
+   */
+  int elapsedTime() {
+    return millis() - startTime;
+  }
 
 
   /* Extract reverse frames from Pixeldust
