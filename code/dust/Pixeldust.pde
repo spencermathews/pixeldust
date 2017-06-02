@@ -21,10 +21,7 @@ class Pixeldust {
   int brightnessPerParticle;  // color contribution of each particle
 
   int numParticles;  // number of particles in simulation
-
-  int numPixelsOver = 0;   // tracks number of pixels with excess particles
-  int numPixelsUnder = 0;  // tracks number of pixels with particle deficiencies
-
+  
 
   /*
    * Constructor
@@ -300,8 +297,8 @@ class Pixeldust {
    * or maybe by comparing to adjacent pixels.
    */
   void updateForward(float p) {
-    numPixelsOver = 0;  // counts number of overflowed pixels
-    numPixelsUnder = 0; // counts number of underflowed pixels
+    int numPixelsOver = 0;  // counts number of overflowed pixels
+    int numPixelsUnder = 0; // counts number of underflowed pixels
 
     float maxAcceleration = map(mouseY, 0, height, 0, 20);
     //println(maxAcceleration);
@@ -339,12 +336,11 @@ class Pixeldust {
     }
 
     // output how close we match original image
-    if (frameCount % 60 == 0) {
-      println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
-    }
+    //if (frameCount % 60 == 0) {
+    //  VERBOSE println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
+    //}
 
-    // not needed as longs as as imgParticles is updated after every move
-    //countParticles();  // updates imgParticles by counting particles in each pixel area
+    // countParticles() not needed as longs as as imgParticles is updated after every move
   }
 
 
