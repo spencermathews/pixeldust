@@ -187,11 +187,11 @@ class Pixeldust {
    *
    * Used to convert particle density to color value. 
    *
-   * param  numParticles int
-   * return              color
+   * param  particleCount int number of particles occupying pixel space
+   * return               color
    */
-  color pixelMerge(int numParticles) {
-    float b = 255 - numParticles * brightnessPerParticle;
+  color pixelMerge(int particleCount) {
+    float b = 255 - particleCount * brightnessPerParticle;
     return color(b);
   }
 
