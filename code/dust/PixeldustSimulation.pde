@@ -105,7 +105,9 @@ class PixeldustSimulation {
   void initAudio(PApplet ref) {
     audio = new SoundFile(ref, audioFile);
 
-    println("\nSimulation with audio file with", audio.duration(), "duration");
+    println("\nSFSampleRate= " + audio.sampleRate() + " Hz");
+    println("SFSamples= " + audio.frames() + " samples");
+    println("SFDuration= " + audio.duration() + " seconds");
   }
 
 
