@@ -18,10 +18,10 @@ class Pixeldust {
 
   float scaleImg;  // set scale factor on image, i.e. how much to shrink
 
-  int brightnessPerParticle;  // color contribution of each particle
+  float brightnessPerParticle;  // color contribution of each particle
 
   int numParticles;  // number of particles in simulation
-  
+
 
   /*
    * Constructor
@@ -32,8 +32,10 @@ class Pixeldust {
   Pixeldust(String imgFile, float scaleImg, int particlesPerPixel) {
 
     // TODO? ensure that full density -> pure black when reconstituted
-    // TODO think about if this should be float or int, there are more particles when it's an int
-    brightnessPerParticle = 255 / particlesPerPixel;
+    // note there are more particles when brightnessPerParticle is an int, but float is more true
+    brightnessPerParticle = 255.0 / particlesPerPixel;
+
+    println("particlesPerPixel:", particlesPerPixel, "brightnessPerParticle:", brightnessPerParticle);
 
     this.scaleImg = scaleImg;
 
@@ -454,4 +456,8 @@ class Pixeldust {
     }
     img.updatePixels();
   }
+
+  //PImage imgParticlesBlur() {
+
+  //}
 }
