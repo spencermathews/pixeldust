@@ -28,19 +28,21 @@ void setup () {
   noSmooth();  // may increase performance
 
   sim.begin();
+
+  lastTime = 0;
 }
 
 void draw() {
   sim.run();
 
   int currentTime = millis();
-  if (millis() - lastTime > 100) {
-    int elapsedTime = (millis() - sim.startTime)/1000;
-    int min = elapsedTime/60;  // use int division to our advantage
+  if (currentTime - lastTime > 100) {
+    int elapsedTime = (currentTime - sim.startTime)/1000;
+    int min = elapsedTime / 60;  // use int division to our advantage
     int sec = elapsedTime % 60;
-    
-    surface.setTitle(min + ":" + nf(sec,2) + " / " + int(frameRate) + " fps");
-    
+
+    surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
+
     lastTime = millis();
   }
 }
