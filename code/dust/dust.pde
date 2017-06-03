@@ -6,6 +6,8 @@ import processing.sound.*;
  * Spencer Mathews, began: 3/2017
  */
 
+String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv"};
+
 Pixeldust pd;
 PixeldustSimulation sim;
 
@@ -15,19 +17,9 @@ void setup () {
   size(1, 1);
   surface.setResizable(true); // enable resizable display window
 
-  String csvFileName = "Mandela-timing.csv";
-  float scaleImg = 2;
-  int particlesPerPixel = 4;
-  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
-
-  surface.setSize(sim.width, sim.height);  // set display window to simulation size
-
-  // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
-  //surface.setLocation(0, 0);
-
   noSmooth();  // may increase performance
 
-  sim.begin();
+  begin();
 
   lastTime = 0;
 }
@@ -45,4 +37,19 @@ void draw() {
 
     lastTime = millis();
   }
+}
+
+void begin() {
+
+  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  float scaleImg = 2;
+  int particlesPerPixel = 4;
+  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
+
+  surface.setSize(sim.width, sim.height);  // set display window to simulation size
+
+  // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
+  //surface.setLocation(0, 0);
+
+  sim.begin();
 }
