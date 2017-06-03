@@ -19,13 +19,17 @@ void setup () {
 
   noSmooth();  // may increase performance
 
+  noLoop();
   begin();
 
   lastTime = 0;
 }
 
 void draw() {
-  sim.run();
+  int isComplete = sim.run();  // iterate simulation
+  if (isComplete == 1) {
+    noLoop();
+  }
 
   int currentTime = millis();
   if (currentTime - lastTime > 100) {
@@ -38,6 +42,7 @@ void draw() {
     lastTime = millis();
   }
 }
+
 
 void begin() {
 
@@ -52,4 +57,5 @@ void begin() {
   //surface.setLocation(0, 0);
 
   sim.begin();
+  loop();
 }

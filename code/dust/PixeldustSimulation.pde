@@ -166,7 +166,7 @@ class PixeldustSimulation {
       particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
     }
 
-    println("\nSimulation uses", nfc(particles.length), "particles\n");
+    println("\nSimulation uses", nfc(particles.length), "particles");
   }
 
 
@@ -204,9 +204,11 @@ class PixeldustSimulation {
 
   /* Main event loop to be called from draw()
    *
-   * Should not be called until after 
+   * Should not be called until after this.begin() has been called once
+   *
+   * returns 1 if simulation is complete, otherwise return 0
    */
-  void run() {
+  int run() {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
     //currentImage.updateForward(0);
@@ -214,9 +216,21 @@ class PixeldustSimulation {
     currentImage.display();
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
-    if (elapsedTime() > currentTime && currentIndex < images.length-1) {
-      setCurrent(currentIndex+1);  // set next to be current
+    if (elapsedTime() > currentTime) {
+      // advance image if there are still more
+      if (currentIndex < images.length-1) {
+        setCurrent(currentIndex+1);  // set next to be current
+      } else if (currentIndex == images.length-1) {
+        // tests if we're actually done since audio maycontinue past timestamp of final image
+        if (elapsedTime() > audio.duration()) {
+          println( "complete @", elapsedTime());
+          return 1;
+        } else {
+          println( "wrapping up @", elapsedTime());
+        }
+      }
     }
+    return 0;  // indicates that we're still running
   }
 
   /* Returns elapsed time in milliseconds (elapsed time is time since begin() was called) 
