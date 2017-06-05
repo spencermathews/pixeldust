@@ -8,28 +8,37 @@ import processing.sound.*;
 
 String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv"};
 
-Pixeldust pd;
 PixeldustSimulation sim;
 
 int lastTime;  // keeps track of timer for fps in title
 
+int isComplete;
+
 void setup () {
-  size(1, 1);
+  size(100, 100);
   surface.setResizable(true); // enable resizable display window
 
   noSmooth();  // may increase performance
 
-  noLoop();
-  begin();
+  background(0, 255, 0);
 
   lastTime = 0;
+  isComplete = 1;
 }
 
 void draw() {
-  int isComplete = sim.run();  // iterate simulation
-  if (isComplete == 1) {
-    noLoop();
+  // Seemingly reduntant, but we want to enable a stopped state
+  // however draw is still run once even if we stop loop
+  if (isComplete == 0) {
+    run();
   }
+}
+
+
+// interates a person/simulation object
+void run() {
+  // set isComplete to 1 after person is finished
+  isComplete = sim.run();  // iterate simulation
 
   int currentTime = millis();
   if (currentTime - lastTime > 100) {
@@ -57,5 +66,10 @@ void begin() {
   //surface.setLocation(0, 0);
 
   sim.begin();
-  loop();
+  isComplete = 0;
+}
+
+// start simulation on mousePressed
+void mousePressed() {
+  begin();
 }
