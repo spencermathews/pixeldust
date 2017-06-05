@@ -304,6 +304,7 @@ class Pixeldust {
     int numPixelsOver = 0;  // counts number of overflowed pixels
     int numPixelsUnder = 0; // counts number of underflowed pixels
 
+    //p = map(mouseX, 0, width, 0, 1.1);
     float maxAcceleration = map(p, 0, 1, 0, 10);
     //println("maxAcceleration", maxAcceleration);
 
@@ -318,7 +319,7 @@ class Pixeldust {
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
         //particles[i].updateRandom(10);
-        particles[i].topspeed = maxAcceleration*10;
+        particles[i].topspeed = 10; //maxAcceleration * 10;
         particles[i].updateRandom(maxAcceleration);
 
 
@@ -340,8 +341,8 @@ class Pixeldust {
     }
 
     // output how close we match original image
-    //if (frameCount % 60 == 0) {
-    //  VERBOSE println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
+    //if (frameCount % 10 == 0) {
+    //  println(numPixelsOver + numPixelsUnder, "=", numPixelsOver, "+", numPixelsUnder);
     //}
 
     // countParticles() not needed as longs as as imgParticles is updated after every move

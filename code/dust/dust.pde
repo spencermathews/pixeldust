@@ -14,7 +14,7 @@ PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 
 void setup () {
-  size(1, 1);
+  size(1, 1, FX2D);
   surface.setResizable(true); // enable resizable display window
 
   noSmooth();  // may increase performance
@@ -27,9 +27,9 @@ void setup () {
 
 void draw() {
   int isComplete = sim.run();  // iterate simulation
-  if (isComplete == 1) {
-    noLoop();
-  }
+  //if (isComplete == 1) {
+  //  noLoop();
+  //}
 
   int currentTime = millis();
   if (currentTime - lastTime > 100) {
@@ -46,9 +46,10 @@ void draw() {
 
 void begin() {
 
-  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  float scaleImg = 2;
-  int particlesPerPixel = 4;
+  //String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  String csvFileName = csvFileNames[1];
+  float scaleImg = 4;
+  int particlesPerPixel = 2;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   surface.setSize(sim.width, sim.height);  // set display window to simulation size

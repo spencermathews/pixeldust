@@ -212,8 +212,11 @@ class PixeldustSimulation {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
     float pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
-    float exponent = 2;  // 1 is linear
+    //println("pct", pct);
+
+    float exponent = 2;  // 1 is linear, 
     float p = pow(pct, exponent);
+    //println("p", p);
     currentImage.updateForward(p);
     currentImage.display();
 
@@ -236,6 +239,7 @@ class PixeldustSimulation {
         }
       }
     }
+    //image(currentImage.imgPixelsOrig, 0 , 0);
     return 0;  // indicates that we're still running
   }
 
