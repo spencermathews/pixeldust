@@ -262,13 +262,26 @@ class Pixeldust {
    *
    * Requires imgParticles array to be current.
    */
-  void particleMerge() {
+  void particleMerge(boolean trueColor) {
 
-    imgPixels.loadPixels();  // loads img pixels[] array so we can update it
+    imgPixels.loadPixels();      // loads img pixels[] array so we can update it
+    imgPixelsOrig.loadPixels();  // loads img pixels[] array for reference only, no need to update
 
     // convert pixel occupation to brightness inverted
     for (int i = 0; i < imgPixels.pixels.length; i++) {
-      imgPixels.pixels[i] = pixelMerge(imgParticles[i]);
+      color computedColor = pixelMerge(imgParticles[i]);
+      //println(computedColor, brightness(imgPixelsOrig.pixels[i]));
+      // pixels will always be reconstructed too light as a result of spltting scheme
+      // so we should be darkening pixels at full occupation to recover full bit depth
+      // checks that we are within one particle brightness of the target
+      // TODO tight bound? I'm confused that setting the first condtion >= yields strange results
+      if (trueColor && brightness(computedColor) > brightness(imgPixelsOrig.pixels[i]) 
+        && brightness(computedColor) - brightness(imgPixelsOrig.pixels[i]) < brightnessPerParticle) {
+        imgPixels.pixels[i] = imgPixelsOrig.pixels[i];
+        //imgPixels.pixels[i] = color(255, 0, 0);
+      } else {
+        imgPixels.pixels[i] = computedColor;
+      }
     }
 
     imgPixels.updatePixels();
@@ -369,7 +382,7 @@ class Pixeldust {
 
 
   void display() {
-    particleMerge();
+    particleMerge(true);
     //img.loadPixels();
     //for (int i = 0; i < img.pixels.length; i++) {
     //  img.pixels[i] = color(255-imgParticles[i]*brightnessPerParticle);
