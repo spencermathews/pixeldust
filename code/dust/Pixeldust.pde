@@ -304,8 +304,8 @@ class Pixeldust {
     int numPixelsOver = 0;  // counts number of overflowed pixels
     int numPixelsUnder = 0; // counts number of underflowed pixels
 
-    float maxAcceleration = map(mouseY, 0, height, 0, 20);
-    //println(maxAcceleration);
+    float maxAcceleration = map(p, 0, 1, 0, 10);
+    //println("maxAcceleration", maxAcceleration);
 
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of this particle on img grid

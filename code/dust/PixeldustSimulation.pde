@@ -211,9 +211,15 @@ class PixeldustSimulation {
   int run() {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
-    //currentImage.updateForward(0);
-    currentImage.updateForward(map(mouseX, 0, width, 1, -0.1));
+    float pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
+    float exponent = 2;  // 1 is linear
+    float p = pow(pct, exponent);
+    currentImage.updateForward(p);
     currentImage.display();
+
+    // displays progress indicator for this segment
+    fill(255, 0, 0);
+    rect(0, height-2, map(pct, 0, 1, 0, width), 2);
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
     if (elapsedTime() > currentTime) {
