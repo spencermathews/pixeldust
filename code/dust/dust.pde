@@ -8,7 +8,9 @@ import processing.net.*;
  * Spencer Mathews, began: 3/2017
  */
 
-String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv"};
+String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv", "Einstein-timing.csv",
+                         "Chavez-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv",
+                         "Mother-Jones-timing.csv", "Luxemburg-timing.csv", "Anthony-timing.csv"};
 PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 int isComplete;
@@ -61,6 +63,7 @@ void run() {
 void begin() {
 
   String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  //String csvFileName = csvFileNames[2];
   float scaleImg = 2;
   int particlesPerPixel = 4;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
