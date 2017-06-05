@@ -375,7 +375,7 @@ class Pixeldust {
     //  img.pixels[i] = color(255-imgParticles[i]*brightnessPerParticle);
     //}
     //img.updatePixels();
-    image(imgPixels, 0, 0);
+    image(imgPixels, 0, 0, width, height);  // TODO maintain aspect!
   }
 
 

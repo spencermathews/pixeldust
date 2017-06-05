@@ -15,12 +15,13 @@ PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 int isComplete;
 
-boolean useNet = true;  // set to false to disable network triggering
+boolean useNet = false;  // set to false to disable network triggering
 
 
 void setup () {
-  size(100, 100);
-  surface.setResizable(true); // enable resizable display window
+  //size(100, 100);
+  //surface.setResizable(true); // enable resizable display window
+  fullScreen();
 
   noSmooth();  // may increase performance
 
@@ -68,7 +69,7 @@ void begin() {
   int particlesPerPixel = 4;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
-  surface.setSize(sim.w, sim.h);  // set display window to simulation size
+  //surface.setSize(sim.w, sim.h);  // set display window to simulation size
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   //surface.setLocation(0, 0);
