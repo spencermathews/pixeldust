@@ -297,6 +297,8 @@ class Pixeldust {
    * An improvement recalculates overflow state after every move.
    * Consider adjusting move range depending on how overoccupied,
    * or maybe by comparing to adjacent pixels.
+   *
+   * param float p probability that particle will stay put even if it's on an underoccupied pixel, p=0 is totally random
    */
   void updateForward(float p) {
     int numPixelsOver = 0;  // counts number of overflowed pixels
@@ -311,7 +313,7 @@ class Pixeldust {
 
       float prob = random(1.0);
       // performs update step if this pixel has overflowed
-      if (imgParticles[loc] > imgParticlesOrig[loc] || prob < p) {
+      if (imgParticles[loc] > imgParticlesOrig[loc] || prob > p) {
         //particles[i].updateRandomWalkBasic();
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
