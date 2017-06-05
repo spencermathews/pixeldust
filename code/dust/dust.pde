@@ -1,4 +1,6 @@
 import processing.sound.*;
+import processing.net.*;
+
 
 /*
  * Pixeldust
@@ -7,12 +9,15 @@ import processing.sound.*;
  */
 
 String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv"};
-
 PixeldustSimulation sim;
-
 int lastTime;  // keeps track of timer for fps in title
-
 int isComplete;
+
+Client c;
+int lastNetTime; // timer for network client, trigger polling
+
+boolean useNet = true;  // set to false to disable network triggering
+
 
 void setup () {
   size(100, 100);
@@ -20,10 +25,13 @@ void setup () {
 
   noSmooth();  // may increase performance
 
-  background(0, 255, 0);
-
   lastTime = 0;
   isComplete = 1;
+  lastNetTime = 0;
+
+  if (useNet == true) {
+    c = new Client(this, "192.168.1.1", 12345);
+  }
 }
 
 void draw() {
@@ -31,6 +39,29 @@ void draw() {
   // however draw is still run once even if we stop loop
   if (isComplete == 0) {
     run();
+  }
+
+  if (useNet == true) {
+    // read byte from network trigger and begin person if ready for it
+    // but need to clear buffer 
+    int currentTime = millis();
+    if (currentTime - lastNetTime > 1000) {
+      // Receive data from server
+      if (c.available() > 0) {
+        int input = c.read();
+        c.clear();  // clear buffer so bytes don't accumulate
+        print("\nTrigger received:");
+
+        // begin a person if not already running
+        if (isComplete == 1) {
+          println(" Starting");
+          begin();
+        } else {
+          println(" Ignoring");
+        }
+      }
+      lastNetTime = millis();
+    }
   }
 }
 
@@ -69,7 +100,13 @@ void begin() {
   isComplete = 0;
 }
 
+
 // start simulation on mousePressed
 void mousePressed() {
+  // Stop playing audio so we can begin again
+  // Effectively identical to isComplete==0, but aways guarantees stop
+  if (sim != null) {
+    sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
+  }
   begin();
 }
