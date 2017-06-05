@@ -318,7 +318,7 @@ class Pixeldust {
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
         //particles[i].updateRandom(10);
-        particles[i].topspeed = maxAcceleration*10;
+        particles[i].topspeed = 10; //maxAcceleration*10;
         particles[i].updateRandom(maxAcceleration);
 
 
