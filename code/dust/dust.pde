@@ -73,6 +73,7 @@ void begin() {
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   //surface.setLocation(0, 0);
 
+  noTint();  // just in case
   sim.begin();
   isComplete = 0;
 }
