@@ -115,18 +115,18 @@ class Mover {
    *
    * As per Shiffman NOC Example 1.9
    */
-  void checkEdgesPeriodicSnap() {
+  void checkEdgesPeriodicSnap(int w, int h) {
 
-    if (position.x >= width) {
+    if (position.x >= w) {
       position.x = 0;
     } else if (position.x < 0) {
-      position.x = width - 0.999;
+      position.x = w - 0.999;
     }
 
-    if (position.y >= height) {
+    if (position.y >= h) {
       position.y = 0;
     } else if (position.y < 0) {
-      position.y = height - 0.999;
+      position.y = h - 0.999;
     }
   }
 
@@ -136,53 +136,53 @@ class Mover {
    *
    * May not make much difference over the snap version.
    */
-  void checkEdgesPeriodic() {
+  void checkEdgesPeriodic(int w, int h) {
 
     float offset = 0.001;  // slight offset to avoid equality with width/height
 
-    if (position.x >= width) {
-      position.x = 0 + (position.x - width);
+    if (position.x >= w) {
+      position.x = 0 + (position.x - w);
     } else if (position.x < 0) {
-      position.x = width + position.x;
+      position.x = w + position.x;
     }
     // handle edge case
-    if (position.x == width) {
-      position.x = width - offset;
+    if (position.x == w) {
+      position.x = w - offset;
     }
 
-    if (position.y >= height) {
-      position.y = 0 + (position.y - height);
+    if (position.y >= h) {
+      position.y = 0 + (position.y - h);
     } else if (position.y < 0) {
-      position.y = height + position.y;
+      position.y = h + position.y;
     }
     // handle edge case, catching position.y==0 as a special case is insufficient
     // since position.y will still be assigned value of height when initially small negative number
-    if (position.y == height) {
-      position.y = height - offset;
+    if (position.y == h) {
+      position.y = h - offset;
     }
 
     // catch conditions where we have gone more than a full width/height
     // only a concern if we allow topspeed more than width/height
     // using mod works fine here but verify for negative numbers (note -1%n -> -1)
     // TODO improve
-    position.x = position.x % width;
-    position.y = position.y % height;
+    position.x = position.x % w;
+    position.y = position.y % h;
   }
 
   /* Constrain position to edge of display window
    */
-  void checkEdgesReflectiveSnap() {
+  void checkEdgesReflectiveSnap(int w, int h) {
 
-    if (position.x >= width) {
-      position.x = width - 0.999;
+    if (position.x >= w) {
+      position.x = w - 0.999;
       velocity.x = -abs(velocity.x);
     } else if (position.x < 0) {
       position.x = 0;
       velocity.x = abs(velocity.x);
     }
 
-    if (position.y >= height) {
-      position.y = height - 0.999;
+    if (position.y >= h) {
+      position.y = h - 0.999;
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
       position.y = 0;
@@ -196,33 +196,33 @@ class Mover {
    *
    * Note special handling of when position exactly equal to width or height.
    */
-  void checkEdgesReflective() {
+  void checkEdgesReflective(int w, int h) {
 
     float offset = 0.001;  // slight offset to avoid equality with width/height
 
-    if (position.x > width) {
-      position.x = width - (position.x - width);
+    if (position.x > w) {
+      position.x = w - (position.x - w);
       velocity.x = -abs(velocity.x);
     } else if (position.x < 0) {
       position.x = 0 - position.x;
       velocity.x = abs(velocity.x);
     }
     // handle edge case
-    if (position.x == width) {
-      position.x = width - offset;
+    if (position.x == w) {
+      position.x = w - offset;
       velocity.x = -abs(velocity.x);
     }
 
-    if (position.y > height) {
-      position.y = height - (position.y - height);
+    if (position.y > h) {
+      position.y = h - (position.y - h);
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
       position.y = 0 - position.y;
       velocity.y = abs(velocity.y);
     }
     // handle edge case
-    if (position.y == height) {
-      position.y = height - offset;
+    if (position.y == h) {
+      position.y = h - offset;
       velocity.y = -abs(velocity.y);
     }
 
@@ -230,43 +230,43 @@ class Mover {
     // doesn't precicely handle reflect dynamics
     // but should be fine for large systems and it's just for rare edge cases anyway
     // TODO improve
-    position.x = constrain(position.x, 0, width - offset);
-    position.y = constrain(position.y, 0, height - offset);
+    position.x = constrain(position.x, 0, w - offset);
+    position.y = constrain(position.y, 0, h - offset);
   }
 
-  void checkEdgesMixed() {
+  void checkEdgesMixed(int w, int h) {
 
     float offset = 0.001;  // slight offset to avoid equality with width/height
 
     // uses periodic boundary on x axis
-    if (position.x >= width) {
-      position.x = 0 + (position.x - width);
+    if (position.x >= w) {
+      position.x = 0 + (position.x - w);
     } else if (position.x < 0) {
-      position.x = width + position.x;
+      position.x = w + position.x;
     }
     // handle edge case
-    if (position.x == width) {
-      position.x = width - offset;
+    if (position.x == w) {
+      position.x = w - offset;
     }
 
     // uses reflective bounary on y axis
-    if (position.y > height) {
-      position.y = height - (position.y - height);
+    if (position.y > h) {
+      position.y = h - (position.y - h);
       velocity.y = -abs(velocity.y);
     } else if (position.y < 0) {
       position.y = 0 - position.y;
       velocity.y = abs(velocity.y);
     }
     // handle edge case
-    if (position.y == height) {
-      position.y = height - offset;
+    if (position.y == h) {
+      position.y = h - offset;
       velocity.y = -abs(velocity.y);
     }
 
     // catch conditions where we have gone more than a full width/height
     // may not precicely handle periodic and/or reflect dynamics
     // but should be fine for large systems and it's just for rare edge cases anyway
-    position.x = position.x % width;
-    position.y = constrain(position.y, 0, height - offset);
+    position.x = position.x % w;
+    position.y = constrain(position.y, 0, h - offset);
   }
 }

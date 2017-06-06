@@ -11,8 +11,8 @@ class Pixeldust {
   PImage imgPixelsOrig;   // maintain the original image after scaling, for reference
   int[] imgParticlesOrig; // array like img but elements hold number of particles in corresponding pixel, for reference
 
-  int width;   // width of scaled image (imgPixels)
-  int height;  // height of scaled image (imgPixels)
+  int w;  // width of scaled image (imgPixels)
+  int h;  // height of scaled image (imgPixels)
 
   Mover[] particles;  // array of particle positions, note: might want to save numParticles as field
 
@@ -46,8 +46,8 @@ class Pixeldust {
     imgPixels.resize(floor(imgPixels.width/scaleImg), 0); // scale image
     imgPixelsOrig = imgPixels.copy();               // keep copy of scaled original image
 
-    this.width = imgPixelsOrig.width;
-    this.height = imgPixelsOrig.height;
+    w = imgPixelsOrig.width;
+    h = imgPixelsOrig.height;
 
     switch(imgPixelsOrig.format) {
     case RGB:
@@ -322,11 +322,11 @@ class Pixeldust {
         particles[i].updateRandom(maxAcceleration);
 
 
-        //particles[i].checkEdgesPeriodicSnap();
-        //particles[i].checkEdgesPeriodic();
-        //particles[i].checkEdgesReflectiveSnap();
-        //particles[i].checkEdgesReflective();
-        particles[i].checkEdgesMixed();
+        //particles[i].checkEdgesPeriodicSnap(w, h);
+        //particles[i].checkEdgesPeriodic(w, h);
+        //particles[i].checkEdgesReflectiveSnap(w, h);
+        //particles[i].checkEdgesReflective(w, h);
+        particles[i].checkEdgesMixed(w, h);
 
         numPixelsOver++;
 
@@ -356,11 +356,11 @@ class Pixeldust {
       //particles[i].updateRandom(2);
       //particles[i].updateMouse();
 
-      //particles[i].checkEdgesPeriodicSnap();
-      //particles[i].checkEdgesPeriodic();
-      //particles[i].checkEdgesReflectiveSnap();
-      //particles[i].checkEdgesReflective();
-      particles[i].checkEdgesMixed();
+      //particles[i].checkEdgesPeriodicSnap(w, h);
+      //particles[i].checkEdgesPeriodic(w, h);
+      //particles[i].checkEdgesReflectiveSnap(w, h);
+      //particles[i].checkEdgesReflective(w, h);
+      particles[i].checkEdgesMixed(w, h);
     }
 
     // sort of unnecessary here since only updateForward() relies on values in imgParticles

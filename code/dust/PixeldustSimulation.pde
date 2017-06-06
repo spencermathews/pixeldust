@@ -9,8 +9,8 @@ class PixeldustSimulation {
 
   String[] imageFiles;
   Pixeldust[] images;
-  int width;
-  int height;
+  int w;  // operating width of simulation, i.e. common width of scaled images
+  int h;  // operating height of simulation, i.e. common height of scaled images
 
   int[] times;
 
@@ -40,7 +40,7 @@ class PixeldustSimulation {
     // initialize audio
     initAudio(ref);
 
-    // initializes width, height, and images[]
+    // initializes w, h, and images[]
     initImages(scaleImg, particlesPerPixel);  // args eventually passed through to Pixeldust constructors
 
     // initializes numParticles and particles[]
@@ -111,13 +111,13 @@ class PixeldustSimulation {
   }
 
 
-  /* Initializes width, height, and images[] fields
+  /* Initializes w, h, and images[] fields
    *
    * Must be called after imagesFiles array is initialized in parse()
    */
   void initImages(float scaleImg, int particlesPerPixel) {
-    this.width = 0;
-    this.height = 0;
+    w = 0;
+    h = 0;
 
     // create and initialize images array
     images = new Pixeldust[imageFiles.length];
@@ -126,24 +126,24 @@ class PixeldustSimulation {
       images[i] = new Pixeldust(imageFiles[i], scaleImg, particlesPerPixel);
 
       // set simulation dimensions to the max of all images
-      if (images[i].width > this.width) {
-        this.width = images[i].width;
+      if (images[i].w > w) {
+        w = images[i].w;
       }
-      if (images[i].height > this.height) {
-        this.height = images[i].height;
+      if (images[i].h > h) {
+        h = images[i].h;
       }
     }
 
     // verify that all images are same dimsension, may want to relax later
     // or decouple simulation size from images so smaller images can be inserted
     for (Pixeldust img : images) {
-      if (img.width != this.width || img.height != this.height) {
+      if (img.w != w || img.h != h) {
         println("Error: images must have same dimensions");
         exit();
       }
     }
 
-    println("\nSimulation with", images.length, "images at", this.width + "x" + this.height);
+    println("\nSimulation with", images.length, "images at", w + "x" + h);
   }
 
 
@@ -163,7 +163,7 @@ class PixeldustSimulation {
     particles = new Mover[maxParticles];
     // creates particles at random locations
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(int(random(this.width)), int(random(this.height)));
+      particles[i] = new Mover(int(random(w)), int(random(h)));
     }
 
     println("\nSimulation uses", nfc(particles.length), "particles");

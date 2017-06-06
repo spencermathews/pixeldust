@@ -68,7 +68,7 @@ void begin() {
   int particlesPerPixel = 4;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
-  surface.setSize(sim.width, sim.height);  // set display window to simulation size
+  surface.setSize(sim.w, sim.h);  // set display window to simulation size
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   //surface.setLocation(0, 0);
