@@ -8,7 +8,29 @@
 
 ### Fixed
 
-## [0.7.0] - 2017-05-16
+## [0.8.0] - 2017-05-?
+
+### Added
+
+* PixeldustSimulation class!
+
+### Changed
+
+### Fixed
+
+## [0.7.1] - 2017-05-?
+
+### Added
+
+* `imgPixels` field so `img` can store original unscaled image
+
+### Changed
+
+* Probabilistic updating even at pixels that have not overflowed.
+
+### Fixed
+
+## [0.7.0] - 2017-05-22
 
 ### Added
 
