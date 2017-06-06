@@ -8,9 +8,9 @@ import processing.net.*;
  * Spencer Mathews, began: 3/2017
  */
 
-String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv", "Einstein-timing.csv",
-                         "Chavez-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv",
-                         "Mother-Jones-timing.csv", "Luxemburg-timing.csv", "Anthony-timing.csv"};
+String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv", "Einstein-timing.csv", 
+  "Chavez-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
+  "Mother-Jones-timing.csv", "Luxemburg-timing.csv", "Anthony-timing.csv"};
 PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 int isComplete;
@@ -95,11 +95,14 @@ void clientEvent(Client c) {
   c.clear();  // clear buffer so bytes don't accumulate
   print("\nTrigger received:");
 
-  // begin a person if not already running
-  if (isComplete == 1) {
-    println(" Starting");
-    begin();
-  } else {
-    println(" Ignoring");
+  // if we received a 1 from the server (i.e. triggered prox sensor)
+  if (input == 1) {
+    // begin a person if not already running
+    if (isComplete == 1) {
+      println(" Starting");
+      begin();
+    } else {
+      println(" Ignoring");
+    }
   }
 }
