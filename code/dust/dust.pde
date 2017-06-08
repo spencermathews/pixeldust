@@ -23,6 +23,12 @@ void setup () {
   //surface.setResizable(true); // enable resizable display window
   fullScreen();
 
+  frameRate(30);  // TODO set timebased throttle, esp with better performing configurations
+
+  if (sketchFullScreen() == true) {
+    println("Running fullScreen");
+  }
+
   noSmooth();  // may increase performance
 
   lastTime = 0;
@@ -54,7 +60,14 @@ void run() {
     int min = elapsedTime / 60;  // use int division to our advantage
     int sec = elapsedTime % 60;
 
+    // display elapsed time and fps in title bar
     surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
+
+    // draw elapsed time and fps in title bar, useful for fullScreen
+    fill(0);
+    rect(width-100, height-50, 98, 47);
+    fill(255);
+    text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
 
     lastTime = millis();
   }
