@@ -222,7 +222,7 @@ class Pixeldust {
 
         // create appropriate number of particles at this pixel location
         while (n > 0) {
-          particles[i] = new Mover(x, y);  // set location of this particle
+          particles[i] = new Mover(x, y, 20);  // set location of this particle
           n--;
           i++;
         }
@@ -318,8 +318,7 @@ class Pixeldust {
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
         //particles[i].updateRandom(10);
-        particles[i].topspeed = 10; //maxAcceleration*10;
-        particles[i].updateRandom(maxAcceleration);
+        particles[i].updateRandom(maxAcceleration, 10);
 
 
         //particles[i].checkEdgesPeriodicSnap(w, h);
@@ -353,7 +352,7 @@ class Pixeldust {
       //particles[i].updateRandomWalkBasic();
       //particles[i].updateRandomWalkVonNeumann();
       particles[i].updateRandomWalkMoore();
-      //particles[i].updateRandom(2);
+      //particles[i].updateRandom(2, 6);
       //particles[i].updateMouse();
 
       //particles[i].checkEdgesPeriodicSnap(w, h);
@@ -425,7 +424,7 @@ class Pixeldust {
     //}
 
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)));  // creates a particle at random location
+      particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)), 20);  // creates a particle at random location
     }
   }
 
