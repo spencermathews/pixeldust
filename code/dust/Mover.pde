@@ -7,7 +7,9 @@ class Mover {
   PVector position;
   PVector velocity;
   PVector acceleration;
+
   float topspeed;
+  float maxAccel;
 
   /* Constructs Mover with given position
    */
@@ -15,14 +17,16 @@ class Mover {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
     topspeed = 6;
+    maxAccel = 2;
   }
 
   /* Constructs Mover with given position and topspeed
    */
-  Mover(float x, float y, float maxSpeed) {
+  Mover(float x, float y, float maxAcceleration, float maxSpeed) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
     topspeed = maxSpeed;  // Shiffman hard coded this to 6
+    maxAccel = maxAcceleration;  // Shiffman hard coded this to 2
   }
 
   /* Move particles using random walk, basic
@@ -76,19 +80,17 @@ class Mover {
   }
 
 
-  /* Moves particles by applying a random vector, specify random limit
+  /* Moves particles by applying a random vector
    *
    * Magnitude is random up to given max acceleration.
    * Velocity is limited by the Mover's topspeed field.
    *
    * Modified from Shiffman NOC Example 1.9
    * but included checkEdges here instead of externally
-   *
-   * param maxAccel float maximum magnitude of acceleration vector
    */
-  void updateRandom(float maxAccel) {
+  void updateRandom() {
     acceleration = PVector.random2D();
-    acceleration.mult(random(maxAccel));  // Shiffman hard coded this to 2
+    acceleration.mult(random(maxAccel));  // use Mover's maxAccel
 
     velocity.add(acceleration);
     velocity.limit(topspeed);  // uses Mover's topspeed field
@@ -101,18 +103,15 @@ class Mover {
    * Magnitude is random up to given max acceleration.
    * Velocity is constrained by the given max speed.
    *
-   * Side effect: This Mover's topspeed field is also upadated!
-   *
-   * param maxAccel float maximum magnitude of acceleration vector
-   * param maxSpeed float top speed that can result
+   * param maxAcceleration float maximum magnitude of acceleration vector
+   * param maxSpeed        float top speed that can result
    */
-  void updateRandom(float maxAccel, float maxSpeed) {
+  void updateRandom(float maxAcceleration, float maxSpeed) {
     acceleration = PVector.random2D();
-    acceleration.mult(random(maxAccel));
+    acceleration.mult(random(maxAcceleration));  // use param
 
     velocity.add(acceleration);
-    topspeed = maxSpeed;
-    velocity.limit(topspeed);
+    velocity.limit(maxSpeed);  // use param
     position.add(velocity);
   }
 

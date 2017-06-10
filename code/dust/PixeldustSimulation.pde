@@ -163,7 +163,7 @@ class PixeldustSimulation {
     particles = new Mover[maxParticles];
     // creates particles at random locations
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(int(random(w)), int(random(h)), 20);
+      particles[i] = new Mover(int(random(w)), int(random(h)), 10, 20);
     }
 
     println("\nSimulation uses", nfc(particles.length), "particles");

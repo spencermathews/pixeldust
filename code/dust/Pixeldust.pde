@@ -222,7 +222,7 @@ class Pixeldust {
 
         // create appropriate number of particles at this pixel location
         while (n > 0) {
-          particles[i] = new Mover(x, y, 20);  // set location of this particle
+          particles[i] = new Mover(x, y, 10, 20);  // set location of this particle
           n--;
           i++;
         }
@@ -424,7 +424,7 @@ class Pixeldust {
     //}
 
     for (int i = 0; i < particles.length; i++) {
-      particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)), 20);  // creates a particle at random location
+      particles[i] = new Mover(int(random(imgPixelsOrig.width)), int(random(imgPixelsOrig.height - ySpread, imgPixelsOrig.height)), 10, 20);  // creates a particle at random location
     }
   }
 
