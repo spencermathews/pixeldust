@@ -215,11 +215,13 @@ class PixeldustSimulation {
     float exponent = 2;  // 1 is linear
     float p = pow(pct, exponent);
     currentImage.updateForward(p);
-    currentImage.display();
+
+    //currentImage.displayPixels();
+    currentImage.displayPixelsMasked(pct);  // set param to 0 for no masking, 1 for full masking
 
     // displays progress indicator for this segment
     fill(255, 0, 0);
-    rect(0, height-2, map(pct, 0, 1, 0, width), 2);
+    rect(0, height-4, map(pct, 0, 1, 0, width), 3);
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
     if (elapsedTime() > currentTime) {

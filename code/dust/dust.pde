@@ -55,7 +55,7 @@ void run() {
   isComplete = sim.run();  // iterate simulation
 
   int currentTime = millis();
-  if (currentTime - lastTime > 100) {
+  if (currentTime - lastTime > 10) {
     int elapsedTime = (currentTime - sim.startTime)/1000;
     int min = elapsedTime / 60;  // use int division to our advantage
     int sec = elapsedTime % 60;
@@ -76,10 +76,10 @@ void run() {
 
 void begin() {
 
-  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  //String csvFileName = csvFileNames[2];
+  //String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  String csvFileName = csvFileNames[2];
   float scaleImg = 2;
-  int particlesPerPixel = 4;
+  int particlesPerPixel = 2;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   //surface.setSize(sim.w, sim.h);  // set display window to simulation size

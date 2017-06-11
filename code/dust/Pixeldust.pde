@@ -367,13 +367,46 @@ class Pixeldust {
   }
 
 
-  void display() {
+  void displayPixels() {
     particleMerge();
     //img.loadPixels();
     //for (int i = 0; i < img.pixels.length; i++) {
     //  img.pixels[i] = color(255-imgParticles[i]*brightnessPerParticle);
     //}
     //img.updatePixels();
+    image(imgPixels, 0, 0, width, height);  // TODO maintain aspect!
+    //note: set(0, 0, imgPixels); may be faster but must set proper dimensions ahead of time
+  }
+
+
+  // could simply overload display instead of creating another method
+  void displayPixelsMasked(float pct) {
+
+    particleMerge();
+
+    background(255);  // if we're messing with transparency the surface behind should be white
+
+    // invert scaled image to apply as mask, should probably maintain as a field
+    PImage imgPixelsOrigInverse = imgPixelsOrig.copy();
+    imgPixelsOrigInverse.filter(INVERT);  // makes originally light areas have low brightness and thus particles there will have low opacity
+
+    float maskAdjustment = 255 - 255*pct;  // full mask (0 adjustment) achived when pct is 1
+    // increases brightness so mask so we only get a partial mask
+    imgPixelsOrigInverse.loadPixels();
+    for (int i=0; i< imgPixelsOrigInverse.pixels.length; i++) {
+      imgPixelsOrigInverse.pixels[i] = color(int(constrain(brightness(imgPixelsOrigInverse.pixels[i]) + maskAdjustment, 0, 255)));
+    }
+    imgPixelsOrigInverse.updatePixels(); 
+
+    // possibly alternative for adjusting mask but doesn't seem to work as well
+    //PImage white = new PImage(1, 1, ALPHA);
+    //white.set(0, 0, color(255, 255));
+    //imgPixelsOrigInverse.blend(white, 0, 0, 1, 1, 0, 0, imgPixelsOrigInverse.width, imgPixelsOrigInverse.height, ADD);
+
+    // applies mask to lighten particles in originally light areas
+    imgPixels.mask(imgPixelsOrigInverse);
+
+    // displays current iteration
     image(imgPixels, 0, 0, width, height);  // TODO maintain aspect!
   }
 
