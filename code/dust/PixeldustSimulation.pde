@@ -228,8 +228,10 @@ class PixeldustSimulation {
         setCurrent(currentIndex+1);  // set next to be current
       } else if (currentIndex == images.length-1) {
         // tests if we're actually done since audio maycontinue past timestamp of final image
-        if (elapsedTime() > audio.duration()) {
+        if (elapsedTime() > audio.duration()+000) {
           println( "complete @", elapsedTime());
+          audio.stop();
+          background(255);
           return 1;
         } else {
           println( "wrapping up @", elapsedTime());

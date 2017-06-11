@@ -62,10 +62,10 @@ void run() {
 
 void begin() {
 
-  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  //String csvFileName = csvFileNames[2];
-  float scaleImg = 2;
-  int particlesPerPixel = 4;
+  //String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  String csvFileName = csvFileNames[3];
+  float scaleImg = 3;
+  int particlesPerPixel = 5;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   surface.setSize(sim.width, sim.height);  // set display window to simulation size
