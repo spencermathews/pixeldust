@@ -212,6 +212,7 @@ class PixeldustSimulation {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
     float pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
+    pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
     float exponent = 2;  // 1 is linear
     float p = pow(pct, exponent);
     currentImage.updateForward(p);

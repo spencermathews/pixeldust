@@ -380,6 +380,8 @@ class Pixeldust {
 
 
   // could simply overload display instead of creating another method
+  // does not handle out of range values well! stick to 0-1
+  // consider constraining, but for now checked in sim.run
   void displayPixelsMasked(float pct) {
 
     particleMerge();
@@ -390,6 +392,7 @@ class Pixeldust {
     PImage imgPixelsOrigInverse = imgPixelsOrig.copy();
     imgPixelsOrigInverse.filter(INVERT);  // makes originally light areas have low brightness and thus particles there will have low opacity
 
+    // TODO consider making adjustment scaled, not a simple shift
     float maskAdjustment = 255 - 255*pct;  // full mask (0 adjustment) achived when pct is 1
     // increases brightness so mask so we only get a partial mask
     imgPixelsOrigInverse.loadPixels();
