@@ -21,7 +21,7 @@ class Mover {
     acceleration = new PVector(0, 0);
     topspeed = 6;
     maxAccel = 2;
-    mass = random(1, 4);
+    mass = random(1, 10);
   }
 
   /* Constructs Mover with given position and topspeed
