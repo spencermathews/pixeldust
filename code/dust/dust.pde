@@ -93,14 +93,27 @@ void begin() {
 }
 
 
-// start simulation on mousePressed
+/* Start simulation on left mouse click, force restart on right mouse click
+ */
 void mousePressed() {
-  // Stop playing audio so we can begin again
-  // Effectively identical to isComplete==0, but aways guarantees stop
-  if (sim != null) {
-    sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
+  if (mouseButton == LEFT) {
+    // begin a person if not already running
+    if (isComplete == 1) {
+      println(" Starting (mouse)");
+      begin();
+    } else {
+      println(" Ignoring (mouse)");
+    }
+  } else if (mouseButton == RIGHT) {
+    println(" Restarting");
+    // Stop playing audio so we can begin again - may not be necessary!
+    // Effectively identical to isComplete==0, but aways guarantees stop
+    // TODO make sure this is still needed, and maybe make a proper stop function for sim
+    if (sim != null) {
+      sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
+    }
+    begin();
   }
-  begin();
 }
 
 // Client param to callback function means c need not be global
@@ -114,10 +127,10 @@ void clientEvent(Client c) {
   if (input == 1) {
     // begin a person if not already running
     if (isComplete == 1) {
-      println(" Starting");
+      println(" Starting (network)");
       begin();
     } else {
-      println(" Ignoring");
+      println(" Ignoring (network)");
     }
   }
 }
