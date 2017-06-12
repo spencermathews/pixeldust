@@ -8,9 +8,10 @@ import processing.net.*;
  * Spencer Mathews, began: 3/2017
  */
 
-String[] csvFileNames = {"Mandela-timing.csv", "Davis-timing.csv", "Einstein-timing.csv", 
-  "Chavez-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
-  "Mother-Jones-timing.csv", "Luxemburg-timing.csv", "Anthony-timing.csv"};
+String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", "Chi-Minh-timing.csv", 
+  "Davis-timing.csv", "Einstein-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
+  "Luxemburg-timing.csv", "Mandela-timing.csv", "Mother-Jones-timing.csv"};
+  
 PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 
