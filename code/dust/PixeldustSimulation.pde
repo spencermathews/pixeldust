@@ -13,6 +13,7 @@ class PixeldustSimulation {
   int h;  // operating height of simulation, i.e. common height of scaled images
 
   int[] times;
+  int[] transitions;  // 1 if we transition normally, 0 for no transition
 
   int currentIndex;        // controlling variable, set with setCurrent() since there is other work to be done
   Pixeldust currentImage;  // reference to images[curentIndex], for convenience
@@ -67,10 +68,12 @@ class PixeldustSimulation {
 
     // gets names of image files and their times
     imageFiles = new String[numRows-1];
+    transitions = new int[numRows-1];
     String[] timestamps = new String[numRows-1];
     for (int i = 1; i < numRows; i++) {
       imageFiles[i-1] = table.getString(i, 0);
       timestamps[i-1] = table.getString(i, 1);
+      transitions[i-1] = table.getInt(i, 2);
     }
 
     // converts M:S to milliseconds
@@ -78,6 +81,11 @@ class PixeldustSimulation {
     for (int i = 0; i < timestamps.length; i++) {
       times[i] = convertTime(timestamps[i]);
     }
+
+    times = new int[timestamps.length];
+    for (int i = 0; i < timestamps.length; i++) {
+      times[i] = convertTime(timestamps[i]);
+    }  
 
     // TODO validate data and that times are well ordered
     for (int i = 0; i < imageFiles.length; i++) {
@@ -211,9 +219,14 @@ class PixeldustSimulation {
   int run() {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
-    // calculates progress of current image from 0 (start) to 1 (complete)
-    float pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
-    pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
+    float pct;
+    if (transitions[currentIndex] == 1) {
+      // calculates progress of current image from 0 (start) to 1 (complete)
+      pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
+      pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
+    } else {
+      pct = 1;
+    }
 
     // calculates some function on the segment progress
     float exponent = 2;  // 1 is linear
@@ -221,7 +234,7 @@ class PixeldustSimulation {
 
     float maxAcceleration = map(p, 0, 1, 0, 10);
     float maxVelocity = 10;
-    
+
     // iterate current image
     currentImage.updateForward(p, maxAcceleration, maxVelocity);
 
