@@ -227,7 +227,7 @@ class PixeldustSimulation {
 
     // display current image
     //currentImage.displayPixels();
-    currentImage.displayPixelsMasked(pct);  // set param to 0 for no masking, 1 for full masking
+    currentImage.displayPixelsMasked(constrain(pct, 0, .5));  // set param to 0 for no masking, 1 for full masking
 
     if (debug) {
       // displays progress indicator for this segment
