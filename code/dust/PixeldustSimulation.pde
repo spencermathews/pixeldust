@@ -211,12 +211,18 @@ class PixeldustSimulation {
   int run() {
     // assumes currentIndex, currentImage, and currentTime are up to date
 
+    // calculates progress of current image from 0 (start) to 1 (complete)
     float pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
     pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
+
+    // calculates some function on the segment progress
     float exponent = 2;  // 1 is linear
     float p = pow(pct, exponent);
+    
+    // iterate current image
     currentImage.updateForward(p);
 
+    // display current image
     //currentImage.displayPixels();
     currentImage.displayPixelsMasked(pct);  // set param to 0 for no masking, 1 for full masking
 
@@ -230,7 +236,7 @@ class PixeldustSimulation {
       if (currentIndex < images.length-1) {
         setCurrent(currentIndex+1);  // set next to be current
       } else if (currentIndex == images.length-1) {
-        // tests if we're actually done since audio maycontinue past timestamp of final image
+        // tests if we're actually done since audio may continue past timestamp of final image
         if (elapsedTime() > audio.duration()*1000) {
           audio.stop();
           println("complete @", elapsedTime(), "/", audio.duration()*1000);
@@ -249,13 +255,5 @@ class PixeldustSimulation {
    */
   int elapsedTime() {
     return millis() - startTime;
-  }
-
-
-  /* Extract reverse frames from Pixeldust
-   *
-   *
-   */
-  void reverseFrames() {
   }
 }
