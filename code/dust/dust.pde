@@ -52,6 +52,11 @@ void draw() {
   if (isComplete == 0) {
     run();
   }
+  // only output stats in debug mode
+  // null check for before we first call begin() and initialize sim
+  if (debug == true && sim != null) {
+    debugMode();
+  }
 }
 
 
@@ -59,11 +64,6 @@ void draw() {
 void run() {
   // set isComplete to 1 after person is finished
   isComplete = sim.run();  // iterate simulation
-
-  // only output stats in debug mode
-  if (debug == true) {
-    debugMode();
-  }
 }
 
 

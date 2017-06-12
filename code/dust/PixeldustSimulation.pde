@@ -226,9 +226,11 @@ class PixeldustSimulation {
     //currentImage.displayPixels();
     currentImage.displayPixelsMasked(pct);  // set param to 0 for no masking, 1 for full masking
 
-    // displays progress indicator for this segment
-    fill(255, 0, 0);
-    rect(0, height-4, map(pct, 0, 1, 0, width), 3);
+    if (debug) {
+      // displays progress indicator for this segment
+      fill(255, 0, 0);
+      rect(0, height-4, map(pct, 0, 1, 0, width), 3);
+    }
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
     if (elapsedTime() > currentTime) {
