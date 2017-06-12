@@ -300,12 +300,9 @@ class Pixeldust {
    *
    * param float p probability that particle will stay put even if it's on an underoccupied pixel, p=0 is totally random
    */
-  void updateForward(float p) {
+  void updateForward(float p, float maxAcceleration, float maxVelocity) {
     int numPixelsOver = 0;  // counts number of overflowed pixels
     int numPixelsUnder = 0; // counts number of underflowed pixels
-
-    float maxAcceleration = map(p, 0, 1, 0, 10);
-    //println("maxAcceleration", maxAcceleration);
 
     for (int i = 0; i < particles.length; i++) {
       // finds the 1D location of this particle on img grid
@@ -318,7 +315,7 @@ class Pixeldust {
         //particles[i].updateRandomWalkVonNeumann();
         //particles[i].updateRandomWalkMoore();
         //particles[i].updateRandom(10);
-        particles[i].updateRandom(maxAcceleration, 10);
+        particles[i].updateRandom(maxAcceleration, maxVelocity);
 
 
         //particles[i].checkEdgesPeriodicSnap(w, h);
