@@ -74,13 +74,15 @@ void draw() {
       fallTime = millis();
     }
     // move on once we have waited some time
-    if (millis() - fallTime > 3000) {
+    if (millis() - fallTime > 20000) {
       isReady = 1;
     }
 
     sim.currentImage.countParticles();
     sim.currentImage.displayPixelsMasked(0);
-  } 
+  } else {
+    background(255);
+  }
   //else if(sim != null) {  // now we're in intermission and are ready to reset
   // NOT WORKING!
   ////TODO move to sim class, so we can do some setup and then play with the next particle set
