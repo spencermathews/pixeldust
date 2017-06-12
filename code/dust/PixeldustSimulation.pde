@@ -229,14 +229,14 @@ class PixeldustSimulation {
     }
 
     // calculates some function on the segment progress
-    float exponent = 2;  // 1 is linear
+    float exponent = 1.5;  // 1 is linear
     float p = pow(pct, exponent);
 
     float maxAcceleration = map(p, 0, 1, 0, 10);
-    float maxVelocity = 10;
+    float maxVelocity = 20;
 
     // iterate current image
-    currentImage.updateForward(p, maxAcceleration, maxVelocity);
+    currentImage.updateForward(constrain(p, 0, .8), maxAcceleration, maxVelocity);
 
     // display current image
     //currentImage.displayPixels();
