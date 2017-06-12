@@ -18,15 +18,15 @@ int lastTime;  // keeps track of timer for fps in title
 int isComplete;  // whether or not current person is complete, set to 0 in begin() and 1 in run() after audio finishes
 int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
 
-boolean useNet = false;  // set to false to disable network triggering
-boolean debug = true;
+boolean useNet = true;  // set to false to disable network triggering
+boolean debug = false;
 
 int fallTime;  // hack to time falling, mark so we can check elapsed
 
 void setup () {
-  size(100, 100);
-  surface.setResizable(true); // enable resizable display window
-  //fullScreen();
+  //size(100, 100);
+  //surface.setResizable(true); // enable resizable display window
+  fullScreen();
 
   frameRate(30);  // TODO set timebased throttle, esp with better performing configurations
 
@@ -120,13 +120,13 @@ void run() {
 // creates a new person/sim and set to run
 void begin() {
 
-  //String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  String csvFileName = csvFileNames[0];
-  float scaleImg = 2;
+  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  //String csvFileName = csvFileNames[2];
+  float scaleImg = 4;
   int particlesPerPixel = 5;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
-  surface.setSize(sim.w, sim.h);  // set display window to simulation size
+  //surface.setSize(sim.w, sim.h);  // set display window to simulation size
 
   // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
   //surface.setLocation(0, 0);
