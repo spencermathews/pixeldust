@@ -121,7 +121,7 @@ void run() {
 void begin() {
 
   //String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  String csvFileName = csvFileNames[4];
+  String csvFileName = csvFileNames[0];
   float scaleImg = 2;
   int particlesPerPixel = 5;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
