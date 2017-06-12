@@ -10,6 +10,8 @@ class Mover {
 
   float topspeed;
   float maxAccel;
+  
+  float mass;
 
   /* Constructs Mover with given position
    */
@@ -18,6 +20,7 @@ class Mover {
     velocity = new PVector(0, 0);
     topspeed = 6;
     maxAccel = 2;
+    mass = 1;
   }
 
   /* Constructs Mover with given position and topspeed
@@ -27,6 +30,7 @@ class Mover {
     velocity = new PVector(0, 0);
     topspeed = maxSpeed;  // Shiffman hard coded this to 6
     maxAccel = maxAcceleration;  // Shiffman hard coded this to 2
+    mass = 1;  // TODO add as param
   }
 
   /* Move particles using random walk, basic
@@ -301,5 +305,20 @@ class Mover {
     // but should be fine for large systems and it's just for rare edge cases anyway
     position.x = position.x % w;
     position.y = constrain(position.y, 0, h - offset);
+  }
+
+  /* As per Shiffman NOC Ch 2 
+   */
+  void applyForce(PVector force) {
+    PVector f = PVector.div(force, mass);
+    acceleration.add(f);
+  }
+
+  /* As per Shiffman NOC Ch 2 
+   */
+  void update() {
+    velocity.add(acceleration);
+    position.add(velocity);
+    acceleration.mult(0);
   }
 }
