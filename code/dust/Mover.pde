@@ -10,7 +10,7 @@ class Mover {
 
   float topspeed;
   float maxAccel;
-  
+
   float mass;
 
   /* Constructs Mover with given position
@@ -18,9 +18,10 @@ class Mover {
   Mover(float x, float y) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
     topspeed = 6;
     maxAccel = 2;
-    mass = 1;
+    mass = random(1, 4);
   }
 
   /* Constructs Mover with given position and topspeed
@@ -28,9 +29,10 @@ class Mover {
   Mover(float x, float y, float maxAcceleration, float maxSpeed) {
     position = new PVector(x, y);
     velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
     topspeed = maxSpeed;  // Shiffman hard coded this to 6
     maxAccel = maxAcceleration;  // Shiffman hard coded this to 2
-    mass = 1;  // TODO add as param
+    mass =  mass = random(1, 4);  // TODO add as param
   }
 
   /* Move particles using random walk, basic
