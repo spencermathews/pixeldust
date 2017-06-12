@@ -16,6 +16,7 @@ int lastTime;  // keeps track of timer for fps in title
 int isComplete;
 
 boolean useNet = false;  // set to false to disable network triggering
+boolean debug = true;
 
 
 void setup () {
@@ -38,6 +39,11 @@ void setup () {
     Client c;
     c = new Client(this, "192.168.1.1", 12345);
   }
+
+  // only show cursor when in debug mode
+  if (debug == false) {
+    noCursor();
+  }
 }
 
 void draw() {
@@ -54,22 +60,9 @@ void run() {
   // set isComplete to 1 after person is finished
   isComplete = sim.run();  // iterate simulation
 
-  int currentTime = millis();
-  if (currentTime - lastTime > 10) {
-    int elapsedTime = (currentTime - sim.startTime)/1000;
-    int min = elapsedTime / 60;  // use int division to our advantage
-    int sec = elapsedTime % 60;
-
-    // display elapsed time and fps in title bar
-    surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
-
-    // draw elapsed time and fps in title bar, useful for fullScreen
-    fill(0);
-    rect(width-100, height-50, 98, 47);
-    fill(255);
-    text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
-
-    lastTime = millis();
+  // only output stats in debug mode
+  if (debug == true) {
+    debugMode();
   }
 }
 
@@ -132,5 +125,26 @@ void clientEvent(Client c) {
     } else {
       println(" Ignoring (network)");
     }
+  }
+}
+
+// call in draw to display on screen and in title bar
+void debugMode() {
+  int currentTime = millis();
+  if (currentTime - lastTime > 10) {
+    int elapsedTime = (currentTime - sim.startTime)/1000;
+    int min = elapsedTime / 60;  // use int division to our advantage
+    int sec = elapsedTime % 60;
+
+    // display elapsed time and fps in title bar
+    surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
+
+    // draw elapsed time and fps in title bar, useful for fullScreen
+    fill(0);
+    rect(width-100, height-50, 98, 47);
+    fill(255);
+    text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
+
+    lastTime = millis();
   }
 }
