@@ -19,7 +19,7 @@ int lastTime;  // keeps track of timer for fps in title
 int isComplete;  // whether or not current person is complete, set to 0 in begin() and 1 in run() after audio finishes
 int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
 
-boolean useNet = true;  // set to false to disable network triggering
+boolean useNet = false;  // set to false to disable network triggering
 boolean debug = false;
 
 int fallTime;  // hack to time falling, mark so we can check elapsed
