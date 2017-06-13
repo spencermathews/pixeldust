@@ -5,7 +5,6 @@
 
 float EXPONENT = 1.5;
 float LIMIT_ACCELERATION = 10;  // 0-1, limits max acceleration which is calculated based on images progress
-float MAX_VELOCITY = 20;  // 0+, topspeed for particles, but may also be set as a function of acceleration
 float LIMIT_ATTRACTION = 0.8;  // 0-1, attraction parameter at end of phase
 
 class PixeldustSimulation {
@@ -239,8 +238,8 @@ class PixeldustSimulation {
     // calculates some function on the segment progress
     float p = pow(pct, EXPONENT);  // exponent ==1 is linear, >1 stays low then rises sharply, <1 starts fast then levels off, is range of pow is 0-1 then range is 0-1
 
-    float maxAcceleration = map(p, 0, 1, 0, LIMIT_ACCELERATION);
-    float maxVelocity = MAX_VELOCITY;  // something like maxAcceleration*10 is also nice
+    float maxAcceleration = map(p, 0, 1, 1, LIMIT_ACCELERATION);
+    float maxVelocity = maxAcceleration*10;
 
     // iterate current image
     currentImage.updateForward(constrain(p, 0, LIMIT_ATTRACTION), maxAcceleration, maxVelocity);
