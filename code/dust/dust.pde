@@ -1,18 +1,21 @@
-import processing.sound.*;
-import processing.net.*;
-
-
 /*
  * Pixeldust
  *
  * Spencer Mathews, began: 3/2017
  */
 
+float SCALE_IMG = 4;
+int PARTICLES_PER_PIXEL = 8;
+
+import processing.sound.*;
+import processing.net.*;
+
 String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", "Chi-Minh-timing.csv", 
   "Davis-timing.csv", "Einstein-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
   "Luxemburg-timing.csv", "Mandela-timing.csv", "Mother-Jones-timing.csv"};
-  
+
 PixeldustSimulation sim;
+
 int lastTime;  // keeps track of timer for fps in title
 
 // status variables, are (0,0) during running person, (1,0) after person/audio finished while we're dropping, and (1,1) when we are ready to restart i.e intermision
@@ -119,12 +122,10 @@ void run() {
 }
 
 // creates a new person/sim and set to run
-void begin() {
+void begin(float scaleImg, int particlesPerPixel) {
 
   String csvFileName = csvFileNames[int(random(csvFileNames.length))];
   //String csvFileName = csvFileNames[2];
-  float scaleImg = 4;
-  int particlesPerPixel = 5;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   //surface.setSize(sim.w, sim.h);  // set display window to simulation size
@@ -147,7 +148,7 @@ void mousePressed() {
     // begin a person if not already running
     if (isReady == 1) {
       println(" Starting (mouse)");
-      begin();
+      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
     } else {
       println(" Ignoring (mouse)");
     }
@@ -159,7 +160,7 @@ void mousePressed() {
     if (sim != null) {
       sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
     }
-    begin();
+    begin(SCALE_IMG, PARTICLES_PER_PIXEL);
   }
 }
 
@@ -175,7 +176,7 @@ void clientEvent(Client c) {
     // begin a person if not already running
     if (isReady == 1) {
       println(" Starting (network)");
-      begin();
+      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
     } else {
       println(" Ignoring (network)");
     }
