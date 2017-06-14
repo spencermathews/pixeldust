@@ -238,7 +238,7 @@ class PixeldustSimulation {
     // calculates some function on the segment progress
     float p = pow(pct, EXPONENT);  // exponent ==1 is linear, >1 stays low then rises sharply, <1 starts fast then levels off, is range of pow is 0-1 then range is 0-1
 
-    float maxAcceleration = map(p, 0, 1, 1, LIMIT_ACCELERATION);
+    float maxAcceleration = map(p, 0, 1, 0.1, LIMIT_ACCELERATION);
     float maxVelocity = maxAcceleration*10;
 
     // iterate current image
