@@ -231,6 +231,10 @@ class PixeldustSimulation {
       // calculates progress of current image from 0 (start) to 1 (complete)
       pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
       pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
+
+      int randomTime = min(2000, currentInterval);  // how long to fade out previous image randomly
+      int attractTime = min(5000, currentInterval);  // how much to fully attact, artifacts may occur until blur is implemented
+      // int scaleTime = ;  // duration of linear increase
     } else {
       pct = 1;
     }
