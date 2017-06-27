@@ -25,7 +25,7 @@ int isReady;     // whether or not we can trigger again, since we need to drop p
 boolean useNet = false;  // set to false to disable network triggering
 boolean debug = false;
 
-int fallTime;  // hack to time falling, mark so we can check elapsed
+int fallThreshold = 50;  // threshold pixels from bottom of display, all particles must be in this window to be
 
 void setup () {
   //size(100, 100);
@@ -43,7 +43,6 @@ void setup () {
   lastTime = 0;
   isComplete = 1;  // start off stopped
   isReady = 1;     // start off stopped
-  fallTime = 0;
 
   if (useNet == true) {
     Client c;
@@ -66,61 +65,58 @@ void draw() {
   } else if (isReady == 0) {  // person ended but still need to drop pixels etc.
     // HACK should likely be handled in sim, but timing and control is delicate
     Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
-
     // iterates through particles and make them fall
     for (int i = 0; i < particles.length; i++) {
       particles[i].acceleration = new PVector(0, 0);
-      particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
+      particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);  // good params were tricky
       particles[i].update();
       particles[i].checkEdgesMixed(sim.w, sim.h);
       //particles[i].checkEdgesReflectiveSnap(sim.w, sim.h);
     }
+    sim.currentImage.countParticles();
+    sim.currentImage.displayPixelsMasked(0);
 
     // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
     boolean haveFallen = true;  // checks that all particles have fallen below a threshold
     for (int i = 0; i < particles.length; i++) {
       // indicates that fall is not complete if we spot any particles above a line
-      if (particles[i].position.y < sim.h-10) {
+      if (particles[i].position.y < sim.h-fallThreshold) {
         haveFallen = false;
       }
-    }
-
-    // mark when we enter this phase
-    if (fallTime == 0) {
-      fallTime = millis();
-      haveFallen = false;
     }
 
     // move on if fall is complete
     if (haveFallen == true) {
       isReady = 1;
     }
+  } else if (sim != null) {
+    // now we're in intermission and are ready to reset
+    // null check is since we must init sim first, so must wait until after starting first sim
+    // TODO parameterize sim.run then we can just call it here with random
 
+    // move particles randomly within the fall window
+    Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
+    for (int i = 0; i < particles.length; i++) {
+      // hack way to update, should modify to update using forces as in the falling
+      particles[i].updateRandom(.2, 2);
+      // hack way to push down
+      if (particles[i].position.y < sim.h - fallThreshold) {
+        // use same update as falling
+        particles[i].acceleration = new PVector(0, 0);
+        particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);  // good params were tricky
+        particles[i].update();
+        particles[i].checkEdgesMixed(sim.w, sim.h);
+        //particles[i].checkEdgesReflectiveSnap(sim.w, sim.h);
+      }
+      particles[i].checkEdgesMixed(sim.w, sim.h);
+    }
     sim.currentImage.countParticles();
     sim.currentImage.displayPixelsMasked(0);
   } else {
+    // before simulation, and when neither Complete nor Ready, and no sim object
     background(255);
   }
-  //else if(sim != null) {  // now we're in intermission and are ready to reset
-  // NOT WORKING!
-  ////TODO move to sim class, so we can do some setup and then play with the next particle set
-  ////better yet figure out how to work with one pixel set and change its size.
 
-  //Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
-  //for (int i = 0; i < particles.length; i++) {
-  //  PVector wind = new PVector(0.01, 0);
-  //  PVector gravity = new PVector(0, 0.1*particles[i].mass);
-
-  //  particles[i].applyForce(wind);
-  //  particles[i].applyForce(gravity);
-
-  //  particles[i].update();
-  //  particles[i].checkEdgesMixed(sim.w, sim.h);
-  //}
-  //sim.currentImage.countParticles();
-  //sim.currentImage.displayPixelsMasked(0);
-
-  //
   // only output stats in debug mode
   // null check for before we first call begin() and initialize sim
   if (debug == true && sim != null) {
@@ -151,7 +147,6 @@ void begin(float scaleImg, int particlesPerPixel) {
   sim.begin();
   isComplete = 0;
   isReady = 0;
-  fallTime = 0;
 }
 
 
