@@ -54,8 +54,18 @@ void setup () {
   triggerState = 1; // start off active
 
   if (useNet == true) {
+    println("Connecting to network trigger...");
     Client c;
-    c = new Client(this, "192.168.1.1", 12345);
+
+    c = new Client(this, "192.168.1.1", 12345);  // may try for a while
+    if (!c.active()) {
+      // java.net.ConnectException is thrown, but caught by the net library, so test active() state
+      println("Network failed to connect!");
+      exit();  // exit program when setup() finishes
+      return;  // skip the rest of this function
+    } else {
+      println("Network active!");
+    }
   }
 
   // only show cursor when in debug mode
