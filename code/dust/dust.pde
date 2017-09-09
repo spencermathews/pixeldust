@@ -25,8 +25,6 @@ int isReady;     // whether or not we can trigger again, since we need to drop p
 boolean useNet = false;  // set to false to disable network triggering
 boolean debug = false;
 
-int fallTime;  // hack to time falling, mark so we can check elapsed
-
 void setup () {
   //size(100, 100);
   //surface.setResizable(true); // enable resizable display window
@@ -43,7 +41,6 @@ void setup () {
   lastTime = 0;
   isComplete = 1;  // start off stopped
   isReady = 1;     // start off stopped
-  fallTime = 0;
 
   if (useNet == true) {
     Client c;
@@ -83,12 +80,6 @@ void draw() {
       if (particles[i].position.y < sim.h-10) {
         haveFallen = false;
       }
-    }
-
-    // mark when we enter this phase
-    if (fallTime == 0) {
-      fallTime = millis();
-      haveFallen = false;
     }
 
     // move on if fall is complete
@@ -151,7 +142,6 @@ void begin(float scaleImg, int particlesPerPixel) {
   sim.begin();
   isComplete = 0;
   isReady = 0;
-  fallTime = 0;
 }
 
 
