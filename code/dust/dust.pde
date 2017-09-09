@@ -29,8 +29,8 @@ int lastTime;  // keeps track of timer for fps in title
 int isComplete;  // whether or not current person is complete, initialize to -1, then set to 0 in begin() and 1 in run() after audio finishes
 int triggerState;  // trigger disabled (0), trigger active (1), triggered (2) 
 
-boolean fullScreenMode = false;  // choose fullScreen or windowed mode
-boolean useNet = false;  // set to false to disable network triggering
+boolean fullScreenMode = true;  // choose fullScreen or windowed mode
+boolean useNet = true;  // set to false to disable network triggering
 boolean debug = false;
 
 
