@@ -44,7 +44,7 @@ We want to be able to specify a csv file listing an audio file and some arbitrar
 `initParticles`
 
 `begin`
-: Play audio, note startTime, and initialize current to 0-th.
+: Play audio, note startTime, and initialize current to 0-th. Currently called by dust.pde:begin(). Could be included in PixeldustSimulation constructor, but leaving it separate makes it possible to load images, etc prior to starting.
 
 ### General Methods
 
