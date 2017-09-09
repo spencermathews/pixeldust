@@ -13,6 +13,7 @@ import processing.net.*;
 String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", "Chi-Minh-timing.csv", 
   "Davis-timing.csv", "Einstein-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
   "Luxemburg-timing.csv", "Mandela-timing.csv", "Mother-Jones-timing.csv"};
+String currentFileName;  // defaults to null
 
 PixeldustSimulation sim;
 
@@ -128,10 +129,15 @@ void run() {
 
 // creates a new person/sim and set to run
 void begin(float scaleImg, int particlesPerPixel) {
+  String csvFileName;
+  // chooses a random person, preventing repeats
+  do {
+    csvFileName = csvFileNames[int(random(csvFileNames.length))];
+  } while (csvFileName.equals(currentFileName));
 
-  String csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  //String csvFileName = csvFileNames[2];
-  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
+  currentFileName = csvFileName;  // saves the file name so we don't repeat consecutively
+  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel); 
+
 
   //surface.setSize(sim.w, sim.h);  // set display window to simulation size
 
