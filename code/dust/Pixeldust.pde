@@ -412,12 +412,14 @@ class Pixeldust {
     if (imgAspect >= displayAspect) {
       // image is wider aspect than display
       image(imgPixels, 0, height/2.0-(width/imgAspect)/2.0, width, float(width)/imgAspect);
+      noStroke();
       fill(0);
       rect(0, 0, width, height/2.0-(width/imgAspect)/2.0);
       rect(0, height-(height/2.0-(width/imgAspect)/2.0), width, height/2.0-(width/imgAspect)/2.0);
     } else {
       // image is taller aspect than display
       image(imgPixels, width/2.0-(height*imgAspect)/2.0, 0, height*imgAspect, height);
+      noStroke();
       fill(0);
       rect(0, 0, width/2.0-(height*imgAspect)/2.0, height);
       rect(width-(width/2.0-(height*imgAspect)/2.0), 0, width/2.0-(height*imgAspect)/2.0, height);

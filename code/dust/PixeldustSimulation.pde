@@ -250,6 +250,7 @@ class PixeldustSimulation {
 
     if (debug) {
       // displays progress indicator for this segment
+      stroke(1);
       fill(255, 0, 0);
       rect(0, height-4, map(pct, 0, 1, 0, width), 3);
     }
