@@ -143,6 +143,7 @@ void run() {
   isComplete = sim.run();  // iterate simulation
 }
 
+
 // creates a new person/sim and set to run
 void begin(float scaleImg, int particlesPerPixel) {
   sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
@@ -154,7 +155,15 @@ void begin(float scaleImg, int particlesPerPixel) {
   } while (csvFileName.equals(currentFileName));
 
   currentFileName = csvFileName;  // saves the file name so we don't repeat consecutively
-  sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel); 
+  try {
+    // instantiate simulation
+    sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
+  }
+  catch (NullPointerException e) {
+    // if the csv file fails 
+    exit();  // exit program when draw() loop finishes
+    return;  // skip the rest of this function, since it will just throw more Exceptions
+  } 
 
   if (!sketchFullScreen()) {
     // set display window to simulation size if running in windowed mode
