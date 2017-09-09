@@ -23,20 +23,30 @@ int lastTime;  // keeps track of timer for fps in title
 int isComplete;  // whether or not current person is complete, set to 0 in begin() and 1 in run() after audio finishes
 int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
 
+boolean fullScreenMode = false;  // choose fullScreen or windowed mode
 boolean useNet = false;  // set to false to disable network triggering
 boolean debug = false;
 
-void setup () {
-  //size(100, 100);
-  //surface.setResizable(true); // enable resizable display window
-  fullScreen();
 
-  frameRate(30);  // TODO set timebased throttle, esp with better performing configurations
-
-  if (sketchFullScreen() == true) {
-    println("Running fullScreen");
+/* Set full screen or not depending on value of fullScreen variable
+ *
+ * Done in settings() since this can't be done conditionally in setup()
+ */
+void settings () {
+  if (fullScreenMode) {
+    fullScreen();
+  } else {
+    size(150, 150);
   }
+}
 
+void setup () {
+  if (!sketchFullScreen()) {
+    // allows resizing window if running in windowed mode
+    surface.setResizable(true); // enable resizable display window, probably best in setup?
+  }
+  
+  frameRate(30);  // TODO set timebased throttle, esp with better performing configurations
   noSmooth();  // may increase performance
 
   lastTime = 0;
@@ -138,11 +148,10 @@ void begin(float scaleImg, int particlesPerPixel) {
   currentFileName = csvFileName;  // saves the file name so we don't repeat consecutively
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel); 
 
-
-  //surface.setSize(sim.w, sim.h);  // set display window to simulation size
-
-  // a forum post says frame.setLocation() must be set in draw, confirm? is surface different?
-  //surface.setLocation(0, 0);
+  if (!sketchFullScreen()) {
+    // set display window to simulation size if running in windowed mode
+    surface.setSize(sim.w, sim.h);
+  }
 
   noTint();  // just in case
   sim.begin();
