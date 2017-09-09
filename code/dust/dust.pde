@@ -1,25 +1,28 @@
-import processing.sound.*;
-import processing.net.*;
-
-
 /*
  * Pixeldust
  *
  * Spencer Mathews, began: 3/2017
  */
 
+float SCALE_IMG = 4;
+int PARTICLES_PER_PIXEL = 8;
+
+import processing.sound.*;
+import processing.net.*;
+
 String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", "Chi-Minh-timing.csv", 
   "Davis-timing.csv", "Einstein-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
   "Luxemburg-timing.csv", "Mandela-timing.csv", "Mother-Jones-timing.csv"};
-  
+
 PixeldustSimulation sim;
+
 int lastTime;  // keeps track of timer for fps in title
 
 // status variables, are (0,0) during running person, (1,0) after person/audio finished while we're dropping, and (1,1) when we are ready to restart i.e intermision
 int isComplete;  // whether or not current person is complete, set to 0 in begin() and 1 in run() after audio finishes
 int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
 
-boolean useNet = true;  // set to false to disable network triggering
+boolean useNet = false;  // set to false to disable network triggering
 boolean debug = false;
 
 int fallTime;  // hack to time falling, mark so we can check elapsed
@@ -63,6 +66,8 @@ void draw() {
   } else if (isReady == 0) {  // person ended but still need to drop pixels etc.
     // HACK should likely be handled in sim, but timing and control is delicate
     Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
+
+    // iterates through particles and make them fall
     for (int i = 0; i < particles.length; i++) {
       particles[i].acceleration = new PVector(0, 0);
       particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
@@ -70,12 +75,24 @@ void draw() {
       particles[i].checkEdgesMixed(sim.w, sim.h);
       //particles[i].checkEdgesReflectiveSnap(sim.w, sim.h);
     }
+
+    // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
+    boolean haveFallen = true;  // checks that all particles have fallen below a threshold
+    for (int i = 0; i < particles.length; i++) {
+      // indicates that fall is not complete if we spot any particles above a line
+      if (particles[i].position.y < sim.h-10) {
+        haveFallen = false;
+      }
+    }
+
     // mark when we enter this phase
     if (fallTime == 0) {
       fallTime = millis();
+      haveFallen = false;
     }
-    // move on once we have waited some time
-    if (millis() - fallTime > 20000) {
+
+    // move on if fall is complete
+    if (haveFallen == true) {
       isReady = 1;
     }
 
@@ -119,12 +136,10 @@ void run() {
 }
 
 // creates a new person/sim and set to run
-void begin() {
+void begin(float scaleImg, int particlesPerPixel) {
 
   String csvFileName = csvFileNames[int(random(csvFileNames.length))];
   //String csvFileName = csvFileNames[2];
-  float scaleImg = 4;
-  int particlesPerPixel = 5;
   sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
 
   //surface.setSize(sim.w, sim.h);  // set display window to simulation size
@@ -147,7 +162,7 @@ void mousePressed() {
     // begin a person if not already running
     if (isReady == 1) {
       println(" Starting (mouse)");
-      begin();
+      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
     } else {
       println(" Ignoring (mouse)");
     }
@@ -159,7 +174,7 @@ void mousePressed() {
     if (sim != null) {
       sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
     }
-    begin();
+    begin(SCALE_IMG, PARTICLES_PER_PIXEL);
   }
 }
 
@@ -175,7 +190,7 @@ void clientEvent(Client c) {
     // begin a person if not already running
     if (isReady == 1) {
       println(" Starting (network)");
-      begin();
+      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
     } else {
       println(" Ignoring (network)");
     }
