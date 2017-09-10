@@ -10,10 +10,12 @@ int PARTICLES_PER_PIXEL = 8;
 import processing.sound.*;
 import processing.net.*;
 
-String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", "Chi-Minh-timing.csv", 
-  "Davis-timing.csv", "Einstein-timing.csv", "Guevara-timing.csv", "Kahlo-timing.csv", 
-  "Luxemburg-timing.csv", "Mandela-timing.csv", "Mother-Jones-timing.csv"};
-String currentFileName;  // defaults to null
+String[] csvFileNames = {"Anthony-timing.csv", "Chavez-timing.csv", 
+  "Mother-Jones-timing.csv", "Guevara-timing.csv", "Davis-timing.csv", 
+  "Einstein-timing.csv", "Luxemburg-timing.csv", "Mandela-timing.csv", 
+  "Kahlo-timing.csv", "Chi-Minh-timing.csv"};
+
+int nameIndex = int(random(csvFileNames.length));  // index for stepping through name array
 
 PixeldustSimulation sim;
 
@@ -162,12 +164,9 @@ void begin(float scaleImg, int particlesPerPixel) {
   sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
 
   String csvFileName;
-  // chooses a random person, preventing repeats
-  do {
-    csvFileName = csvFileNames[int(random(csvFileNames.length))];
-  } while (csvFileName.equals(currentFileName));
+  csvFileName = csvFileNames[nameIndex];
+  nameIndex = (nameIndex + 1) % csvFileNames.length;
 
-  currentFileName = csvFileName;  // saves the file name so we don't repeat consecutively
   try {
     // instantiate simulation
     sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
