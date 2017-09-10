@@ -80,6 +80,8 @@ void draw() {
     // HACK should likely be handled in sim, but timing and control is delicate
     Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
 
+    float triggerThreshold = sim.h*0.5;  // amount particles should fall before be we can retrigger
+
     // iterates through particles and make them fall
     for (int i = 0; i < particles.length; i++) {
       particles[i].acceleration = new PVector(0, 0);
@@ -93,12 +95,12 @@ void draw() {
     boolean haveFallen = true;  // checks that all particles have fallen below a threshold
     for (int i = 0; i < particles.length; i++) {
       // indicates that fall is not complete if we spot any particles above a line
-      if (particles[i].position.y < sim.h*0.5) {
+      if (particles[i].position.y < triggerThreshold) {
         haveFallen = false;
       }
     }
 
-    // allow retriggering if fall is complete
+    // allow retriggering if all particles have fallen past threshold
     if (haveFallen == true) {
       triggerState = 1;
     }
