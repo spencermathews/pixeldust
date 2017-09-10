@@ -102,6 +102,7 @@ void draw() {
       particles[i].acceleration = new PVector(0, 0);
       particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
       particles[i].update();
+      particles[i].updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
       particles[i].checkEdgesMixed(sim.w, sim.h);
       //particles[i].checkEdgesReflectiveSnap(sim.w, sim.h);
     }
