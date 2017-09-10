@@ -66,6 +66,8 @@ void setup () {
       return;  // skip the rest of this function
     } else {
       println("Network active!");
+      // spawn thread to check network state and reconnect if needed
+      thread("watchNetwork");
     }
   }
 
@@ -144,17 +146,6 @@ void draw() {
   // null check for before we first call begin() and initialize sim
   if (debug == true && sim != null) {
     debugMode();
-  }
-
-  // reconnect to network if disconnected
-  if (useNet && !c.active()) {
-    println("Server connection lost!\nReconnecting...");
-    // keeps trying to reconnect to server until successful
-    do {  
-      c = new Client(this, "192.168.1.1", 12345);  // may try for a while
-      delay(1000);  // wait before trying to reconnect again
-    } while (!c.active());
-    println("Network reconnected!");
   }
 }
 
@@ -241,6 +232,26 @@ void clientEvent(Client c) {
     }
   }
 }
+
+
+// reconnects to network if disconnected
+// should be run as a watchdog thread
+void watchNetwork() {
+  while (true) {
+    // repeats loop forever
+    if (!c.active()) {
+      // if connection lost then keeps trying to reconnect to server until successful
+      println("Server connection lost!\nReconnecting...");   
+      do {  
+        c = new Client(this, "192.168.1.1", 12345);  // may try for a while
+        delay(1000);  // wait before trying to reconnect again
+      } while (!c.active());
+      println("Network reconnected!");
+    }
+    delay(5000);  // checks connectivity every 5 seconds
+  }
+}
+
 
 // call in draw to display on screen and in title bar
 void debugMode() {
