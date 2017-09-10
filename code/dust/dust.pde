@@ -102,7 +102,30 @@ void draw() {
     sim.currentImage.displayPixelsMasked(0);
   } else {
     background(255);
+
+    // draws black rectangles, also done in Pixeldust.display* while running
+    // TODO make less hacky, this is repeated code
+    // this could also be placed outside of the else clause and removed from Pixeldust.display*
+    if (sim != null) {
+      float displayAspect = float(width)/float(height);
+      // trusts that sim.w/h == sim.currentImage.imgPixels.width/height
+      float imgAspect = float(sim.w)/float(sim.h);
+      if (imgAspect >= displayAspect) {
+        // image is wider aspect than display
+        noStroke();
+        fill(0);
+        rect(0, 0, width, height/2.0-(width/imgAspect)/2.0);
+        rect(0, height-(height/2.0-(width/imgAspect)/2.0), width, height/2.0-(width/imgAspect)/2.0);
+      } else {
+        // image is taller aspect than display
+        noStroke();
+        fill(0);
+        rect(0, 0, width/2.0-(height*imgAspect)/2.0, height);
+        rect(width-(width/2.0-(height*imgAspect)/2.0), 0, width/2.0-(height*imgAspect)/2.0, height);
+      }
+    }
   }
+
   //else if(sim != null) {  // now we're in intermission and are ready to reset
   // NOT WORKING!
   ////TODO move to sim class, so we can do some setup and then play with the next particle set
