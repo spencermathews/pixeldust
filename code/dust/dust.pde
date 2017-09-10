@@ -20,6 +20,8 @@ int nameIndex = int(random(csvFileNames.length));  // index for stepping through
 PixeldustSimulation sim;
 
 Client c;  // network client, only used if useNet == true
+String serverHost = "192.168.1.1";
+int serverPort = 12345;
 
 int lastTime;  // keeps track of timer for fps in title
 
@@ -60,7 +62,7 @@ void setup () {
   if (useNet == true) {
     println("Connecting to network trigger...");
 
-    c = new Client(this, "192.168.1.1", 12345);  // may try for a while
+    c = new Client(this, serverHost, serverPort);  // may try for a while
     if (!c.active()) {
       // java.net.ConnectException is thrown, but caught by the net library, so test active() state
       println("Network failed to connect!");
@@ -243,7 +245,7 @@ void watchNetwork() {
       // if connection lost then keeps trying to reconnect to server until successful
       println("Server connection lost!\nReconnecting...");   
       do {  
-        c = new Client(this, "192.168.1.1", 12345);  // may try for a while
+        c = new Client(this, serverHost, serverPort);  // may try for a while
         delay(1000);  // wait before trying to reconnect again
       } while (!c.active());
       println("Network reconnected!");

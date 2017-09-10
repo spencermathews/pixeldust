@@ -9,13 +9,14 @@
 import processing.net.*;
 
 Server s;
+int serverPort = 12345;
 
 void setup() 
 {
   size(100, 100);
   background(0, 255, 0);
   //frameRate(5); // Slow it down a little
-  s = new Server(this, 12345); // Start a simple server on a port
+  s = new Server(this, serverPort); // Start a simple server on a port
 }
 
 void draw() 

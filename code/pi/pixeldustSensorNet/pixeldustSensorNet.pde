@@ -7,6 +7,7 @@ import processing.io.*;
 import processing.net.*;
 
 Server s;
+int serverPort = 12345;
 int lastTime = 0;
 
 boolean isPresent = true;
@@ -20,7 +21,7 @@ void setup() {
   // LED output pin (BOARD 3)
   GPIO.pinMode(2, GPIO.OUTPUT);
 
-  s = new Server(this, 12345);
+  s = new Server(this, serverPort);
 }
 
 
