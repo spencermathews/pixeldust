@@ -17,6 +17,8 @@ String currentFileName;  // defaults to null
 
 PixeldustSimulation sim;
 
+Client c;  // network client, only used if useNet == true
+
 int lastTime;  // keeps track of timer for fps in title
 
 // status variables, are (0,0) during running person, (1,0) after person/audio finished while we're dropping, and (1,1) when we are ready to restart i.e intermision
@@ -55,7 +57,6 @@ void setup () {
 
   if (useNet == true) {
     println("Connecting to network trigger...");
-    Client c;
 
     c = new Client(this, "192.168.1.1", 12345);  // may try for a while
     if (!c.active()) {
@@ -143,6 +144,17 @@ void draw() {
   // null check for before we first call begin() and initialize sim
   if (debug == true && sim != null) {
     debugMode();
+  }
+
+  // reconnect to network if disconnected
+  if (useNet && !c.active()) {
+    println("Server connection lost!\nReconnecting...");
+    // keeps trying to reconnect to server until successful
+    do {  
+      c = new Client(this, "192.168.1.1", 12345);  // may try for a while
+      delay(1000);  // wait before trying to reconnect again
+    } while (!c.active());
+    println("Network reconnected!");
   }
 }
 
