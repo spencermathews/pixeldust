@@ -71,8 +71,8 @@ void setup () {
     }
   }
 
-  // only show cursor when in debug mode
-  if (debug == false) {
+  // Hides cursor if running fullscreen
+  if (sketchFullScreen()) {
     noCursor();
   }
 }
