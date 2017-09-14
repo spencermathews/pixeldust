@@ -20,7 +20,7 @@ PixeldustSimulation sim;
 int lastTime;  // keeps track of timer for fps in title
 
 // status variables, are (0,0) during running person, (1,0) after person/audio finished while we're dropping, and (1,1) when we are ready to restart i.e intermision
-int isComplete;  // whether or not current person is complete, set to 0 in begin() and 1 in run() after audio finishes
+int isComplete;  // whether or not current person is complete, initialize to -1, then set to 0 in begin() and 1 in run() after audio finishes
 int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
 
 boolean fullScreenMode = false;  // choose fullScreen or windowed mode
@@ -50,7 +50,7 @@ void setup () {
   noSmooth();  // may increase performance
 
   lastTime = 0;
-  isComplete = 1;  // start off stopped
+  isComplete = -1;  // start off with special value so draw loop is no-op until we setup first person
   isReady = 1;     // start off stopped
 
   if (useNet == true) {
@@ -71,7 +71,7 @@ void draw() {
 
   if (isComplete == 0) {  // normal running
     run();
-  } else if (sim != null) {
+  } else if (isComplete == 1) {
     // person ended but still need to drop pixels etc.
     // HACK should likely be handled in sim, but timing and control is delicate
     Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
@@ -139,6 +139,8 @@ void run() {
 
 // creates a new person/sim and set to run
 void begin(float scaleImg, int particlesPerPixel) {
+  sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
+
   String csvFileName;
   // chooses a random person, preventing repeats
   do {
