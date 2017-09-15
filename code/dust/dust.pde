@@ -169,16 +169,17 @@ void begin(float scaleImg, int particlesPerPixel) {
 /* Start simulation on left mouse click, force restart on right mouse click
  */
 void mousePressed() {
+  print("[" + millis() + "] Mouse trigger received");
   if (mouseButton == LEFT) {
     // begin a person if not already running
-      println(" Starting (mouse)");
     if (triggerState == 1) {
+      println(": Triggering");
       triggerState = 2;  // set flag to restart simulation
     } else {
-      println(" Ignoring (mouse)");
+      println(": Ignoring");
     }
   } else if (mouseButton == RIGHT) {
-    println(" Restarting");
+    println(": Restarting");
     // Stop playing audio so we can begin again - may not be necessary!
     // Effectively identical to isComplete==0, but aways guarantees stop
     // TODO make sure this is still needed, and maybe make a proper stop function for sim
@@ -194,16 +195,16 @@ void clientEvent(Client c) {
   // read byte from network trigger and begin person if ready for it
   int input = c.read();
   c.clear();  // clear buffer so bytes don't accumulate
-  print("\nTrigger received:");
+  print("[" + millis() + "] Network trigger received");
 
   // if we received a 1 from the server (i.e. triggered prox sensor)
   if (input == 1) {
     // begin a person if not already running
-      println(" Starting (network)");
     if (triggerState == 1) {
+      println(": Triggering");
       triggerState = 2;
     } else {
-      println(" Ignoring (network)");
+      println(": Ignoring");
     }
   }
 }

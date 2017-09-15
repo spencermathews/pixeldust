@@ -188,6 +188,7 @@ class PixeldustSimulation {
    * Begin playing audio and set first image, now we can run().
    */
   void begin() {
+    println("[" + millis() + "] Begin " + audioFile);
     audio.play();
 
     startTime = millis();  // marks the time the simulation starts
