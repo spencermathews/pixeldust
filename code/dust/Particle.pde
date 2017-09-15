@@ -1,7 +1,18 @@
+float closeEnoughTarget = 50;  // was a global in the example
+float speedSlider = 1;
+
+// Used by nextImage
+float loadPercentage = 1.0;    // 0 to 1.0, originally 0.045
+float particleSizeSlider = 1; // originally 8
+float resSlider = 1;
+
+
 /**
  A particle that uses a seek behaviour to move to its target.
  @param {number} x
  @param {number} y
+ 
+ Inspired by Particle to Image by Jason Labbe
  */
 class Particle {
 

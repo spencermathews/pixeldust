@@ -5,7 +5,6 @@
  */
 
 float SCALE_IMG = 4;
-int PARTICLES_PER_PIXEL = 8;
 
 import processing.sound.*;
 import processing.net.*;
@@ -33,7 +32,6 @@ boolean fullScreenMode = true;  // choose fullScreen or windowed mode
 boolean useNet = true;  // set to false to disable network triggering
 boolean debug = false;
 
-
 /* Set full screen or not depending on value of fullScreen variable
  *
  * Done in settings() since this can't be done conditionally in setup()
@@ -42,17 +40,16 @@ void settings () {
   if (fullScreenMode) {
     fullScreen();
   } else {
-    size(150, 150);
+    size(500, 500, FX2D);
   }
 }
 
 void setup () {
-  if (!sketchFullScreen()) {
-    // allows resizing window if running in windowed mode
-    surface.setResizable(true); // enable resizable display window, probably best in setup?
-  }
-  
-  frameRate(30);  // TODO set timebased throttle, esp with better performing configurations
+  //if (!sketchFullScreen()) {
+  //  // allows resizing window if running in windowed mode
+  //  surface.setResizable(true); // enable resizable display window, probably best in setup?
+  //}
+
   noSmooth();  // may increase performance
 
   lastTime = 0;
@@ -89,66 +86,43 @@ void draw() {
   if (triggerState == 2) {
     // if trigger flag has been set then (re)start a simulation
     println("[" + millis() + "] Triggered!");
-    begin(SCALE_IMG, PARTICLES_PER_PIXEL);
+    begin(SCALE_IMG);
   } else if (isComplete == 0) {  // normal running
     run();
   } else if (isComplete == 1) {
-    // person ended but still need to drop pixels etc.
-    // HACK should likely be handled in sim, but timing and control is delicate
-    Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
+    //// person ended but still need to drop pixels etc.
+    //// HACK should likely be handled in sim, but timing and control is delicate
+    //Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
 
-    float triggerThreshold = sim.h*0.5;  // amount particles should fall before be we can retrigger
+    //float triggerThreshold = sim.h*0.5;  // amount particles should fall before be we can retrigger
 
-    // iterates through particles and make them fall
-    for (int i = 0; i < particles.length; i++) {
-      particles[i].acceleration = new PVector(0, 0);
-      particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
-      particles[i].update();
-      particles[i].updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
-      particles[i].checkEdgesMixed(sim.w, sim.h);
-      //particles[i].checkEdgesReflectiveSnap(sim.w, sim.h);
-    }
+    //// iterates through particles and make them fall
+    //for (int i = 0; i < particles.length; i++) {
+    //  particles[i].acceleration = new PVector(0, 0);
+    //  particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
+    //  particles[i].update();
+    //  particles[i].updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
+    //  particles[i].checkEdgesMixed(sim.w, sim.h);
+    //}
 
-    // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
-    boolean haveFallen = true;  // checks that all particles have fallen below a threshold
-    for (int i = 0; i < particles.length; i++) {
-      // indicates that fall is not complete if we spot any particles above a line
-      if (particles[i].position.y < triggerThreshold) {
-        haveFallen = false;
-      }
-    }
-
-    // allow retriggering if all particles have fallen past threshold
-    if (haveFallen == true) {
-      triggerState = 1;
-    }
-
-    sim.currentImage.countParticles();
-    sim.currentImage.displayPixelsMasked(0);
+    //// tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
+    //boolean haveFallen = true;  // checks that all particles have fallen below a threshold
+    //for (int i = 0; i < particles.length; i++) {
+    //  // indicates that fall is not complete if we spot any particles above a line
+    //  if (particles[i].position.y < triggerThreshold) {
+    //    haveFallen = false;
+    //  }
   }
 
-  //else if(sim != null) {  // now we're in intermission and are ready to reset
-  // NOT WORKING!
-  ////TODO move to sim class, so we can do some setup and then play with the next particle set
-  ////better yet figure out how to work with one pixel set and change its size.
-
-  //Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
-  //for (int i = 0; i < particles.length; i++) {
-  //  PVector wind = new PVector(0.01, 0);
-  //  PVector gravity = new PVector(0, 0.1*particles[i].mass);
-
-  //  particles[i].applyForce(wind);
-  //  particles[i].applyForce(gravity);
-
-  //  particles[i].update();
-  //  particles[i].checkEdgesMixed(sim.w, sim.h);
+  //// allow retriggering if all particles have fallen past threshold
+  //if (haveFallen == true) {
+  //  triggerState = 1;
   //}
+
   //sim.currentImage.countParticles();
   //sim.currentImage.displayPixelsMasked(0);
+  //}
 
-  //
-  // only output stats in debug mode
-  // null check for before we first call begin() and initialize sim
   if (debug == true && sim != null) {
     debugMode();
   }
@@ -163,7 +137,7 @@ void run() {
 
 
 // creates a new person/sim and set to run
-void begin(float scaleImg, int particlesPerPixel) {
+void begin(float scaleImg) {
   sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
 
   String csvFileName;
@@ -172,7 +146,7 @@ void begin(float scaleImg, int particlesPerPixel) {
 
   try {
     // instantiate simulation
-    sim = new PixeldustSimulation(this, csvFileName, scaleImg, particlesPerPixel);
+    sim = new PixeldustSimulation(this, csvFileName, scaleImg);
   }
   catch (NullPointerException e) {
     // if the csv file fails 
@@ -180,10 +154,10 @@ void begin(float scaleImg, int particlesPerPixel) {
     return;  // skip the rest of this function, since it will just throw more Exceptions
   } 
 
-  if (!sketchFullScreen()) {
-    // set display window to simulation size if running in windowed mode
-    surface.setSize(sim.w, sim.h);
-  }
+  //if (!sketchFullScreen()) {
+  //  // set display window to simulation size if running in windowed mode
+  //  surface.setSize(sim.w, sim.h);
+  //}
 
   noTint();  // just in case
   sim.begin();
