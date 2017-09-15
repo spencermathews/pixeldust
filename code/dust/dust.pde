@@ -21,7 +21,7 @@ int lastTime;  // keeps track of timer for fps in title
 
 // status variables, are (0,0) during running person, (1,0) after person/audio finished while we're dropping, and (1,1) when we are ready to restart i.e intermision
 int isComplete;  // whether or not current person is complete, initialize to -1, then set to 0 in begin() and 1 in run() after audio finishes
-int isReady;     // whether or not we can trigger again, since we need to drop pixels after completion, set to 0 in begin and 
+int triggerState;  // trigger disabled (0), trigger active (1), triggered (2) 
 
 boolean fullScreenMode = false;  // choose fullScreen or windowed mode
 boolean useNet = false;  // set to false to disable network triggering
@@ -51,7 +51,7 @@ void setup () {
 
   lastTime = 0;
   isComplete = -1;  // start off with special value so draw loop is no-op until we setup first person
-  isReady = 1;     // start off stopped
+  triggerState = 1; // start off active
 
   if (useNet == true) {
     Client c;
@@ -69,7 +69,11 @@ void draw() {
   // Seemingly reduntant, but we want to enable a stopped state
   // however draw is still run once even if we stop loop
 
-  if (isComplete == 0) {  // normal running
+  if (triggerState == 2) {
+    // if trigger flag has been set then (re)start a simulation
+    println("[" + millis() + "] Triggered!");
+    begin(SCALE_IMG, PARTICLES_PER_PIXEL);
+  } else if (isComplete == 0) {  // normal running
     run();
   } else if (isComplete == 1) {
     // person ended but still need to drop pixels etc.
@@ -96,7 +100,7 @@ void draw() {
 
     // allow retriggering if fall is complete
     if (haveFallen == true) {
-      isReady = 1;
+      triggerState = 1;
     }
 
     sim.currentImage.countParticles();
@@ -158,7 +162,7 @@ void begin(float scaleImg, int particlesPerPixel) {
   noTint();  // just in case
   sim.begin();
   isComplete = 0;
-  isReady = 0;
+  triggerState = 0;
 }
 
 
@@ -167,9 +171,9 @@ void begin(float scaleImg, int particlesPerPixel) {
 void mousePressed() {
   if (mouseButton == LEFT) {
     // begin a person if not already running
-    if (isReady == 1) {
       println(" Starting (mouse)");
-      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
+    if (triggerState == 1) {
+      triggerState = 2;  // set flag to restart simulation
     } else {
       println(" Ignoring (mouse)");
     }
@@ -181,7 +185,7 @@ void mousePressed() {
     if (sim != null) {
       sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
     }
-    begin(SCALE_IMG, PARTICLES_PER_PIXEL);
+    triggerState = 2;  // set flag to restart simulation
   }
 }
 
@@ -195,9 +199,9 @@ void clientEvent(Client c) {
   // if we received a 1 from the server (i.e. triggered prox sensor)
   if (input == 1) {
     // begin a person if not already running
-    if (isReady == 1) {
       println(" Starting (network)");
-      begin(SCALE_IMG, PARTICLES_PER_PIXEL);
+    if (triggerState == 1) {
+      triggerState = 2;
     } else {
       println(" Ignoring (network)");
     }
