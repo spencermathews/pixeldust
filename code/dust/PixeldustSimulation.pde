@@ -40,6 +40,8 @@ class PixeldustSimulation {
    * should change to accept name of csv file!
    */
   PixeldustSimulation(PApplet ref, String csvFile, float scaleImg, int particlesPerPixel) {
+    println("[" + millis() + "] Creating PixeldustSimulation");
+
     // parse control file and initialize audioFile, imageFiles, and times
     parse(csvFile);
 
@@ -63,13 +65,13 @@ class PixeldustSimulation {
   void parse(String csvFile) {
 
     Table table = loadTable(csvFile);
-    println("Parsing", csvFile, "with", table.getRowCount(), "rows and", table.getColumnCount(), "columns");
+    println("[" + millis() + "] Parsing", csvFile, "with", table.getRowCount(), "rows and", table.getColumnCount(), "columns");
 
     int numRows = table.getRowCount();
 
     // gets name of audio file
     audioFile = table.getString(0, 0);
-    println(audioFile);
+    println("\t" + audioFile);
 
     // gets names of image files and their times
     imageFiles = new String[numRows-1];
@@ -94,7 +96,7 @@ class PixeldustSimulation {
 
     // TODO validate data and that times are well ordered
     for (int i = 0; i < imageFiles.length; i++) {
-      println(imageFiles[i], timestamps[i], times[i]);
+      println("\t" + imageFiles[i] + ", " + timestamps[i] + ", " + times[i]);
     }
   }
 
@@ -116,11 +118,12 @@ class PixeldustSimulation {
    * Must be called after audioFile initialized in parse()
    */
   void initAudio(PApplet ref) {
+    println("[" + millis() + "] Initializing " + audioFile);
     audio = new SoundFile(ref, audioFile);
 
-    println("\nSFSampleRate= " + audio.sampleRate() + " Hz");
-    println("SFSamples= " + audio.frames() + " samples");
-    println("SFDuration= " + audio.duration() + " seconds");
+    println("\tSFSampleRate= " + audio.sampleRate() + " Hz");
+    println("\tSFSamples= " + audio.frames() + " samples");
+    println("\tSFDuration= " + audio.duration() + " seconds");
   }
 
 
@@ -135,7 +138,6 @@ class PixeldustSimulation {
     // create and initialize images array
     images = new Pixeldust[imageFiles.length];
     for (int i = 0; i < imageFiles.length; i++) {
-      println("\nCreating", imageFiles[i]);
       images[i] = new Pixeldust(imageFiles[i], scaleImg, particlesPerPixel);
 
       // set simulation dimensions to the max of all images
@@ -155,8 +157,7 @@ class PixeldustSimulation {
         exit();
       }
     }
-
-    println("\nSimulation with", images.length, "images at", w + "x" + h);
+    println("[" + millis() + "] Initialized", images.length, "images at", w + "x" + h);
   }
 
 
@@ -179,7 +180,7 @@ class PixeldustSimulation {
       particles[i] = new Mover(int(random(w)), int(random(h)), 10, 20);
     }
 
-    println("\nSimulation uses", nfc(particles.length), "particles");
+    println("[" + millis() + "] Initialized", nfc(particles.length), "particles");
   }
 
 
@@ -188,7 +189,7 @@ class PixeldustSimulation {
    * Begin playing audio and set first image, now we can run().
    */
   void begin() {
-    println("[" + millis() + "] Begin " + audioFile);
+    println("[" + millis() + "] Playing " + audioFile);
     audio.play();
 
     startTime = millis();  // marks the time the simulation starts
@@ -202,14 +203,15 @@ class PixeldustSimulation {
    * Set currentIndex and pass particles to it.
    */
   void setCurrent(int i) {
-    println("\nelapsed time:", elapsedTime(), "| actual interval ->", currentInterval + elapsedTime() - currentTime);
+    println("\telapsed time:", elapsedTime(), "| actual interval ->", currentInterval + elapsedTime() - currentTime);
     currentIndex = i;
+    println("[" + millis() + "] Starting", imageFiles[i]);
     currentImage = images[i];
     currentTime = times[i];
     // computes target time relative to time elapsed since start of sim
     // will typically be some 10s of ms less than expected time because of error in catching the time condition
     currentInterval = (currentTime - elapsedTime());
-    println("set: currentIndex =", currentIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
+    println("\tset: currentIndex =", currentIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
 
     currentImage.initParticles(particles);  // passes this particle[] array to the current Pixeldust image
     currentImage.countParticles();          // updates that object's imgParticles[] array with the new particles

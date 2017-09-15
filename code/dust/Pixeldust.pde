@@ -35,7 +35,7 @@ class Pixeldust {
     // note there are more particles when brightnessPerParticle is an int, but float is more true
     brightnessPerParticle = 255.0 / particlesPerPixel;
 
-    println("particlesPerPixel:", particlesPerPixel, "brightnessPerParticle:", brightnessPerParticle);
+    println("[" + millis() + "] Creating " + imgFile + " w/ particlesPerPixel=" + particlesPerPixel + " brightnessPerParticle=" + brightnessPerParticle);
 
     this.scaleImg = scaleImg;
 
@@ -51,23 +51,23 @@ class Pixeldust {
 
     switch(imgPixelsOrig.format) {
     case RGB:
-      println("RGB format");
+      println("\tRGB format");
       break;
     case ARGB:
-      println("ARGB format");
+      println("\tARGB format");
       break;
     case ALPHA:
-      println("ALPHA format");
+      println("\tALPHA format");
       break;
     default:
       println("Error: unknown format");
     }
 
-    println("scaled", "x", scaleImg, "->", imgPixelsOrig.width + "x" + imgPixelsOrig.height);
+    println("\tScaled", "x", scaleImg, "->", imgPixelsOrig.width + "x" + imgPixelsOrig.height);
 
     numParticles = numParticles();  // compute number of particles to work with
 
-    println(nfc(numParticles), "particles from", nfc(imgPixelsOrig.pixels.length), "pixels");
+    println("\t" + nfc(numParticles), "particles from", nfc(imgPixelsOrig.pixels.length), "pixels");
 
     //imgStats();
 
