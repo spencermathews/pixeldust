@@ -102,4 +102,39 @@ class Particle {
     pos.add(vel);
     acc.mult(0);
   }
+
+
+  /* Moves particles by applying a random vector, specify random limit, and max speed
+   *
+   * Magnitude is random up to given max acceleration.
+   * Velocity is constrained by the given max speed.
+   *
+   * param maxAcceleration float maximum magnitude of acceleration vector
+   * param maxSpeed        float top speed that can result
+   */
+  void updateRandom(float maxAcceleration, float maxSpeed) {
+    acc = PVector.random2D();
+    acc.mult(random(maxAcceleration));
+    vel.add(acc);
+    vel.limit(maxSpeed);
+    pos.add(vel);
+  }
+
+
+  /* Moves particles by applying a random vector
+   *
+   * Magnitude is random up to given max acceleration.
+   * Velocity is limited by the Mover's topspeed field.
+   *
+   * Modified from Shiffman NOC Example 1.9
+   * but included checkEdges here instead of externally
+   */
+  void updateRandom() {
+    acc = PVector.random2D();
+    acc.mult(random(maxSpeed));  // sets max acceleration per timestep, maxSpeed ~ maxAccel
+
+    vel.add(acc);
+    vel.limit(this.maxForce*speedSlider);  // sets hard limit on velocity, maxForce ~ topspeed field
+    pos.add(vel);
+  }
 }
