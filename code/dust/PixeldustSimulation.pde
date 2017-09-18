@@ -22,7 +22,7 @@ class PixeldustSimulation {
   int currentTime;      // reference to times[currentIndex], for convenience
   int currentInterval;  // total time we have to converge current image, calculated wrt simulation startTime
 
-  ArrayList<Particle> allParticles = new ArrayList<Particle>();
+  ArrayList<Particle> particles = new ArrayList<Particle>();
 
   int startTime;  // set by begin() to track when audio starts
 
@@ -215,13 +215,13 @@ class PixeldustSimulation {
     //float maxVelocity = maxAcceleration*10;
 
     background(255);
-    for (int i = allParticles.size()-1; i > -1; i--) {
-      allParticles.get(i).move();
-      allParticles.get(i).draw();
+    for (int i = particles.size()-1; i > -1; i--) {
+      particles.get(i).move();
+      particles.get(i).draw();
 
-      if (allParticles.get(i).isKilled) {
-        if (allParticles.get(i).isOutOfBounds()) {
-          allParticles.remove(i);
+      if (particles.get(i).isKilled) {
+        if (particles.get(i).isOutOfBounds()) {
+          particles.remove(i);
         }
       }
     }
@@ -273,7 +273,7 @@ class PixeldustSimulation {
 
     // Create an array of indexes from particle array.
     ArrayList<Integer> particleIndexes = new ArrayList<Integer>();
-    for (int i = 0; i < allParticles.size(); i++) {
+    for (int i = 0; i < particles.size(); i++) {
       particleIndexes.add(i);
     }
 
@@ -299,11 +299,11 @@ class PixeldustSimulation {
           // Re-use existing particle.
           // JS Array splice can handle non-int params it seems, but ArrayList.remove fails, also was originally length-1
           int index = particleIndexes.remove(int(random(particleIndexes.size())));
-          newParticle = allParticles.get(index);
+          newParticle = particles.get(index);
         } else {
           // Create a new particle.
           newParticle = new Particle(random(width), height-1);
-          allParticles.add(newParticle);
+          particles.add(newParticle);
         }
 
         newParticle.target.x = x+width/2-imgs[imgIndex].width/2;
@@ -316,10 +316,10 @@ class PixeldustSimulation {
     // Kill off any left over particles that aren't assigned to anything.
     if (particleIndexes.size() > 0) {
       for (int i = 0; i < particleIndexes.size(); i++) {
-        allParticles.get(particleIndexes.get(i)).kill();
+        particles.get(particleIndexes.get(i)).kill();
       }
     }
 
-    println("\tUsing", nfc(allParticles.size()), "particles w/", particleIndexes.size(), "killed");
+    println("\tUsing", nfc(particles.size()), "particles w/", particleIndexes.size(), "killed");
   }
 }
