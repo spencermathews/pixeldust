@@ -297,16 +297,22 @@ class PixeldustSimulation {
         color pixelColor = pixel;
 
         Particle newParticle;
-        if (particleIndexes.size() > 0) {
+        if (imgIndex == 0) {
+          // Initialize particles for the first image on the bottom edge
+          float x1 = width/2 - sim.w/2;  // gets upper left position of sim bounding box
+          float y1 = height/2 - sim.h/2;
+          newParticle = new Particle(random(x1, x1 + sim.w), y1 + sim.h - 1);
+          particles.add(newParticle);
+        } else if (particleIndexes.size() > 0) {
           // Re-use existing particle.
           // JS Array splice can handle non-int params it seems, but ArrayList.remove fails, also was originally length-1
           int index = particleIndexes.remove(int(random(particleIndexes.size())));
           newParticle = particles.get(index);
         } else {
-          // Create a new particle.
-          float x1 = width/2 - sim.w/2;  // gets upper left position of sim bounding box
-          float y1 = height/2 - sim.h/2;
-          newParticle = new Particle(random(x1, x1 + sim.w), y1 + sim.h - 1);
+          // Create a new particle since all existing particles have already been used
+          // Place new particle at the same location as a randomly selected existing particle
+          Particle randomParticle = particles.get(int(random(particles.size())));
+          newParticle = new Particle(randomParticle.pos.x, randomParticle.pos.y);
           particles.add(newParticle);
         }
 
