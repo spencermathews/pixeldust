@@ -304,7 +304,9 @@ class PixeldustSimulation {
           newParticle = particles.get(index);
         } else {
           // Create a new particle.
-          newParticle = new Particle(random(width), height-1);
+          float x1 = width/2 - sim.w/2;  // gets upper left position of sim bounding box
+          float y1 = height/2 - sim.h/2;
+          newParticle = new Particle(random(x1, x1 + sim.w), y1 + sim.h - 1);
           particles.add(newParticle);
         }
 
