@@ -88,7 +88,8 @@ void draw() {
     println("[" + millis() + "] Triggered!");
     begin(SCALE_IMG);
   } else if (isComplete == 0) {  // normal running
-    run();
+    // iterates simulationset and sets isComplete to 1 after person is finished
+    isComplete = sim.run();  // 
   } else if (isComplete == 1) {
     //// person ended but still need to drop pixels etc.
     //// HACK should likely be handled in sim, but timing and control is delicate
@@ -126,13 +127,6 @@ void draw() {
   if (debug == true && sim != null) {
     debugMode();
   }
-}
-
-
-// interates a person/simulation object
-void run() {
-  // set isComplete to 1 after person is finished
-  isComplete = sim.run();  // iterate simulation
 }
 
 
