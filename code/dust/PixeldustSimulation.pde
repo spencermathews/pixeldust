@@ -335,6 +335,16 @@ class PixeldustSimulation {
   }
 
 
+  // simply display particles, does not update or do bounds checking
+  void display() {    
+    background(255);
+    for (int i = particles.size()-1; i > -1; i--) {
+      particles.get(i).draw();
+    }
+    displayLetterbox();
+  }
+
+
   void displayLetterbox() {
     float y1 = height/2 - this.h/2;  // gets top of sim bounding box
     noStroke();
