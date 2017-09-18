@@ -220,7 +220,9 @@ class PixeldustSimulation {
       particles.get(i).draw();
 
       if (particles.get(i).isKilled) {
-        if (particles.get(i).isOutOfBounds()) {
+        float x1 = width/2 - this.w/2;  // gets upper left position of sim bounding box
+        float y1 = height/2 - this.h/2;
+        if (particles.get(i).isOutOfBounds(x1, y1, this.w, this.h)) {
           particles.remove(i);
         }
       }

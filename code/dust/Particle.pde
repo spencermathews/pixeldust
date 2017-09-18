@@ -87,4 +87,11 @@ class Particle {
     return (this.pos.x < 0 || this.pos.x > width || 
       this.pos.y < 0 || this.pos.y > height);
   }
+
+  // tests out of bounds based on a bounding box
+  // params as rect(), given as upper-left corner then width and height
+  boolean isOutOfBounds(float x1, float y1, float x2, float y2) {
+    return (this.pos.x < x1 || this.pos.x > x1 + x2 || 
+      this.pos.y < y1 || this.pos.y > y1 + y2);
+  }
 }
