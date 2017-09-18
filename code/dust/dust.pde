@@ -89,40 +89,40 @@ void draw() {
     begin(SCALE_IMG);
   } else if (isComplete == 0) {  // normal running
     // iterates simulationset and sets isComplete to 1 after person is finished
-    isComplete = sim.run();  // 
+    isComplete = sim.run();
   } else if (isComplete == 1) {
-    //// person ended but still need to drop pixels etc.
-    //// HACK should likely be handled in sim, but timing and control is delicate
-    //Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
+    // person ended but still need to drop pixels etc.
+    // HACK should likely be handled in sim, but timing and control is delicate
+    Mover[] particles = sim.particles;  // hack, get reference to particles in most recent sim
 
-    //float triggerThreshold = sim.h*0.5;  // amount particles should fall before be we can retrigger
+    float triggerThreshold = sim.h*0.5;  // amount particles should fall before be we can retrigger
 
-    //// iterates through particles and make them fall
-    //for (int i = 0; i < particles.length; i++) {
-    //  particles[i].acceleration = new PVector(0, 0);
-    //  particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
-    //  particles[i].update();
-    //  particles[i].updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
-    //  particles[i].checkEdgesMixed(sim.w, sim.h);
-    //}
+    // iterates through particles and make them fall
+    for (int i = 0; i < particles.length; i++) {
+      particles[i].acceleration = new PVector(0, 0);
+      particles[i].velocity = new PVector(random(-3, 3), .03*(sim.h - particles[i].position.y)*particles[i].mass);
+      particles[i].update();
+      particles[i].updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
+      particles[i].checkEdgesMixed(sim.w, sim.h);
+    }
 
-    //// tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
-    //boolean haveFallen = true;  // checks that all particles have fallen below a threshold
-    //for (int i = 0; i < particles.length; i++) {
-    //  // indicates that fall is not complete if we spot any particles above a line
-    //  if (particles[i].position.y < triggerThreshold) {
-    //    haveFallen = false;
-    //  }
+    // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
+    boolean haveFallen = true;  // checks that all particles have fallen below a threshold
+    for (int i = 0; i < particles.length; i++) {
+      // indicates that fall is not complete if we spot any particles above a line
+      if (particles[i].position.y < triggerThreshold) {
+        haveFallen = false;
+      }
+    }
+
+    // allow retriggering if all particles have fallen past threshold
+    if (haveFallen == true) {
+      triggerState = 1;
+    }
+
+    sim.currentImage.countParticles();
+    sim.currentImage.displayPixelsMasked(0);
   }
-
-  //// allow retriggering if all particles have fallen past threshold
-  //if (haveFallen == true) {
-  //  triggerState = 1;
-  //}
-
-  //sim.currentImage.countParticles();
-  //sim.currentImage.displayPixelsMasked(0);
-  //}
 
   if (debug == true && sim != null) {
     debugMode();
