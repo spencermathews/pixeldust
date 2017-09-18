@@ -22,6 +22,8 @@ class Particle {
   PVector target = new PVector(0, 0);
   boolean isKilled = false;
 
+  float mass = random(1, 10);
+
   float maxSpeed = random(0.25, 2); // How fast it can move per frame.
   float maxForce = random(8, 15); // Its speed limit.
 
