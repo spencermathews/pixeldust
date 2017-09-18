@@ -94,4 +94,12 @@ class Particle {
     return (this.pos.x < x1 || this.pos.x >= x1 + x2 || 
       this.pos.y < y1 || this.pos.y >= y1 + y2);
   }
+
+  /* As per Shiffman NOC Ch 2
+   */
+  void update() {
+    vel.add(acc);
+    pos.add(vel);
+    acc.mult(0);
+  }
 }
