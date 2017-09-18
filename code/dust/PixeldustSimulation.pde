@@ -227,6 +227,7 @@ class PixeldustSimulation {
         }
       }
     }
+    displayLetterbox();
 
     if (debug) {
       // displays progress indicator for this segment
@@ -331,5 +332,14 @@ class PixeldustSimulation {
     }
 
     println("\tUsing", nfc(particles.size()), "particles w/", particleIndexes.size(), "killed");
+  }
+
+
+  void displayLetterbox() {
+    float y1 = height/2 - this.h/2;  // gets top of sim bounding box
+    noStroke();
+    fill(0);
+    rect(0, 0, width, y1);  // could be a little sloppy and off by 1 or so
+    rect(0, y1 + this.h, width, y1);
   }
 }
