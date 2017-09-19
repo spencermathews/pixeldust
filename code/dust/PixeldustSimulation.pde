@@ -54,6 +54,12 @@ class PixeldustSimulation {
     initImages(scaleImg);
   }
 
+  PixeldustSimulation(PApplet ref, String csvFile, float scaleImg, ArrayList<Particle> particles) {
+    this(ref, csvFile, scaleImg);
+
+    this.particles = particles;  // initializes with particles that were passed in
+  }
+
 
   /* Parses controlling csv file and sets audioFile, imageFiles, and times fields
    *
@@ -291,8 +297,9 @@ class PixeldustSimulation {
 
         // Assigns particles to new pixels, creating new ones if needed 
         Particle newParticle;
-        if (imgIndex == 0) {
-          // Initialize particles for the first image on the bottom edge
+        if (imgIndex == 0 && particleIndexes.isEmpty()) {
+          // Initializes particles for the first image on the bottom edge if starting from scratch
+          // If particles were passed in this block is skipped and we recycle them as usual, since aparticleIndexes will not be empty 
           float x1 = width/2 - sim.w/2;  // gets upper left position of sim bounding box
           float y1 = height/2 - sim.h/2;
           newParticle = new Particle(random(x1, x1 + sim.w), y1 + sim.h - 1);

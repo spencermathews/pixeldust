@@ -137,7 +137,16 @@ void draw() {
 
 // creates a new person/sim and set to run
 void begin(float scaleImg) {
-  sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
+  ArrayList<Particle> existingParticles;
+  if (sim != null) {
+    // Gets particles for current simulation, if there is one
+    existingParticles = sim.particles;
+    sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
+  } else {
+    // Sets existingParticles to null, since otherwise Processing complains
+    // that 'The local variable "existingParticles" may not have been initialized'
+    existingParticles = null;
+  }
 
   String csvFileName;
   csvFileName = csvFileNames[nameIndex];
@@ -145,7 +154,13 @@ void begin(float scaleImg) {
 
   try {
     // instantiate simulation
-    sim = new PixeldustSimulation(this, csvFileName, scaleImg);
+    if (existingParticles == null) {
+      // If no particles already, constructs simulation which will create its own initial set of particles
+      sim = new PixeldustSimulation(this, csvFileName, scaleImg);
+    } else {
+      // Passes existingParticles on to the new simulation
+      sim = new PixeldustSimulation(this, csvFileName, scaleImg, existingParticles);
+    }
   }
   catch (NullPointerException e) {
     // if the csv file fails 
@@ -184,6 +199,7 @@ void mousePressed() {
     // TODO make sure this is still needed, and maybe make a proper stop function for sim
     if (sim != null) {
       sim.audio.stop();  // hack, would be better to have sim.stop, but this is just for testing
+      sim = null;  // Clears sim so existing particles aren't kept
     }
     triggerState = 2;  // set flag to restart simulation
   }
