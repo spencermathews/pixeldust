@@ -252,15 +252,17 @@ void debugMode() {
     int min = elapsedTime / 60;  // use int division to our advantage
     int sec = elapsedTime % 60;
 
-    // display elapsed time and fps in title bar
-    surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
-
-    // draw elapsed time and fps in title bar, useful for fullScreen
-    noStroke();
-    fill(0);
-    rect(width-100, height-50, 100, 46);
-    fill(255);
-    text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
+    if (!sketchFullScreen()) {
+      // Displays elapsed time and fps in title bar
+      surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
+    } else {
+      // Draws elapsed time and fps in a box, useful for fullScreen
+      noStroke();
+      fill(0);
+      rect(width-100, height-50, 100, 46);
+      fill(255);
+      text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
+    }
 
     lastTime = millis();
   }
