@@ -18,8 +18,7 @@ class PixeldustSimulation {
   int[] times;
   int[] transitions;  // 1 if we transition normally, 0 for no transition
 
-  int currentIndex;  // controlling variable, set with setCurrent() since there is other work to be done
-  int currentTime;      // reference to times[currentIndex], for convenience
+  int currentTime;      // reference to times[imgIndex], for convenience
   int currentInterval;  // total time we have to converge current image, calculated wrt simulation startTime
 
   ArrayList<Particle> particles = new ArrayList<Particle>();
@@ -28,7 +27,7 @@ class PixeldustSimulation {
 
   PImage[] imgs = new PImage[0];
   String[] imgNames;  // was imageFiles
-  int imgIndex = -1;
+  int imgIndex = -1;  // currentIndex was folded into here
 
   float brightnessThreshold = 254;  // do no create particles from pixels lighter than this
 
@@ -170,24 +169,7 @@ class PixeldustSimulation {
 
     startTime = millis();  // marks the time the simulation starts
 
-    setCurrent(0);
     nextImage();  // imgIndex is initialized to -1 so we start off correctly
-  }
-
-
-  /* Pass control to a Pixeldust object
-   *
-   * Sets currentIndex based on parameter, sets currentTime and currentInterval.
-   */
-  void setCurrent(int i) {
-    println("\telapsed time:", elapsedTime(), "| actual interval ->", currentInterval + elapsedTime() - currentTime);
-    currentIndex = i;
-    println("[" + millis() + "] Starting", imgNames[i]);
-    currentTime = times[i];
-    // computes target time relative to time elapsed since start of sim
-    // will typically be some 10s of ms less than expected time because of error in catching the time condition
-    currentInterval = (currentTime - elapsedTime());
-    println("\tset: currentIndex =", currentIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
   }
 
 
@@ -200,7 +182,7 @@ class PixeldustSimulation {
   int run() {
     float pct;
 
-    if (transitions[currentIndex] == 1) {
+    if (transitions[imgIndex] == 1) {
       // calculates progress of current image from 0 (start) to 1 (complete)
       pct = 1 - float(currentTime - elapsedTime()) / currentInterval;
       pct = constrain(pct, 0, 1);  // ensures pct stays in range 0-1 or else strange things happen
@@ -239,10 +221,9 @@ class PixeldustSimulation {
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
     if (elapsedTime() > currentTime) {
       // advance image if there are still more
-      if (currentIndex < imgs.length-1) {
-        setCurrent(currentIndex+1);  // set next to be current
+      if (imgIndex < imgs.length-1) {
         nextImage();
-      } else if (currentIndex == imgs.length-1) {
+      } else if (imgIndex == imgs.length-1) {
         // tests if we're actually done since audio may continue past timestamp of final image
         if (elapsedTime() > audio.duration()*1000) {
           audio.stop();
@@ -265,14 +246,28 @@ class PixeldustSimulation {
 
   /**
    Dynamically adds/removes particles to make up the next image.
+   *
+   * Sets currentTime and currentInterval.
    */
   void nextImage() {
-    // Switch index to next image.
+
+    // Moved here from setCurrent(), would be nice to eventually find a way to print this for last image, and maybe suppress for first
+    println("\telapsed time:", elapsedTime(), "| actual interval ->", currentInterval + elapsedTime() - currentTime);
+
+    // Switch index to next image. Note: logic in run() bounds tests this aleady but doesn't hurt to leave in.
     imgIndex++;
     if (imgIndex > imgs.length-1) {
       imgIndex = 0;
     }
     imgs[imgIndex].loadPixels();
+
+    // Moved here from setCurrent()
+    println("[" + millis() + "] Starting", imgNames[imgIndex]);
+    currentTime = times[imgIndex];
+    // computes target time relative to time elapsed since start of sim
+    // will typically be some 10s of ms less than expected time because of error in catching the time condition
+    currentInterval = (currentTime - elapsedTime());
+    println("\tset: imgIndex =", imgIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
 
     // Create an array of indexes from particle array.
     ArrayList<Integer> particleIndexes = new ArrayList<Integer>();
