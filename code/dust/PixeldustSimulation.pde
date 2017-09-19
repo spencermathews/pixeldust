@@ -280,9 +280,8 @@ class PixeldustSimulation {
       particleIndexes.add(i);
     }
 
-    int pixelIndex = 0;
-
     // Go through each pixel of the image.
+    int pixelIndex = 0;
     for (int y = 0; y < imgs[imgIndex].height; y++) {
       for (int x = 0; x < imgs[imgIndex].width; x++) {
         // Get the pixel's color.
@@ -295,8 +294,7 @@ class PixeldustSimulation {
           continue;
         }
 
-        color pixelColor = pixel;
-
+        // Assigns particles to new pixels, creating new ones if needed 
         Particle newParticle;
         if (imgIndex == 0) {
           // Initialize particles for the first image on the bottom edge
@@ -319,7 +317,7 @@ class PixeldustSimulation {
 
         newParticle.target.x = x+width/2-imgs[imgIndex].width/2;
         newParticle.target.y = y+height/2-imgs[imgIndex].height/2;
-        newParticle.currentColor = pixelColor;
+        newParticle.currentColor = pixel;
         newParticle.currentSize = particleSizeSlider;
       }
     }
