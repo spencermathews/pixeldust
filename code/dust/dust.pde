@@ -256,8 +256,9 @@ void debugMode() {
     surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
 
     // draw elapsed time and fps in title bar, useful for fullScreen
+    noStroke();
     fill(0);
-    rect(width-100, height-50, 98, 47);
+    rect(width-100, height-50, 100, 46);
     fill(255);
     text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
 

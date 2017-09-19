@@ -219,9 +219,9 @@ class PixeldustSimulation {
 
     if (debug) {
       // displays progress indicator for this segment
-      stroke(1);
+      noStroke();
       fill(255, 0, 0);
-      rect(0, height-4, map(pct, 0, 1, 0, width), 3);
+      rect(0, height-4, map(pct, 0, 1, 0, width), 4);
     }
 
     // starts next image once we have reached desired convergence time, will typcally overshoot by 10s of ms
