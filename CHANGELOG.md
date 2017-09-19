@@ -108,3 +108,8 @@
 
 * Simple framework for decomposing pixels into particles, scattering pixels using random walk, and reassembling into pixels.
 
+---
+
+## [3.0.0]
+
+* New dynamics!

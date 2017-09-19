@@ -20,36 +20,64 @@ e.g.
     ...
     imageFile1.png, 1:59, 0
 
-## Fields
+## Global Variables
 
-sim
+### Configuration Variables
 
-lastTime
+`fullScreenMode`
 
-isComplete
-: Status variable set on every call to sim.run(). Value 0 
+`useNet`
 
-isReady
+`debug`
 
-useNet
+`csvFileNames`
 
-debug
+### Simulation Variables
+
+`nameIndex`
+
+`sim`
+
+`lastTime`
+
+### State Variables
+
+`isComplete`
+: Status variable set on every call to sim.run(). Value 0
+
+`triggerState`
+
+### Network Variables
+
+`c`
+
+`serverHost`
+
+`serverPort`
 
 ## Functions
+
+settings
 
 setup
 
 draw
-: Main event loop. Normally just calls run(). Otherwise, handles pixels falling.
-
-run
-: Simply calls sim.run() and updates isComplete state variable with retval. Note: could probably be moved up to draw().
+: Main event loop. Normally just calls sim.run(). Otherwise, handles pixels falling  and responding to triggered state.
 
 begin
-: Called by mousePressed() or clientEvent() to (re)initialize PixeldustSimulation. Name of csv file is used to select person.
+: Called from draw() in response to triggerState set by mousePressed() or clientEvent() to (re)initialize PixeldustSimulation. Name of csv file is used to select person.
+
+### Event Functions
 
 mousePressed
 
 clientEvent
+
+### Network Functions
+
+watchNetwork
+: Separate thread which periodically checks network state. If not it attempts to reconnect Client.
+
+### Misc Functions
 
 debugMode

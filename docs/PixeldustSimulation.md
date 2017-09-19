@@ -6,21 +6,39 @@ We want to be able to specify a csv file listing an audio file and some arbitrar
 
 ## Fields
 
+### Configuration Fields
+
+`brightnessThreshold`
+
+### Audio Fields
+
 `audioFile`
 
 `audio`
 
-`imageFiles`
+### Image Fields
 
-`images`
+`w`
 
-`width`
+`h`
 
-`height`
+`imageNames`
+
+`imgs`
+
+`imgIndex`
+
+`particles`
+
+### Timing Fields
 
 `times`
 
-`particles`
+`transitions`
+
+`currentTime`
+
+`currentInterval`
 
 `startTime`
 
@@ -29,13 +47,10 @@ We want to be able to specify a csv file listing an audio file and some arbitrar
 ### Initialization Methods
 
 `PixeldustSimulation` [constructor]
-: Pass in name of guiding csv file, how much to scale images, and number of particles per black pixel. Parses csv file to initialize audioFile, imageFiles[], and times[], then creates audio, images[],and particles[].
+: Pass in name of guiding csv file and how much to scale images Parses csv file to initialize audioFile, imgs[], and times[], then creates audio, images[],and particles[].
 : constructor
 
 `parse`
-
-`convertTime`
-: helper method
 
 `initAudio`
 
@@ -44,32 +59,27 @@ We want to be able to specify a csv file listing an audio file and some arbitrar
 `initParticles`
 
 `begin`
-: Play audio, note startTime, and initialize current to 0-th. Currently called by dust.pde:begin(). Could be included in PixeldustSimulation constructor, but leaving it separate makes it possible to load images, etc prior to starting.
+: Play audio, note startTime, and initialize current to 0-th. Currently called by dust.pde:begin(). Logically could be included in PixeldustSimulation constructor, but leaving it separate permits images to be loaded prior to starting simulation.
 
-### General Methods
+### Control Methods
 
 `setCurrent`
-:
+
+`nextImage`
+
+### Display Methods
 
 `run`
+: Main method which performs update and display.
 
-### Helper Methods
+`display`
+: Performs basic display of particles.
 
-`convertTime`
+`displayLetterBox`
+
+### Timing Methods
 
 `elapsedTime`
 
-## Etc
-
-Single experiment to test particle limits (implemented as Mover[]):
-
-Particles | RAM
-----------|----
-2^15 | 80 MB
-2^20 (1M) | 170 MB
-2^21 (2M)| 334 MB
-2^22 (4M)| 600 MB
-2^23 (8M)| 1.2 GB
-2^24 | tired of waiting
-
-Note: 32-bit signed `int` have range -2,147,483,648 ($$−2^{31}$$) through 2,147,483,647 ($$2^{31}−1$$), and it's doubtful Processing allows 64-bit `long` for array indexing. So this puts an upper limit on the number of possible particles.
+`convertTime`
+: Helper method.
