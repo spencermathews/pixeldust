@@ -281,6 +281,12 @@ class PixeldustSimulation {
       particleIndexes.add(i);
     }
 
+    // Clears particleIndexes for an additive transition. Existing particles and targets remain.
+    if (transitions[imgIndex] == 0) {
+      // Clears particleIndexes so no particles will be reassigned. New particles will be created for all threshold pixels.
+      particleIndexes.clear();
+    }
+
     // Go through each pixel of the image.
     int pixelIndex = 0;
     for (int y = 0; y < imgs[imgIndex].height; y++) {
