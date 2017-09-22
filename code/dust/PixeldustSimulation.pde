@@ -31,6 +31,7 @@ class PixeldustSimulation {
 
   float brightnessThreshold = 254;  // do no create particles from pixels lighter than this
 
+  PGraphics pg;  // Off-screen graphics buffer, used to make resizing easier, initialized in initImages with w and h
 
   /* Constructor
    *
@@ -162,6 +163,8 @@ class PixeldustSimulation {
     }
 
     println("[" + millis() + "] Initialized", imgs.length, "images at", w + "x" + h);
+
+    pg = createGraphics(w, h, P2D);  // Initializes off-screen graphics buffer, note renderer options constrained by main renderer
   }
 
 
@@ -202,22 +205,22 @@ class PixeldustSimulation {
     //float maxAcceleration = map(p, 0, 1, 0.1, LIMIT_ACCELERATION);
     //float maxVelocity = maxAcceleration*10;
 
-    g.beginDraw();
-    g.background(255);
+    background(0);
+    pg.beginDraw();
+    pg.background(255);
     for (int i = particles.size()-1; i > -1; i--) {
       particles.get(i).move();
-      particles.get(i).draw(g);
+      particles.get(i).draw(pg);
 
       if (particles.get(i).isKilled) {
-        float x1 = width/2 - this.w/2;  // gets upper left position of sim bounding box
-        float y1 = height/2 - this.h/2;
-        if (particles.get(i).isOutOfBounds(x1, y1, this.w, this.h)) {
+        if (particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
           particles.remove(i);
         }
       }
     }
-    g.endDraw();
-    displayLetterbox();
+    pg.endDraw();
+    float aspect = float(w)/float(h);
+    image(pg, 0, height / 2 - ( width / aspect) / 2, width, width / aspect);  // Fits to screen, adapts if screen is taller than sim, but not if wider
 
     if (debug) {
       // displays progress indicator for this segment
@@ -308,9 +311,7 @@ class PixeldustSimulation {
         if (imgIndex == 0 && particleIndexes.isEmpty()) {
           // Initializes particles for the first image on the bottom edge if starting from scratch
           // If particles were passed in this block is skipped and we recycle them as usual, since aparticleIndexes will not be empty 
-          float x1 = width/2 - this.w/2;  // gets upper left position of sim bounding box
-          float y1 = height/2 - this.h/2;
-          newParticle = new Particle(random(x1, x1 + this.w), y1 + this.h - 1);
+          newParticle = new Particle(random(0, this.w), this.h - 1);
           particles.add(newParticle);
         } else if (particleIndexes.size() > 0) {
           // Re-use existing particle.
@@ -325,8 +326,8 @@ class PixeldustSimulation {
           particles.add(newParticle);
         }
 
-        newParticle.target.x = x+width/2-imgs[imgIndex].width/2;
-        newParticle.target.y = y+height/2-imgs[imgIndex].height/2;
+        newParticle.target.x = x+this.w/2-imgs[imgIndex].width/2;
+        newParticle.target.y = y+this.h/2-imgs[imgIndex].height/2;
         newParticle.currentColor = pixel;
         newParticle.currentSize = particleSizeSlider;
       }
@@ -344,6 +345,7 @@ class PixeldustSimulation {
 
 
   // simply display particles, does not update or do bounds checking
+  // TODO update for new display approach
   void display() {    
     background(255);
     for (int i = particles.size()-1; i > -1; i--) {
@@ -353,6 +355,7 @@ class PixeldustSimulation {
   }
 
 
+  // TODO remove once new display approach is complete
   void displayLetterbox() {
     float y1 = height/2 - this.h/2;  // gets top of sim bounding box
     noStroke();

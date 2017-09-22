@@ -38,17 +38,17 @@ boolean debug = false;
  */
 void settings () {
   if (fullScreenMode) {
-    fullScreen();
+    fullScreen(P2D);
   } else {
-    size(500, 500, FX2D);
+    size(500, 500, P2D);
   }
 }
 
 void setup () {
-  //if (!sketchFullScreen()) {
-  //  // allows resizing window if running in windowed mode
-  //  surface.setResizable(true); // enable resizable display window, probably best in setup?
-  //}
+  if (!sketchFullScreen()) {
+    // allows resizing window if running in windowed mode
+    surface.setResizable(true); // enable resizable display window, probably best in setup?
+  }
 
   noSmooth();  // may increase performance
 
@@ -168,10 +168,10 @@ void begin(float scaleImg) {
     return;  // skip the rest of this function, since it will just throw more Exceptions
   } 
 
-  //if (!sketchFullScreen()) {
-  //  // set display window to simulation size if running in windowed mode
-  //  surface.setSize(sim.w, sim.h);
-  //}
+  if (!sketchFullScreen()) {
+    // set display window to simulation size if running in windowed mode
+    surface.setSize(sim.w, sim.h);
+  }
 
   noTint();  // just in case
   sim.begin();
