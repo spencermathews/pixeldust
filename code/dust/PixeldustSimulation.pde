@@ -202,10 +202,11 @@ class PixeldustSimulation {
     //float maxAcceleration = map(p, 0, 1, 0.1, LIMIT_ACCELERATION);
     //float maxVelocity = maxAcceleration*10;
 
-    background(255);
+    g.beginDraw();
+    g.background(255);
     for (int i = particles.size()-1; i > -1; i--) {
       particles.get(i).move();
-      particles.get(i).draw();
+      particles.get(i).draw(g);
 
       if (particles.get(i).isKilled) {
         float x1 = width/2 - this.w/2;  // gets upper left position of sim bounding box
@@ -215,6 +216,7 @@ class PixeldustSimulation {
         }
       }
     }
+    g.endDraw();
     displayLetterbox();
 
     if (debug) {
@@ -345,7 +347,7 @@ class PixeldustSimulation {
   void display() {    
     background(255);
     for (int i = particles.size()-1; i > -1; i--) {
-      particles.get(i).draw();
+      particles.get(i).draw(g);
     }
     displayLetterbox();
   }

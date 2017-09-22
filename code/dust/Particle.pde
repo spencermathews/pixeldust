@@ -70,12 +70,13 @@ class Particle {
     this.acc.mult(0);
   }
 
-  void draw() {
-    stroke(this.currentColor);
 
-    strokeWeight(this.currentSize);
+  void draw(PGraphics pg) {
+    pg.stroke(this.currentColor);
 
-    point(this.pos.x, this.pos.y);
+    pg.strokeWeight(this.currentSize);
+
+    pg.point(this.pos.x, this.pos.y);
   }
 
   void kill() {
