@@ -300,9 +300,9 @@ class PixeldustSimulation {
         if (imgIndex == 0 && particleIndexes.isEmpty()) {
           // Initializes particles for the first image on the bottom edge if starting from scratch
           // If particles were passed in this block is skipped and we recycle them as usual, since aparticleIndexes will not be empty 
-          float x1 = width/2 - sim.w/2;  // gets upper left position of sim bounding box
-          float y1 = height/2 - sim.h/2;
-          newParticle = new Particle(random(x1, x1 + sim.w), y1 + sim.h - 1);
+          float x1 = width/2 - this.w/2;  // gets upper left position of sim bounding box
+          float y1 = height/2 - this.h/2;
+          newParticle = new Particle(random(x1, x1 + this.w), y1 + this.h - 1);
           particles.add(newParticle);
         } else if (particleIndexes.size() > 0) {
           // Re-use existing particle.
