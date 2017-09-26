@@ -216,20 +216,22 @@ class PixeldustSimulation {
       particles.get(i).move();
 
       if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
+        // Removes particles that are out of bounds and killed
         particles.remove(i);
+      } else if (particles.get(i).pos.dist(particles.get(i).target) < 1 && !particles.get(i).isKilled) {
+        // Clamps particles to their target if they are very close, checking not killed may be redundant or unnecessary but makes doubly sure we don't clamp to some out of bounds target
+        // Note we intentionally allow these particles to be (slightly) out of bounds
+        // Corrects numerical artifacts of pixel binning by clamping particles to their targets
+        int loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
+        frame.pixels[loc] = particles.get(i).currentColor;
       } else if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Only considers particles that are within bounds since otherwise loc will be invalid
         int loc = int(particles.get(i).pos.x) + int(particles.get(i).pos.y) * w;  // gets this pixels index in pixels[]
-        if (particles.get(i).pos.dist(particles.get(i).target) < 1) {
-          // Corrects numerical artifacts of pixel binning by clamping particles to their targets
-          // TODO fix nonconvergence along top row and left edge!
-          loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
-          frame.pixels[loc] = particles.get(i).currentColor;
-        } else if (brightness(frame.pixels[loc]) > brightness(particles.get(i).currentColor)) {
+        if (brightness(frame.pixels[loc]) > brightness(particles.get(i).currentColor)) {
           // Updates pixel if it should be darker
           frame.pixels[loc] = particles.get(i).currentColor;
         }
-      }
+      } // No action is taken on live particles that are out of bounds but not close to their targets!
     }
     frame.updatePixels();
     float aspect = float(w)/float(h);
