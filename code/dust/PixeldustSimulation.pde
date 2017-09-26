@@ -31,7 +31,7 @@ class PixeldustSimulation {
 
   float brightnessThreshold = 254;  // do no create particles from pixels lighter than this
 
-  PGraphics pg;  // Off-screen graphics buffer, used to make resizing easier, initialized in initImages with w and h
+  PImage frame;  // PImage used as off-screen graphics buffer, used to make resizing easier, initialized in initImages with w and h
 
   /* Constructor
    *
@@ -164,7 +164,7 @@ class PixeldustSimulation {
 
     println("[" + millis() + "] Initialized", imgs.length, "images at", w + "x" + h);
 
-    pg = createGraphics(w, h, P2D);  // Initializes off-screen graphics buffer, note renderer options constrained by main renderer
+    frame = createImage(w, h, RGB);
   }
 
 
@@ -206,21 +206,40 @@ class PixeldustSimulation {
     //float maxVelocity = maxAcceleration*10;
 
     background(0);
-    pg.beginDraw();
-    pg.background(255);
+    frame.loadPixels();
+    for (int i = 0; i < frame.pixels.length; i++) {
+      // Sets background to white
+      frame.pixels[i] = color(255);
+    }
+
     for (int i = particles.size()-1; i > -1; i--) {
       particles.get(i).move();
-      particles.get(i).draw(pg);
 
       if (particles.get(i).isKilled) {
         if (particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
           particles.remove(i);
+          continue;  // skip to next particle and prevents drawing of particles that are killed and out of bounds
+        }
+      }
+
+      // Only considers particles that are within bounds since otherwise loc will be invalid
+      if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
+        int loc = int(particles.get(i).pos.x) + int(particles.get(i).pos.y) * w;  // gets this pixels index in pixels[]
+
+        if (particles.get(i).pos.dist(particles.get(i).target) < 1) {
+          // Corrects numerical artifacts of pixel binning by clamping particles to their targets
+          // TODO fix nonconvergence along top row and left edge!
+          loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
+          frame.pixels[loc] = particles.get(i).currentColor;
+        } else if (brightness(frame.pixels[loc]) > brightness(particles.get(i).currentColor)) {
+          // Updates pixel if it should be darker
+          frame.pixels[loc] = particles.get(i).currentColor;
         }
       }
     }
-    pg.endDraw();
+    frame.updatePixels();
     float aspect = float(w)/float(h);
-    image(pg, 0, height / 2 - ( width / aspect) / 2, width, width / aspect);  // Fits to screen, adapts if screen is taller than sim, but not if wider
+    image(frame, 0, height / 2 - ( width / aspect) / 2, width, width / aspect);  // Fits to screen, adapts if screen is taller than sim, but not if wider
 
     if (debug) {
       // displays progress indicator for this segment

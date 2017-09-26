@@ -38,9 +38,9 @@ boolean debug = false;
  */
 void settings () {
   if (fullScreenMode) {
-    fullScreen(P2D);
+    fullScreen(FX2D);
   } else {
-    size(500, 500, P2D);
+    size(500, 500, FX2D);
   }
 }
 
