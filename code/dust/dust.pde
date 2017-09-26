@@ -142,6 +142,7 @@ void begin(float scaleImg) {
     // Gets particles for current simulation, if there is one
     existingParticles = sim.particles;
     sim = null;  // probably unnecessary since trigger moved to draw(), this is just to catch any bugs
+    println("[" + millis() + "] Recycling", nfc(existingParticles.size()), "particles!");
   } else {
     // Sets existingParticles to null, since otherwise Processing complains
     // that 'The local variable "existingParticles" may not have been initialized'
