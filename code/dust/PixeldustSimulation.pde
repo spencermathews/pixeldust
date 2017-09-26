@@ -205,11 +205,7 @@ class PixeldustSimulation {
     //float maxAcceleration = map(p, 0, 1, 0.1, LIMIT_ACCELERATION);
     //float maxVelocity = maxAcceleration*10;
 
-    for (int i = particles.size()-1; i > -1; i--) {
-      particles.get(i).move();
-    }
-
-    display();
+    display(true);  // performs update then displays
 
     if (debug) {
       // displays progress indicator for this segment
@@ -333,8 +329,12 @@ class PixeldustSimulation {
   }
 
 
-  // simply display particles, does not update or do bounds checking
-  void display() {
+  /*
+   * Simply displays particles, optionally updates first, does not do bounds checking
+   *
+   * @param doUpdate  boolean which indicates if an update should also be performed 
+   */
+  void display(boolean doUpdate) {
     background(0);
     frame.loadPixels();
     for (int i = 0; i < frame.pixels.length; i++) {
@@ -343,6 +343,9 @@ class PixeldustSimulation {
     }
 
     for (int i = particles.size()-1; i > -1; i--) {
+      if (doUpdate) {
+        particles.get(i).move();
+      }
       if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Removes particles that are out of bounds and killed
         particles.remove(i);
@@ -364,5 +367,13 @@ class PixeldustSimulation {
     frame.updatePixels();
     float aspect = float(w)/float(h);
     image(frame, 0, height / 2 - ( width / aspect) / 2, width, width / aspect);  // Fits to screen, adapts if screen is taller than sim, but not if wider
+  }
+
+
+  /*
+   * Simply displays particles, does not update or do bounds checking
+   */
+  void display() {
+    display(false);
   }
 }
