@@ -70,6 +70,37 @@ class Particle {
     this.acc.mult(0);
   }
 
+  void move(float timeLeft, float frameTime) {
+    this.distToTarget = dist(this.pos.x, this.pos.y, this.target.x, this.target.y);
+
+    // Steer towards its target.
+    if (this.distToTarget > 0) {
+      PVector steer = new PVector(this.target.x, this.target.y);
+      steer.sub(this.pos);
+      steer.normalize();
+
+      float dist;
+      if (timeLeft > 0) {
+        // Prevents divide by zero, which give Infinity, or cases where timeLeft < 0
+        // Calculate how many pixels to move based on distance and time remaining and how long the last frame took
+        // pixels/s/fps -> pixels*(1/s)/(f/s) -> pixels*(1/s)*(s/f) -> pixels*(1/f) -> pixels/frame
+        dist =  this.distToTarget * frameTime / timeLeft;
+        dist = constrain(dist, 0, distToTarget);  // makes doubly sure that no weirdness leads to crazy large moves
+      } else {
+        // Moves directly to target
+        dist = this.distToTarget;
+      }
+      steer.mult(dist);
+      this.acc.add(steer);
+    }
+
+    // Move it.
+    this.vel.mult(0);  // sets velocity to zero so we just m
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+  }
+
 
   void draw() {
     stroke(this.currentColor);

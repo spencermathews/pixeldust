@@ -33,6 +33,8 @@ class PixeldustSimulation {
 
   PImage frame;  // PImage used as off-screen graphics buffer, used to make resizing easier, initialized in initImages with w and h
 
+  int prevTime;  // Stores the last time we drew a frame, used for animation timing
+
   /* Constructor
    *
    * It's rather silly that because of how SoundFile works we need to
@@ -179,6 +181,8 @@ class PixeldustSimulation {
     startTime = millis();  // marks the time the simulation starts
 
     nextImage();  // imgIndex is initialized to -1 so we start off correctly
+
+    prevTime = millis();  // first frameTime calculation causes weirdness if this is not reset, there are still bugs
   }
 
 
@@ -237,6 +241,15 @@ class PixeldustSimulation {
    */
   int elapsedTime() {
     return millis() - startTime;
+  }
+
+  /*
+   * Returns the time remaining for this image
+   *
+   * @return   time in milliseconds until current image should converge, may be negative in brief moments of overshooting
+   */
+  int timeLeft() {
+    return currentTime - elapsedTime();
   }
 
 
@@ -342,9 +355,12 @@ class PixeldustSimulation {
       frame.pixels[i] = color(255);
     }
 
+    int frameTime = millis() - prevTime;  // calculates how long the previous frame took to render
+    prevTime = millis();
+
     for (int i = particles.size()-1; i > -1; i--) {
       if (doUpdate) {
-        particles.get(i).move();
+        particles.get(i).move(timeLeft(), frameTime);
       }
       if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Removes particles that are out of bounds and killed
