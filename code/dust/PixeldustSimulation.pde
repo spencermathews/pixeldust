@@ -215,17 +215,11 @@ class PixeldustSimulation {
     for (int i = particles.size()-1; i > -1; i--) {
       particles.get(i).move();
 
-      if (particles.get(i).isKilled) {
-        if (particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
-          particles.remove(i);
-          continue;  // skip to next particle and prevents drawing of particles that are killed and out of bounds
-        }
-      }
-
-      // Only considers particles that are within bounds since otherwise loc will be invalid
-      if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
+      if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
+        particles.remove(i);
+      } else if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
+        // Only considers particles that are within bounds since otherwise loc will be invalid
         int loc = int(particles.get(i).pos.x) + int(particles.get(i).pos.y) * w;  // gets this pixels index in pixels[]
-
         if (particles.get(i).pos.dist(particles.get(i).target) < 1) {
           // Corrects numerical artifacts of pixel binning by clamping particles to their targets
           // TODO fix nonconvergence along top row and left edge!
