@@ -112,18 +112,23 @@ void draw() {
       //}
     }
 
-    // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
-    boolean haveFallen = true;  // checks that all particles have fallen below a threshold
-    for (int i = 0; i < sim.particles.size(); i++) {
-      // indicates that fall is not complete if we spot any particles above a line
-      if (sim.particles.get(i).pos.y < baseline - sim.h * triggerThreshold) {
-        haveFallen = false;
+    if (triggerState == 0) {
+      // Only tests fall if trigger is not active. This condition is only for optimization since it prevents unnecessary retesting. Consider condition: should this be != 1?
+      // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
+      boolean haveFallen = true;  // checks that all particles have fallen below a threshold
+      for (int i = 0; i < sim.particles.size(); i++) {
+        // indicates that fall is not complete if we spot any particles above a line
+        if (sim.particles.get(i).pos.y < baseline - sim.h * triggerThreshold) {
+          haveFallen = false;
+          break;  // escapes loop once we can say fall is not complete
+        }
       }
-    }
 
-    // allow retriggering if all particles have fallen past threshold
-    if (haveFallen == true) {
-      triggerState = 1;
+      // allow retriggering if all particles have fallen past threshold
+      if (haveFallen == true) {
+        triggerState = 1;
+        println("[" + millis() + "] Trigger active!");
+      }
     }
 
     sim.display();
