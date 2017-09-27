@@ -141,10 +141,24 @@ class PixeldustSimulation {
     h = 0;
 
     for (int i = 0; i < imgNames.length; i++) {
-      println("[" + millis() + "] Loading", imgNames[i]);
+      print("[" + millis() + "] Loading", imgNames[i]);
       PImage newImg = loadImage(imgNames[i]);
       newImg.resize(floor(newImg.width/scaleImg), 0);
       imgs = (PImage[])append(imgs, newImg);
+
+      switch(newImg.format) {
+      case RGB:
+        println(" (RGB format)");
+        break;
+      case ARGB:
+        println(" (ARGB format)");
+        break;
+      case ALPHA:
+        println(" (ALPHA format)");
+        break;
+      default:
+        println(" (unknown format)");
+      }
 
       // set simulation dimensions to the max of all images
       if (imgs[i].width > w) {
