@@ -323,6 +323,15 @@ class PixeldustSimulation {
       }
     }
 
+    // Immediately removes these killed particles if we are just starting this person and have passed in particles
+    if (particleIndexes.size() > 0 && imgIndex == 0) {
+      for (int i = particles.size()-1; i > -1; i--) {
+        if (particles.get(i).isKilled) {
+          particles.remove(i);
+        }
+      }
+    }
+
     println("\tUsing", nfc(particles.size()), "particles w/", particleIndexes.size(), "killed");
   }
 
