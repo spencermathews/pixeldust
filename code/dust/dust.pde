@@ -91,47 +91,8 @@ void draw() {
     // iterates simulationset and sets isComplete to 1 after person is finished
     isComplete = sim.run();
   } else if (isComplete == 1) {
-    // person ended but still need to drop pixels etc., should probably be handled in sim
-
-    float triggerThreshold = 0.5;  // amount of falling before we can retrigger, 1 = we can retrigger right away, closer to 0 means longer wait
-    //float x1 = width/2 - sim.w/2;   // gets upper left position of sim bounding box
-    //float y1 = height/2 - sim.h/2;  // gets upper left position of sim bounding box
-    float baseline = height/2 + sim.h/2;  // y coordinate of the bottom of the sim bounding box, could be off by 1 or a few due to rounding
-
-    // iterates through particles and make them fall
-    for (int i = 0; i < sim.particles.size(); i++) {
-      Particle particle = sim.particles.get(i);
-      particle.acc = new PVector(0, 0);
-      particle.vel = new PVector(random(-3, 3), .03 * (baseline - particle.pos.y) * particle.mass);
-      particle.update();
-      particle.updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
-      // remove particles that are out of bounds, is this a good idea? it diverges from original approach
-      // TODO I think you need to use Iterator.remove() to do this properly! I think we may miss some if there are consecutive to remove
-      //if (particle.isOutOfBounds(x1, y1, sim.w, sim.h)) {
-      //  sim.particles.remove(i);  // consider if remove is the right thing to do here...!
-      //}
-    }
-
-    if (triggerState == 0) {
-      // Only tests fall if trigger is not active. This condition is only for optimization since it prevents unnecessary retesting. Consider condition: should this be != 1?
-      // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
-      boolean haveFallen = true;  // checks that all particles have fallen below a threshold
-      for (int i = 0; i < sim.particles.size(); i++) {
-        // indicates that fall is not complete if we spot any particles above a line
-        if (sim.particles.get(i).pos.y < baseline - sim.h * triggerThreshold) {
-          haveFallen = false;
-          break;  // escapes loop once we can say fall is not complete
-        }
-      }
-
-      // allow retriggering if all particles have fallen past threshold
-      if (haveFallen == true) {
-        triggerState = 1;
-        println("[" + millis() + "] Trigger active!");
-      }
-    }
-
-    sim.display();
+    // person ended but still need to drop pixels etc.
+    sim.fall();
   }
 
   if (debug == true && sim != null) {
