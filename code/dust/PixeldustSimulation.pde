@@ -1,6 +1,11 @@
 /* PixeldustSimulation Class
  *
  * requires Sound library
+ *
+ * Constructor parses config file and prepares audio and images.
+ * Audio playback is triggered by begin().
+ * Call run() every frame to cycle through images as audio is playing. Its retval indicates when audio is complete.
+ * Then call fall() to finish off simulation. Its retval will indicate when control is ready to be passed back.
  */
 
 
@@ -31,6 +36,8 @@ class PixeldustSimulation {
   PImage frame;  // PImage used as off-screen graphics buffer, used to make resizing easier, initialized in initImages with w and h
 
   int prevTime;  // Stores the last time we drew a frame, used for animation timing
+
+  boolean haveFallen;  // Keeps track of if particles have fallen past a threshold, marks effective end of simulation
 
   /* Constructor
    *
@@ -194,6 +201,8 @@ class PixeldustSimulation {
     nextImage();  // imgIndex is initialized to -1 so we start off correctly
 
     prevTime = millis();  // first frameTime calculation causes weirdness if this is not reset, there are still bugs
+
+    haveFallen = false;  // resets fall state, ignored until fall phase
   }
 
 
@@ -242,10 +251,9 @@ class PixeldustSimulation {
    * Should be called instead of run() after simulation is complate.
    * Performs a custom update and displays.
    *
-   * @param  triggerState  the current trigger state
-   * @return               the trigger state 
+   * @return    a boolean indicating if particles have fallen below threshold
    */
-  int fall(int triggerState) {
+  boolean fall() {
     float triggerThreshold = 0.5;  // amount of falling before we can retrigger, 0 = we can retrigger right away, closer to 1 means longer wait, 1 will never retrigger
 
     // iterates through particles and make them fall
@@ -263,28 +271,21 @@ class PixeldustSimulation {
       //}
     }
 
-    if (triggerState == 0) {
-      // Only tests fall if trigger is not active. This condition is only for optimization since it prevents unnecessary retesting. Consider condition: should this be != 1?
-      // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
-      boolean haveFallen = true;  // checks that all particles have fallen below a threshold
+    display();
+
+    if (haveFallen == false) {
+      // Only tests fall if need. This condition is only for optimization since it prevents unnecessary retesting.
+      haveFallen = true;  // assumes we have fallen until we observe evidence to the contrary
       for (int i = 0; i < particles.size(); i++) {
-        // indicates that fall is not complete if we spot any particles above a line
+        // checks that all particles have fallen below a threshold
         if (particles.get(i).pos.y < h * triggerThreshold) {
+          //fall is not complete if we spot any particle above the threshold
           haveFallen = false;
           break;  // escapes loop once we can say fall is not complete
         }
       }
-
-      // allow retriggering if all particles have fallen past threshold
-      if (haveFallen == true) {
-        triggerState = 1;
-        println("[" + millis() + "] Trigger active!");
-      }
     }
-
-    display();
-
-    return triggerState;
+    return haveFallen;
   }
 
   /* Returns elapsed time in milliseconds (elapsed time is time since begin() was called) 

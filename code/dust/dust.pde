@@ -92,7 +92,12 @@ void draw() {
     isComplete = sim.run();
   } else if (isComplete == 1) {
     // person ended but still need to drop pixels etc.
-    triggerState = sim.fall(triggerState);
+    boolean isFallen = sim.fall();  // iterates fall and indicates if particles have fallen past threshold 
+    if (isFallen && triggerState == 0) {
+      // allow retriggering if all particles have fallen past threshold
+      triggerState = 1;
+      println("[" + millis() + "] Trigger active!");
+    }
   }
 
   if (debug == true && sim != null) {
