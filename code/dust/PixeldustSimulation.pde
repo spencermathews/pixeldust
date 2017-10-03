@@ -440,6 +440,18 @@ class PixeldustSimulation {
         }
       } // No action is taken on live particles that are out of bounds but not close to their targets!
     }
+
+    // For debugging, also render particles at their targets, this means pixels may be rendered twice and if a pixel is occupied by a particle that is darker than that pixel's target color then it may be obscured
+    if (keyPressed && key == 't') {
+      for (int i = 0; i < particles.size(); i++) {
+        int loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
+        if (loc >= 0 && loc < frame.pixels.length) {
+          // Render particle at its target, assuming it's in bounds, note condition effectively like testing isOutOfBounds but for target position
+          frame.pixels[loc] = particles.get(i).currentColor;
+        }
+      }
+    }
+
     frame.updatePixels();
     float aspect = float(w)/float(h);
     image(frame, 0, height / 2 - ( width / aspect) / 2, width, width / aspect);  // Fits to screen, adapts if screen is taller than sim, but not if wider
