@@ -258,16 +258,28 @@ void debugMode() {
     int min = elapsedTime / 60;  // use int division to our advantage
     int sec = elapsedTime % 60;
 
+    String debugText = min + ":" + nf(sec, 2) + " | " + int(frameRate) + " fps" + " | " + nfc(sim.particles.size()) + " particles";
     if (!sketchFullScreen()) {
       // Displays elapsed time and fps in title bar
-      surface.setTitle(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps");
+      surface.setTitle(debugText);
     } else {
       // Draws elapsed time and fps in a box, useful for fullScreen
       noStroke();
       fill(0);
-      rect(width-100, height-50, 100, 46);
+      // determines width and height of the text
+      int debugWidth = int(textWidth(debugText));
+      int debugHeight = int(textAscent() + textDescent());  // note each font is adjusted by a different scalar
+      int buffer = 10;  // number of pixels to buffer around text in the box
+      int vOffset = 3;
+      // calculates upper left corner and width and height of box considering the dimensions of text
+      int a = (width - 1) - debugWidth - (2 * buffer);
+      int b = (height - 1) - debugHeight - (2 * buffer) - vOffset;
+      int c = debugWidth + (2 * buffer);
+      int d = debugHeight + (2  * buffer);
+      rect(a, b, c, d);
       fill(255);
-      text(min + ":" + nf(sec, 2) + " / " + int(frameRate) + " fps", width-88, height-22);
+      textAlign(CENTER, CENTER);  // note vertical centering is strangely off by a little
+      text(debugText, a, b, c, d);  // specifying width and height of bounding box
     }
 
     lastTime = millis();
