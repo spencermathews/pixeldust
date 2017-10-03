@@ -92,7 +92,7 @@ void draw() {
     isComplete = sim.run();
   } else if (isComplete == 1) {
     // person ended but still need to drop pixels etc.
-    sim.fall();
+    triggerState = sim.fall(triggerState);
   }
 
   if (debug == true && sim != null) {

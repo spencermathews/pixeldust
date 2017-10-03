@@ -236,22 +236,29 @@ class PixeldustSimulation {
     return 0;  // indicates that we're still running
   }
 
-  void fall() {
-    float triggerThreshold = 0.5;  // amount of falling before we can retrigger, 1 = we can retrigger right away, closer to 0 means longer wait
-    //float x1 = width/2 - sim.w/2;   // gets upper left position of sim bounding box
-    //float y1 = height/2 - sim.h/2;  // gets upper left position of sim bounding box
-    float baseline = height/2 + sim.h/2;  // y coordinate of the bottom of the sim bounding box, could be off by 1 or a few due to rounding
+  /*
+   * Makes particles fall
+   *
+   * Should be called instead of run() after simulation is complate.
+   * Performs a custom update and displays.
+   *
+   * @param  triggerState  the current trigger state
+   * @return               the trigger state 
+   */
+  int fall(int triggerState) {
+    float triggerThreshold = 0.5;  // amount of falling before we can retrigger, 0 = we can retrigger right away, closer to 1 means longer wait, 1 will never retrigger
 
     // iterates through particles and make them fall
-    for (int i = 0; i < sim.particles.size(); i++) {
-      Particle particle = sim.particles.get(i);
+    for (int i = 0; i < particles.size(); i++) {
+      Particle particle = particles.get(i);
       particle.acc = new PVector(0, 0);
-      particle.vel = new PVector(random(-3, 3), .03 * (baseline - particle.pos.y) * particle.mass);
+      particle.vel = new PVector(random(-3, 3), .03 * (h - particle.pos.y) * particle.mass);
       particle.update();
       particle.updateRandom(random(20), random(40));  // adds a little bit of randomness to particles linger at bottom
-      // remove particles that are out of bounds, is this a good idea? it diverges from original approach
-      // TODO I think you need to use Iterator.remove() to do this properly! I think we may miss some if there are consecutive to remove
-      //if (particle.isOutOfBounds(x1, y1, sim.w, sim.h)) {
+      // TODO currently there is no boundary condition so particles will eventually diffuse off screen if above dynamics allow, currently I think they will accumulate just barely out of sight
+      // Removes particles that are out of bounds. Note this diverges from the original "Particles to image" by Labbe approach.
+      // TODO Use Iterator.remove() to do this properly, or iterate in reverse, or else we may miss some if there are consecutive to remove
+      //if (particle.isOutOfBounds(0, 0, w, h)) {
       //  sim.particles.remove(i);  // consider if remove is the right thing to do here...!
       //}
     }
@@ -260,9 +267,9 @@ class PixeldustSimulation {
       // Only tests fall if trigger is not active. This condition is only for optimization since it prevents unnecessary retesting. Consider condition: should this be != 1?
       // tests if we have fallen far enough, could maybe include in update loop? can shortcut eval here at the cost of a second loop
       boolean haveFallen = true;  // checks that all particles have fallen below a threshold
-      for (int i = 0; i < sim.particles.size(); i++) {
+      for (int i = 0; i < particles.size(); i++) {
         // indicates that fall is not complete if we spot any particles above a line
-        if (sim.particles.get(i).pos.y < baseline - sim.h * triggerThreshold) {
+        if (particles.get(i).pos.y < h * triggerThreshold) {
           haveFallen = false;
           break;  // escapes loop once we can say fall is not complete
         }
@@ -275,7 +282,9 @@ class PixeldustSimulation {
       }
     }
 
-    sim.display();
+    display();
+
+    return triggerState;
   }
 
   /* Returns elapsed time in milliseconds (elapsed time is time since begin() was called) 
