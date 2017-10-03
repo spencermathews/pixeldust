@@ -37,7 +37,7 @@ class PixeldustSimulation {
 
   int prevTime;  // Stores the last time we drew a frame, used for animation timing
 
-  boolean haveFallen;  // Keeps track of if particles have fallen past a threshold, marks effective end of simulation
+  boolean isFallen;  // Keeps track of if particles have fallen past a threshold, marks effective end of simulation
 
   /* Constructor
    *
@@ -202,7 +202,7 @@ class PixeldustSimulation {
 
     prevTime = millis();  // first frameTime calculation causes weirdness if this is not reset, there are still bugs
 
-    haveFallen = false;  // resets fall state, ignored until fall phase
+    isFallen = false;  // resets fall state, ignored until fall phase
   }
 
 
@@ -273,19 +273,19 @@ class PixeldustSimulation {
 
     display();
 
-    if (haveFallen == false) {
+    if (isFallen == false) {
       // Only tests fall if need. This condition is only for optimization since it prevents unnecessary retesting.
-      haveFallen = true;  // assumes we have fallen until we observe evidence to the contrary
+      isFallen = true;  // assumes we have fallen until we observe evidence to the contrary
       for (int i = 0; i < particles.size(); i++) {
         // checks that all particles have fallen below a threshold
         if (particles.get(i).pos.y < h * triggerThreshold) {
           //fall is not complete if we spot any particle above the threshold
-          haveFallen = false;
+          isFallen = false;
           break;  // escapes loop once we can say fall is not complete
         }
       }
     }
-    return haveFallen;
+    return isFallen;
   }
 
   /* Returns elapsed time in milliseconds (elapsed time is time since begin() was called) 
