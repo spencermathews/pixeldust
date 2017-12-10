@@ -2,7 +2,9 @@
 
 This is the main code for Pixeldust.
 
-# Dust
+## Contents
+
+### /dust
 
 `dust.pde`
 : the main sketch
@@ -16,22 +18,28 @@ This is the main code for Pixeldust.
 `Mover`
 : Represents a particle
 
-# Pi
+### /pi
 
 `pixelDustSensorNet.pde`
 : Triggers Pixeldust from Raspberry Pi using prox sensor
 
 ## Setup
 
-Running Pixeldust requires code from the `master` branch and data from the `data` branch. The following commands will set things up. Run from the `pixeldust` root directory.
+Running Pixeldust requires code from the `master` branch and data from the `data` branch. The following commands will set things up.
 
+    git clone https://github.com/spencermathews/pixeldust.git
+    cd pixeldust
     git checkout master
     git checkout data -- code/dust/data
     git reset
 
+If you have already cloned the repository then the checkouts and reset should suffice.
+
+Run `code/dust/dust.pde`.
+
+Note: additional steps are required to run without the network trigger, see below.
 
 ### Testing
-
 
 #### Network Triggering
 
