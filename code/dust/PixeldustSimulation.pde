@@ -351,7 +351,7 @@ class PixeldustSimulation {
         pixelIndex += 1;
 
         // Do not assign a particle to this pixel under some conditions
-        if (random(1.0) > loadPercentage*resSlider || brightness(pixel) > brightnessThreshold) {
+        if (brightness(pixel) > brightnessThreshold) {
           continue;
         }
 
@@ -378,7 +378,6 @@ class PixeldustSimulation {
         newParticle.target.x = x+this.w/2-imgs[imgIndex].width/2;
         newParticle.target.y = y+this.h/2-imgs[imgIndex].height/2;
         newParticle.currentColor = pixel;
-        newParticle.currentSize = particleSizeSlider;
       }
     }
 
