@@ -30,6 +30,7 @@ class Particle {
   // Saving as class var so it doesn't need to calculate twice.
   float distToTarget = 0;
 
+  // TODO overload constructor to allow passing other fields
   Particle(float x, float y) {
     this.pos = new PVector(x, y);
   }
@@ -90,7 +91,7 @@ class Particle {
     }
 
     // Move it.
-    this.vel.mult(0);  // sets velocity to zero so we just m
+    this.vel.mult(0);  // sets velocity to zero so motion only based on acceleration
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     this.acc.mult(0);
@@ -111,6 +112,8 @@ class Particle {
       this.isKilled = true;
     }
   }
+
+  // TODO consider loosening bounds to allow width/height+1 due to int casting in sim.display
 
   boolean isOutOfBounds() {
     return (this.pos.x < 0 || this.pos.x >= width || 

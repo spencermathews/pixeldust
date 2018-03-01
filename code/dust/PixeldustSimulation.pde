@@ -375,6 +375,7 @@ class PixeldustSimulation {
           particles.add(newParticle);
         }
 
+        // TODO consider how we set target wrt particle.isOutOfBounds() and sim.display(), i.e is this int? and what happens if w/width are odd?
         newParticle.target.x = x+this.w/2-imgs[imgIndex].width/2;
         newParticle.target.y = y+this.h/2-imgs[imgIndex].height/2;
         newParticle.currentColor = pixel;
@@ -418,9 +419,12 @@ class PixeldustSimulation {
     prevTime = millis();
 
     for (int i = particles.size()-1; i > -1; i--) {
+      // TODO simplify by making particles.get(i) a variable
       if (doUpdate) {
         particles.get(i).move(timeLeft(), frameTime);
       }
+      // TODO clean up, complications in conditions resulted from edge case on right border where out of bounds yet within
+      //maybe can just change bounds test
       if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Removes particles that are out of bounds and killed
         particles.remove(i);
@@ -428,6 +432,7 @@ class PixeldustSimulation {
         // Clamps particles to their target if they are very close, checking not killed may be redundant or unnecessary but makes doubly sure we don't clamp to some out of bounds target
         // Note we intentionally allow these particles to be (slightly) out of bounds
         // Corrects numerical artifacts of pixel binning by clamping particles to their targets
+        // TODO is casting necessary? check how we assign target, this may be boilerplate pattern for pixels[]
         int loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
         frame.pixels[loc] = particles.get(i).currentColor;
       } else if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
@@ -463,4 +468,6 @@ class PixeldustSimulation {
   void display() {
     display(false);
   }
+  
+  // TODO display using particle.draw() for comparison
 }
