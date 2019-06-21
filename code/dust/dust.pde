@@ -4,7 +4,7 @@
  * Spencer Mathews, began: 3/2017
  */
 
-float SCALE_IMG = 4;
+float SCALE_IMG = 2;
 
 import processing.sound.*;
 import processing.net.*;
@@ -47,6 +47,8 @@ void settings () {
 }
 
 void setup () {
+  nameIndex=5;
+  
   if (!sketchFullScreen()) {
     // allows resizing window if running in windowed mode
     surface.setResizable(true); // enable resizable display window, probably best in setup?

@@ -293,6 +293,17 @@ class PixeldustSimulation {
   int elapsedTime() {
     return millis() - startTime;
   }
+  
+  // Returns elapsed time for this image
+  int imgElapsedTime() {
+    if (imgIndex == 0) {
+      // No adjustment needed for first image.
+      return elapsedTime();
+    } else {
+      // Subsequent images require an offset based on previous images target time.
+      return elapsedTime() - times[imgIndex - 1];
+    }
+  }
 
   /*
    * Returns the time remaining for this image
@@ -329,17 +340,20 @@ class PixeldustSimulation {
     currentInterval = (currentTime - elapsedTime());
     println("\tset: imgIndex =", imgIndex, "| currentTime =", currentTime, "| currentInterval =", currentInterval);
 
-    // Create an array of indexes from particle array.
+    // Create an array of indexes from particle array that are available to be reassigned.
     ArrayList<Integer> particleIndexes = new ArrayList<Integer>();
-    for (int i = 0; i < particles.size(); i++) {
-      particleIndexes.add(i);
-    }
-
     // Clears particleIndexes for an additive transition. Existing particles and targets remain.
     if (transitions[imgIndex] == 0) {
       // Clears particleIndexes so no particles will be reassigned. New particles will be created for all threshold pixels.
       particleIndexes.clear();
+    } else {
+      // For normal transition enumerate indices of particle array so they can be reassigned.
+      for (int i = 0; i < particles.size(); i++) {
+        particleIndexes.add(i);
+      }
     }
+    
+    println(particleIndexes.size(), particles.size());
 
     // Go through each pixel of the image.
     int pixelIndex = 0;
@@ -359,7 +373,7 @@ class PixeldustSimulation {
         Particle newParticle;
         if (imgIndex == 0 && particleIndexes.isEmpty()) {
           // Initializes particles for the first image on the bottom edge if starting from scratch
-          // If particles were passed in this block is skipped and we recycle them as usual, since aparticleIndexes will not be empty 
+          // If particles were passed in this block is skipped and we recycle them as usual, since particleIndexes will not be empty 
           newParticle = new Particle(random(0, this.w), this.h - 1);
           particles.add(newParticle);
         } else if (particleIndexes.size() > 0) {
@@ -367,18 +381,24 @@ class PixeldustSimulation {
           // JS Array splice can handle non-int params it seems, but ArrayList.remove fails, also was originally length-1
           int index = particleIndexes.remove(int(random(particleIndexes.size())));
           newParticle = particles.get(index);
-        } else {
+        }  else {
           // Create a new particle since all existing particles have already been used
+          
           // Place new particle at the same location as a randomly selected existing particle
           Particle randomParticle = particles.get(int(random(particles.size())));
           newParticle = new Particle(randomParticle.pos.x, randomParticle.pos.y);
+          
+          //newParticle = new Particle(random(w), random(h));
+          //newParticle.pos = generateRandomPos(width/2, height/2, max(width, height));
+          
           particles.add(newParticle);
         }
 
         // TODO consider how we set target wrt particle.isOutOfBounds() and sim.display(), i.e is this int? and what happens if w/width are odd?
         newParticle.target.x = x+this.w/2-imgs[imgIndex].width/2;
         newParticle.target.y = y+this.h/2-imgs[imgIndex].height/2;
-        newParticle.currentColor = pixel;
+        //newParticle.currentColor = pixel;
+        newParticle.currentColor = color(0);  // Hack to make all pixels black, won't be necessary once images are updated to b/w.
       }
     }
 
@@ -408,7 +428,7 @@ class PixeldustSimulation {
    * @param doUpdate  boolean which indicates if an update should also be performed 
    */
   void display(boolean doUpdate) {
-    background(0);
+    background(0);  // Necessary?
     frame.loadPixels();
     for (int i = 0; i < frame.pixels.length; i++) {
       // Sets background to white
@@ -421,20 +441,25 @@ class PixeldustSimulation {
     for (int i = particles.size()-1; i > -1; i--) {
       // TODO simplify by making particles.get(i) a variable
       if (doUpdate) {
-        particles.get(i).move(timeLeft(), frameTime);
+        if (imgElapsedTime() < 0) {
+          // Move randomly when the image first starts.
+          particles.get(i).updateRandom(1, 1);
+        } else {
+          particles.get(i).move(timeLeft(), frameTime);
+        }
       }
       // TODO clean up, complications in conditions resulted from edge case on right border where out of bounds yet within
       //maybe can just change bounds test
       if (particles.get(i).isKilled && particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Removes particles that are out of bounds and killed
         particles.remove(i);
-      } else if (particles.get(i).pos.dist(particles.get(i).target) < 1 && !particles.get(i).isKilled) {
-        // Clamps particles to their target if they are very close, checking not killed may be redundant or unnecessary but makes doubly sure we don't clamp to some out of bounds target
-        // Note we intentionally allow these particles to be (slightly) out of bounds
-        // Corrects numerical artifacts of pixel binning by clamping particles to their targets
-        // TODO is casting necessary? check how we assign target, this may be boilerplate pattern for pixels[]
-        int loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
-        frame.pixels[loc] = particles.get(i).currentColor;
+      //} else if (particles.get(i).pos.dist(particles.get(i).target) < 1 && !particles.get(i).isKilled) {
+      //  // Clamps particles to their target if they are very close, checking not killed may be redundant or unnecessary but makes doubly sure we don't clamp to some out of bounds target
+      //  // Note we intentionally allow these particles to be (slightly) out of bounds
+      //  // Corrects numerical artifacts of pixel binning by clamping particles to their targets
+      //  // TODO is casting necessary? check how we assign target, this may be boilerplate pattern for pixels[]
+      //  int loc = int(particles.get(i).target.x) + int(particles.get(i).target.y) * w;
+      //  frame.pixels[loc] = particles.get(i).currentColor;
       } else if (!particles.get(i).isOutOfBounds(0, 0, this.w, this.h)) {
         // Only considers particles that are within bounds since otherwise loc will be invalid
         int loc = int(particles.get(i).pos.x) + int(particles.get(i).pos.y) * w;  // gets this pixels index in pixels[]

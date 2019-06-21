@@ -23,7 +23,7 @@ class Particle {
   float maxForce = random(8, 15); // Its speed limit.
 
   color currentColor = color(0);
-  float colorBlendRate = random(0.01, 0.05);
+  float colorBlendRate = random(0.01, 0.05);  // Unused!
 
   float currentSize = 0;
 
@@ -80,11 +80,26 @@ class Particle {
         // Prevents divide by zero, which give Infinity, or cases where timeLeft < 0
         // Calculate how many pixels to move based on distance and time remaining and how long the last frame took
         // pixels/s/fps -> pixels*(1/s)/(f/s) -> pixels*(1/s)*(s/f) -> pixels*(1/f) -> pixels/frame
-        dist =  this.distToTarget * frameTime / timeLeft;
+        dist = this.distToTarget * frameTime / timeLeft;
         dist = constrain(dist, 0, distToTarget);  // makes doubly sure that no weirdness leads to crazy large moves
+        
+        // Hacks in to prevent convergence.
+        //if (timeLeft < 300) {
+        //  dist = 0;
+        //}
+        //else if (this.distToTarget < closeEnoughTarget) {
+        if (this.distToTarget < 3) {
+          //dist *= this.distToTarget/closeEnoughTarget;
+          steer = PVector.random2D();
+          dist = random(.5);
+        }
       } else {
         // Moves directly to target
-        dist = this.distToTarget;
+        //dist = this.distToTarget;  // Commented out as part of nonconvergence
+        
+        // Hack do a more or less updateRandom, repurpose dist and steer vars.
+        steer = PVector.random2D();
+        dist = random(.5);
       }
       steer.mult(dist);
       this.acc.add(steer);
@@ -150,6 +165,10 @@ class Particle {
     vel.add(acc);
     vel.limit(maxSpeed);
     pos.add(vel);
+    
+    // Reset acceleration and velocity so dynamics are stateless.
+    //acc.mult(0);
+    //vel.mult(0);
   }
 
 
