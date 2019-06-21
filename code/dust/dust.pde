@@ -42,6 +42,8 @@ void settings () {
   } else {
     size(500, 500, FX2D);
   }
+  
+  noSmooth();  // may increase performance
 }
 
 void setup () {
@@ -49,8 +51,6 @@ void setup () {
     // allows resizing window if running in windowed mode
     surface.setResizable(true); // enable resizable display window, probably best in setup?
   }
-
-  noSmooth();  // may increase performance
 
   lastTime = 0;
   isComplete = -1;  // start off with special value so draw loop is no-op until we setup first person
